@@ -63,22 +63,15 @@ export default function InputPage() {
   };
 
   const formAction = async (formData: FormData) => {
-    // Tambahkan pelindung try...catch di sini
-    try {
-      const res = await addTransaction(null, formData);
-      
-      if (res?.status === 'success') {
-        setShowPopup(true);
-        setPreviewUrl(null);
-        setTimeout(() => {
-          router.push('/'); 
-        }, 2000); 
-      } else if (res?.status === 'error') {
-        setMessage(res.message);
-      }
-    } catch (error) {
-      console.error("Terjadi error di client:", error);
-      setMessage("❌ Gagal: Koneksi terputus atau file terlalu besar untuk server (Maks 4.5 MB).");
+    const res = await addTransaction(null, formData);
+    if (res?.status === "success") {
+      setShowPopup(true);
+      setPreviewUrl(null);
+      setTimeout(() => {
+        router.push("/");
+      }, 2000);
+    } else if (res?.status === "error") {
+      setMessage(res.message);
     }
   };
 
