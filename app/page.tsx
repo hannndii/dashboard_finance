@@ -1,4 +1,4 @@
-import { getDashboardData } from '@/app/input/';
+import { getDashboardData } from './action';
 import { DollarSign, ShoppingCart, TrendingUp, Calendar } from 'lucide-react';
 import Link from 'next/link';
 import { RevenueChart } from '../app/component/RevenueCart'; // Kita buat component ini terpisah
