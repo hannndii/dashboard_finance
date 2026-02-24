@@ -63,15 +63,22 @@ export default function InputPage() {
   };
 
   const formAction = async (formData: FormData) => {
-    const res = await addTransaction(null, formData);
-    if (res?.status === "success") {
-      setShowPopup(true);
-      setPreviewUrl(null);
-      setTimeout(() => {
-        router.push("/");
-      }, 2000);
-    } else if (res?.status === "error") {
-      setMessage(res.message);
+    // Tambahkan pelindung try...catch di sini
+    try {
+      const res = await addTransaction(null, formData);
+      
+      if (res?.status === 'success') {
+        setShowPopup(true);
+        setPreviewUrl(null);
+        setTimeout(() => {
+          router.push('/'); 
+        }, 2000); 
+      } else if (res?.status === 'error') {
+        setMessage(res.message);
+      }
+    } catch (error) {
+      console.error("Terjadi error di client:", error);
+      setMessage("❌ Gagal: Koneksi terputus atau file terlalu besar untuk server (Maks 4.5 MB).");
     }
   };
 
@@ -210,7 +217,6 @@ export default function InputPage() {
                     type="button"
                     onClick={() => {
                       setPreviewUrl(null);
-                      // Reset file di dalam input asli agar bisa pilih ulang gambar
                       const fileInput = document.getElementById(
                         "dropzone-file",
                       ) as HTMLInputElement;
@@ -224,7 +230,6 @@ export default function InputPage() {
               )}
 
               {/* TAMPILAN KOTAK UPLOAD & INPUT FILE ASLI */}
-              {/* Sengaja disembunyikan pakai 'hidden' jika preview muncul, agar datanya tetap terkirim */}
               <label
                 htmlFor="dropzone-file"
                 className={`flex flex-col items-center justify-center w-full h-32 border-2 border-blue-200 border-dashed rounded-lg cursor-pointer bg-white hover:bg-blue-50 transition-colors ${previewUrl ? "hidden" : "flex"}`}
