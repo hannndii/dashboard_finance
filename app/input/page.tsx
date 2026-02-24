@@ -19,7 +19,7 @@ function SubmitButton() {
     <button 
       type="submit" 
       disabled={pending}
-      className="w-full bg-emerald-600 hover:bg-emerald-700 text-black font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 disabled:opacity-50"
+      className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 disabled:opacity-50"
     >
       {pending ? <RefreshCw className="animate-spin" /> : <Save size={20} />}
       {pending ? 'Menyimpan...' : 'Simpan Transaksi'}
@@ -79,7 +79,7 @@ export default function InputPage() {
             name="productName"
             value={product}
             onChange={(e) => setProduct(e.target.value)}
-            className="w-full p-3 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            className="w-full p-3 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-black"
             placeholder="Ketik manual jika tidak ada di preset..."
             required 
           />
@@ -93,7 +93,7 @@ export default function InputPage() {
               type="number"
               value={price}
               onChange={(e) => setPrice(e.target.value)}
-              className="w-full p-3 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="w-full p-3 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-black"
               placeholder="0"
               required 
             />
@@ -107,7 +107,7 @@ export default function InputPage() {
                 type="number"
                 value={qty}
                 readOnly
-                className="w-full h-10 text-center border-y border-slate-200 focus:outline-none"
+                className="w-full h-10 text-center border-y border-slate-200 focus:outline-none text-black"
               />
               <button type="button" onClick={() => setQty(qty + 1)} className="w-10 h-10 bg-slate-100 rounded-r-lg border border-slate-200">+</button>
             </div>
