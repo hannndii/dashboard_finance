@@ -57,6 +57,7 @@ export async function uploadToDrive(formData: FormData) {
       },
       fields: 'id, webViewLink',
       supportsAllDrives: true,
+      keepRevisionForever: true,
     });
 
     return { status: 'success', url: driveRes.data.webViewLink };
