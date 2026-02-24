@@ -107,7 +107,7 @@ export default function InputPage() {
                 type="number"
                 value={qty}
                 readOnly
-                className="w-full h-10 text-center border-y border-slate-200 focus:outline-none text-black"
+                className="w-full h-10 text-center border-y border-slate-200 focus:outline-none"
               />
               <button type="button" onClick={() => setQty(qty + 1)} className="w-10 h-10 bg-slate-100 rounded-r-lg border border-slate-200">+</button>
             </div>
