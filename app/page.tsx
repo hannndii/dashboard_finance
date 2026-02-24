@@ -8,8 +8,6 @@ export const dynamic = 'force-dynamic';
 export default async function Dashboard() {
   const data = await getDashboardData();
   const formatRp = (n: number) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(n);
-
-  // 👈 CARI TANGGAL TRANSAKSI TERAKHIR UNTUK CARD
   const lastTransaction = data.recent.length > 0 ? new Date(data.recent[0].createdAt) : null;
   const lastTrxText = lastTransaction 
     ? `Terakhir: ${lastTransaction.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })} ${lastTransaction.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}` 
@@ -71,7 +69,7 @@ export default async function Dashboard() {
                 <tr>
                   <th className="px-6 py-3">Waktu</th>
                   <th className="px-6 py-3">Produk</th>
-                  <th className="px-6 py-3 text-center">Pembayaran</th> {/* 👈 KOLOM BARU */}
+                  <th className="px-6 py-3 text-center">Pembayaran</th> 
                   <th className="px-6 py-3 text-right">Harga Satuan</th>
                   <th className="px-6 py-3 text-center">Qty</th>
                   <th className="px-6 py-3 text-right">Total</th>

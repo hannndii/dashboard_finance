@@ -13,10 +13,27 @@ export async function addTransaction(prevState: any, formData: FormData) {
     const productName = formData.get('productName');
     const price = Number(formData.get('price'));
     const qty = Number(formData.get('qty')) || 1;
-    const paymentMethod = formData.get('paymentMethod') || 'Cash'; // 👈 TANGKAP DATA INI
+    const paymentMethod = formData.get('paymentMethod') || 'Cash';
 
     if (!productName || !price) {
         return { message: 'Data tidak lengkap', status: 'error' };
+    }
+
+    let receiptBase64 = null;
+    
+    if (paymentMethod === 'QRIS') {
+      const file = formData.get('receiptImage') as File;
+      
+      if (file && file.size > 0) {
+        if (file.size > 5242880) {
+          return { message: 'Gagal: Ukuran gambar bukti maksimal 5 MB!', status: 'error' };
+        }
+
+        const buffer = Buffer.from(await file.arrayBuffer());
+        receiptBase64 = `data:${file.type};base64,${buffer.toString('base64')}`;
+      } else {
+        return { message: 'Bukti transaksi QRIS wajib diunggah!', status: 'error' };
+      }
     }
 
     await Transaction.create({
@@ -24,7 +41,8 @@ export async function addTransaction(prevState: any, formData: FormData) {
       price,
       qty,
       total: price * qty,
-      paymentMethod, 
+      paymentMethod,
+      receiptImage: receiptBase64, 
       createdAt: new Date(),
     });
 
@@ -32,6 +50,7 @@ export async function addTransaction(prevState: any, formData: FormData) {
     return { message: 'Gagal menyimpan data', status: 'error' };
   }
 
+  revalidatePath('/'); 
   return { message: 'Transaksi berhasil disimpan!', status: 'success' };
 }
 

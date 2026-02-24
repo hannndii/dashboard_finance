@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation"; // Tambahkan ini untuk navigasi
+import { useRouter } from "next/navigation";
 import { addTransaction } from "../action";
 import { useFormStatus } from "react-dom";
-import { Save, RefreshCw, ShoppingBag, CheckCircle2 } from "lucide-react"; // Tambah icon Check
+import { Save, RefreshCw, ShoppingBag, CheckCircle2 } from "lucide-react";
 
 // Preset Menu Mochisan
 const PRESETS = [
@@ -29,7 +29,7 @@ function SubmitButton() {
 }
 
 export default function InputPage() {
-  const router = useRouter(); // Inisialisasi router
+  const router = useRouter();
   const [product, setProduct] = useState("");
   const [price, setPrice] = useState("");
   const [qty, setQty] = useState(1);
@@ -70,7 +70,7 @@ export default function InputPage() {
         {PRESETS.map((p, idx) => (
           <button
             key={idx}
-            type="button" // Penting: agar tidak memicu form submit
+            type="button"
             onClick={() => selectPreset(p)}
             className="p-3 bg-white border border-slate-200 rounded-lg text-sm font-medium shadow-sm hover:border-emerald-500 hover:bg-emerald-50 text-left transition-colors"
           >
@@ -175,6 +175,57 @@ export default function InputPage() {
           </div>
           {/* Input tersembunyi untuk mengirim data ke action.ts */}
           <input type="hidden" name="paymentMethod" value={paymentMethod} />
+        </div>
+
+        {paymentMethod === "QRIS" && (
+          <div className="bg-blue-50/50 p-4 rounded-xl border border-blue-100 mb-4 animate-in fade-in slide-in-from-top-2 duration-300">
+            <label className="block text-xs font-semibold text-blue-800 uppercase mb-2">
+              Upload Bukti Transfer QRIS
+            </label>
+
+            <div className="flex items-center justify-center w-full">
+              <label
+                htmlFor="dropzone-file"
+                className="flex flex-col items-center justify-center w-full h-32 border-2 border-blue-200 border-dashed rounded-lg cursor-pointer bg-white hover:bg-blue-50 transition-colors"
+              >
+                <div className="flex flex-col items-center justify-center pt-5 pb-6 text-blue-500">
+                  <svg
+                    className="w-8 h-8 mb-2"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 20 16"
+                  >
+                    <path
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                    />
+                  </svg>
+                  <p className="mb-1 text-sm font-medium">
+                    Klik untuk upload gambar
+                  </p>
+                  <p className="text-xs text-blue-400">
+                    PNG, JPG, JPEG (Maks. 5 MB)
+                  </p>
+                </div>
+                <input
+                  id="dropzone-file"
+                  name="receiptImage"
+                  type="file"
+                  accept="image/*" // Hanya menerima file gambar
+                  className="hidden"
+                  required={paymentMethod === "QRIS"} // Wajib diisi jika milih QRIS
+                />
+              </label>
+            </div>
+          </div>
+        )}
+
+        <div className="pt-2">
+          <SubmitButton />
         </div>
 
         <div className="pt-4">
