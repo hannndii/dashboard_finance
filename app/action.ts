@@ -37,8 +37,8 @@ export async function addTransaction(prevState: any, formData: FormData) {
       const file = formData.get('receiptImage') as File;
       
       if (file && file.size > 0) {
-        if (file.size > 5242880) { 
-          return { message: 'Gagal: Ukuran gambar maksimal 5 MB!', status: 'error' };
+        if (file.size > 2097152) { 
+          return { message: 'Gagal: Ukuran gambar maksimal 2 MB!', status: 'error' };
         }
         
         // 1. Ubah file gambar menjadi Stream agar bisa dikirim ke Google
