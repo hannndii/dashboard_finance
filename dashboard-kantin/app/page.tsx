@@ -1,4 +1,4 @@
-import { getDashboardData } from './action';
+import { getDashboardData } from '../app/action';
 import { DollarSign, ShoppingCart, TrendingUp, Calendar } from 'lucide-react';
 import Link from 'next/link';
 import { RevenueChart } from '../app/component/RevenueCart'; // Kita buat component ini terpisah
@@ -14,8 +14,8 @@ export default async function Dashboard() {
       {/* Navbar */}
       <nav className="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center sticky top-0 z-10">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center text-white font-bold">PB AU</div>
-          <span className="font-bold text-slate-800 text-lg">Kantin Dashboard</span>
+          <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center text-white font-bold">M</div>
+          <span className="font-bold text-slate-800 text-lg">Mochisan Dashboard</span>
         </div>
         <Link href="/input" className="bg-slate-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-800 transition">
           + Input Transaksi
