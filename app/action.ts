@@ -55,7 +55,8 @@ export async function uploadToDrive(formData: FormData) {
         mimeType: file.type,
         body: stream,
       },
-      fields: 'id, webViewLink', 
+      fields: 'id, webViewLink',
+      supportsAllDrives: true,
     });
 
     return { status: 'success', url: driveRes.data.webViewLink };
