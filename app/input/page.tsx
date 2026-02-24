@@ -93,7 +93,7 @@ export default function InputPage() {
               type="number"
               value={price}
               onChange={(e) => setPrice(e.target.value)}
-              className="w-full p-3 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-black"
+              className="w-full p-3 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-600 hover:bg-slate-200 transition-colors"
               placeholder="0"
               required 
             />
@@ -107,9 +107,9 @@ export default function InputPage() {
                 type="number"
                 value={qty}
                 readOnly
-                className="w-full h-10 text-center border-y border-slate-200 focus:outline-none"
+                className="w-full h-10 text-center border-y border-slate-200 focus:outline-none text-black"
               />
-              <button type="button" onClick={() => setQty(qty + 1)} className="w-10 h-10 bg-slate-100 rounded-r-lg border border-slate-200">+</button>
+              <button type="button" onClick={() => setQty(qty + 1)} className="w-10 h-10 bg-slate-100 rounded-r-lg border border-slate-200 text-slate-600 hover:bg-slate-200 transition-colors">+</button>
             </div>
           </div>
         </div>
