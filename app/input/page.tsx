@@ -224,10 +224,6 @@ export default function InputPage() {
           </div>
         )}
 
-        <div className="pt-2">
-          <SubmitButton />
-        </div>
-
         <div className="pt-4">
           <SubmitButton />
         </div>
