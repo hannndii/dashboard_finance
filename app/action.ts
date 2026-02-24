@@ -26,8 +26,8 @@ export async function addTransaction(prevState: any, formData: FormData) {
     });
 
     revalidatePath('/'); // Refresh dashboard
-    revalidatePath('/input');
     redirect('/');
+
     return { message: 'Transaksi berhasil disimpan!', status: 'success' };
   } catch (e) {
     return { message: 'Gagal menyimpan data', status: 'error' };
