@@ -1,20 +1,25 @@
-import { getDashboardData } from './action';
+import { getDashboardData } from './action'; // Sesuaikan path jika berbeda
 import { DollarSign, ShoppingCart, TrendingUp, Calendar } from 'lucide-react';
 import Link from 'next/link';
-import { RevenueChart } from '../app/component/RevenueCart'; // Kita buat component ini terpisah
+import { RevenueChart } from './component/RevenueCart'; 
 
-export const dynamic = 'force-dynamic'; // Agar data selalu fresh saat dibuka
+export const dynamic = 'force-dynamic';
 
 export default async function Dashboard() {
   const data = await getDashboardData();
   const formatRp = (n: number) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(n);
 
+  // 👈 CARI TANGGAL TRANSAKSI TERAKHIR UNTUK CARD
+  const lastTransaction = data.recent.length > 0 ? new Date(data.recent[0].createdAt) : null;
+  const lastTrxText = lastTransaction 
+    ? `Terakhir: ${lastTransaction.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })} ${lastTransaction.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}` 
+    : "Belum ada transaksi";
+
   return (
     <div className="min-h-screen bg-slate-50/50">
-      {/* Navbar */}
       <nav className="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center sticky top-0 z-10">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center text-white font-bold">PB AU</div>
+          <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center text-white font-bold">PB</div>
           <span className="font-bold text-slate-800 text-lg">Kantin Dashboard</span>
         </div>
         <Link href="/input" className="bg-slate-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-800 transition">
@@ -23,8 +28,6 @@ export default async function Dashboard() {
       </nav>
 
       <main className="max-w-6xl mx-auto p-6 space-y-6">
-        
-        {/* Key Metrics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Card 
             title="Omset Hari Ini" 
@@ -36,7 +39,7 @@ export default async function Dashboard() {
             title="Total Transaksi" 
             value={data.today.count.toString()} 
             icon={<ShoppingCart className="text-blue-600" />} 
-            desc="Terhitung sejak 00:00 WIB"
+            desc={lastTrxText} // 👈 UPDATE DESKRIPSI DI SINI
           />
           <Card 
             title="Status Kantin" 
@@ -46,19 +49,18 @@ export default async function Dashboard() {
           />
         </div>
 
-        {/* Chart Section */}
+        {/* Chart Section ... */}
         <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
           <div className="flex items-center gap-2 mb-6">
             <TrendingUp className="w-5 h-5 text-slate-400" />
             <h2 className="font-bold text-slate-800">Tren Pendapatan (7 Hari)</h2>
           </div>
           <div className="h-[300px] w-full">
-            {/* Chart dipisah ke client component karena Recharts butuh window object */}
             <RevenueChart data={data.chart} />
           </div>
         </div>
 
-        {/* Recent Transactions Table */}
+        {/* Tabel Transaksi */}
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
           <div className="p-6 border-b border-slate-100">
             <h2 className="font-bold text-slate-800">Transaksi Terakhir</h2>
@@ -69,6 +71,7 @@ export default async function Dashboard() {
                 <tr>
                   <th className="px-6 py-3">Waktu</th>
                   <th className="px-6 py-3">Produk</th>
+                  <th className="px-6 py-3 text-center">Pembayaran</th> {/* 👈 KOLOM BARU */}
                   <th className="px-6 py-3 text-right">Harga Satuan</th>
                   <th className="px-6 py-3 text-center">Qty</th>
                   <th className="px-6 py-3 text-right">Total</th>
@@ -77,10 +80,24 @@ export default async function Dashboard() {
               <tbody className="divide-y divide-slate-100">
                 {data.recent.map((trx: any) => (
                   <tr key={trx._id} className="hover:bg-slate-50/50">
-                    <td className="px-6 py-3 text-slate-500">
-                      {new Date(trx.createdAt).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
+                    <td className="px-6 py-3 text-slate-500 whitespace-nowrap">
+                      {/* 👈 FORMAT TANGGAL BARU */}
+                      <div className="font-medium text-slate-700">
+                        {new Date(trx.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
+                      </div>
+                      <div className="text-xs">
+                        {new Date(trx.createdAt).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })} WIB
+                      </div>
                     </td>
                     <td className="px-6 py-3 font-medium text-slate-800">{trx.productName}</td>
+                    
+                    {/* 👈 TAMPILAN BADGE PEMBAYARAN */}
+                    <td className="px-6 py-3 text-center">
+                      <span className={`px-2 py-1 text-xs rounded-md font-medium ${trx.paymentMethod === 'QRIS' ? 'bg-blue-100 text-blue-700' : 'bg-emerald-100 text-emerald-700'}`}>
+                        {trx.paymentMethod || 'Cash'}
+                      </span>
+                    </td>
+
                     <td className="px-6 py-3 text-right text-slate-600">{formatRp(trx.price)}</td>
                     <td className="px-6 py-3 text-center text-slate-600">{trx.qty}</td>
                     <td className="px-6 py-3 text-right font-bold text-emerald-600">{formatRp(trx.total)}</td>
@@ -88,7 +105,7 @@ export default async function Dashboard() {
                 ))}
                 {data.recent.length === 0 && (
                   <tr>
-                    <td colSpan={5} className="px-6 py-8 text-center text-slate-400">Belum ada transaksi hari ini</td>
+                    <td colSpan={6} className="px-6 py-8 text-center text-slate-400">Belum ada transaksi hari ini</td>
                   </tr>
                 )}
               </tbody>
@@ -100,7 +117,6 @@ export default async function Dashboard() {
   );
 }
 
-// Helper Component untuk Card
 function Card({ title, value, icon, desc }: any) {
   return (
     <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">

@@ -13,23 +13,25 @@ export async function addTransaction(prevState: any, formData: FormData) {
     const productName = formData.get('productName');
     const price = Number(formData.get('price'));
     const qty = Number(formData.get('qty')) || 1;
+    const paymentMethod = formData.get('paymentMethod') || 'Cash'; // 👈 TANGKAP DATA INI
 
-    // Validasi sederhana
-    if (!productName || !price) return { message: 'Data tidak lengkap', status: 'error' };
+    if (!productName || !price) {
+        return { message: 'Data tidak lengkap', status: 'error' };
+    }
 
     await Transaction.create({
       productName,
       price,
       qty,
       total: price * qty,
+      paymentMethod, 
       createdAt: new Date(),
-    });    
+    });
+
   } catch (e) {
     return { message: 'Gagal menyimpan data', status: 'error' };
   }
 
-  revalidatePath('/'); 
-  
   return { message: 'Transaksi berhasil disimpan!', status: 'success' };
 }
 
