@@ -10,7 +10,7 @@ import { Readable } from 'stream';
 const getDriveService = () => {
   const auth = new google.auth.GoogleAuth({
     credentials: {
-      client_email: "drive-uploader@kantin-dashboard.iam.gserviceaccount.com",
+      client_email: process.env.GOOGLE_CLIENT_EMAIL,
       private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'), 
     },
     scopes: ['https://www.googleapis.com/auth/drive.file'],
