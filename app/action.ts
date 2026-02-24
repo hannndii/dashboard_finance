@@ -26,12 +26,13 @@ export async function addTransaction(prevState: any, formData: FormData) {
     });
 
     revalidatePath('/'); // Refresh dashboard
-    redirect('/');
 
     return { message: 'Transaksi berhasil disimpan!', status: 'success' };
   } catch (e) {
     return { message: 'Gagal menyimpan data', status: 'error' };
   }
+  revalidatePath('/input'); 
+  redirect('/');
 }
 
 // Action untuk Ambil Data Dashboard
