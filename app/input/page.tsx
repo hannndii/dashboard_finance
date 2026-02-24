@@ -7,22 +7,23 @@ import { Save, RefreshCw, ShoppingBag } from 'lucide-react';
 
 // Preset Menu Mochisan (Bisa ditambah nanti)
 const PRESETS = [
-  { name: 'Mochi Strawberry', price: 10000 },
-  { name: 'Mochi Coklat', price: 10000 },
-  { name: 'Mochi Matcha', price: 12000 },
+  { name: 'Dimsum Goreng', price: 18000 },
+  { name: 'Dimsum Kukus', price: 18000 },
+  { name: 'Pisang Coklat', price: 1500 },
   { name: 'Air Mineral', price: 3000 },
 ];
 
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <link href="/" 
-      type="submit"
+    <button 
+      type="submit" 
+      disabled={pending}
       className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 disabled:opacity-50"
     >
       {pending ? <RefreshCw className="animate-spin" /> : <Save size={20} />}
       {pending ? 'Menyimpan...' : 'Simpan Transaksi'}
-    </link>
+    </button>
   );
 }
 
