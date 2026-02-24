@@ -2,6 +2,7 @@ import { getDashboardData } from './action';
 import { DollarSign, ShoppingCart, TrendingUp, Calendar, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 import { RevenueChart } from './component/RevenueCart'; 
+import { ReceiptViewer } from './component/ReceiptViewer';
 
 export const dynamic = 'force-dynamic';
 
@@ -96,15 +97,9 @@ export default async function Dashboard() {
 
                     <td className="px-6 py-3 text-center">
                       {trx.paymentMethod === 'QRIS' && trx.receiptImage ? (
-                        <a 
-                          href={trx.receiptImage} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 bg-blue-50 px-3 py-1.5 rounded-md transition-colors font-semibold"
-                        >
-                          <ExternalLink size={14} />
-                          Lihat
-                        </a>
+                        
+                        <ReceiptViewer base64Image={trx.receiptImage} />
+
                       ) : (
                         <span className="text-slate-300">-</span>
                       )}
