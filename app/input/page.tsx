@@ -19,7 +19,7 @@ function SubmitButton() {
     <button 
       type="submit" 
       disabled={pending}
-      className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 disabled:opacity-50"
+      className="w-full bg-emerald-600 hover:bg-emerald-700 text-black font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 disabled:opacity-50"
     >
       {pending ? <RefreshCw className="animate-spin" /> : <Save size={20} />}
       {pending ? 'Menyimpan...' : 'Simpan Transaksi'}
