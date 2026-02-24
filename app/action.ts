@@ -6,7 +6,6 @@ import { revalidatePath } from 'next/cache';
 import { google } from 'googleapis';
 import { Readable } from 'stream';
 
-// Fungsi untuk inisialisasi koneksi ke Google Drive
 const getDriveService = () => {
   const auth = new google.auth.GoogleAuth({
     credentials: {
@@ -18,6 +17,51 @@ const getDriveService = () => {
   return google.drive({ version: 'v3', auth });
 };
 
+// =========================================================
+// ACTION BARU 1: KHUSUS UPLOAD GAMBAR KE GOOGLE DRIVE
+// =========================================================
+export async function uploadToDrive(formData: FormData) {
+  try {
+    const file = formData.get('file') as File;
+    
+    if (!file || file.size === 0) {
+      return { status: 'error', message: 'File kosong atau tidak terbaca.' };
+    }
+    if (file.size > 2097152) {
+      return { status: 'error', message: 'Maksimal ukuran gambar adalah 2 MB!' };
+    }
+
+    // Ubah jadi stream dan kirim ke Drive
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const stream = new Readable();
+    stream.push(buffer);
+    stream.push(null);
+
+    const drive = getDriveService();
+    const driveRes = await drive.files.create({
+      requestBody: {
+        name: `QRIS_${Date.now()}_${file.name}`, 
+        parents: [process.env.GOOGLE_DRIVE_FOLDER_ID as string], 
+      },
+      media: {
+        mimeType: file.type,
+        body: stream,
+      },
+      fields: 'id, webViewLink', 
+    });
+
+    // Berhasil! Kembalikan Link Google Drive nya
+    return { status: 'success', url: driveRes.data.webViewLink };
+
+  } catch (e: any) {
+    console.error("Error Drive:", e.message);
+    return { status: 'error', message: 'Koneksi ke Google Drive Gagal. Cek Kunci Rahasia Anda.' };
+  }
+}
+
+// =========================================================
+// ACTION 2: KHUSUS SIMPAN TRANSAKSI KE MONGODB
+// =========================================================
 export async function addTransaction(prevState: any, formData: FormData) {
   try {
     await dbConnect();
@@ -26,63 +70,30 @@ export async function addTransaction(prevState: any, formData: FormData) {
     const price = Number(formData.get('price'));
     const qty = Number(formData.get('qty')) || 1;
     const paymentMethod = formData.get('paymentMethod') || 'Cash';
+    
+    // Tangkap Link Drive Asli dari input tersembunyi
+    const receiptUrl = formData.get('receiptUrl') as string;
 
     if (!productName || !price) {
         return { message: 'Data tidak lengkap', status: 'error' };
     }
 
-    let receiptUrl = null;
-    
-    if (paymentMethod === 'QRIS') {
-      const file = formData.get('receiptImage') as File;
-      
-      if (file && file.size > 0) {
-        if (file.size > 5242880) { 
-          return { message: 'Gagal: Ukuran gambar maksimal 5 MB!', status: 'error' };
-        }
-        
-        // 1. Ubah file gambar menjadi Stream agar bisa dikirim ke Google
-        const buffer = Buffer.from(await file.arrayBuffer());
-        const stream = new Readable();
-        stream.push(buffer);
-        stream.push(null);
-
-        // 2. Proses Upload ke Google Drive
-        const drive = getDriveService();
-        const driveRes = await drive.files.create({
-          requestBody: {
-            name: `QRIS_${Date.now()}_${file.name}`, 
-            parents: [process.env.GOOGLE_DRIVE_FOLDER_ID as string], 
-          },
-          media: {
-            mimeType: file.type,
-            body: stream,
-          },
-          fields: 'id, webViewLink', 
-        });
-
-        // 3. Tangkap URL gambar dari Google Drive
-        receiptUrl = driveRes.data.webViewLink;
-
-      } else {
-        return { message: 'Bukti transaksi QRIS wajib diunggah!', status: 'error' };
-      }
+    if (paymentMethod === 'QRIS' && !receiptUrl) {
+      return { message: 'Bukti transaksi QRIS wajib diunggah sampai selesai!', status: 'error' };
     }
 
-    // 4. Simpan URL Google Drive tersebut ke MongoDB Anda
     await Transaction.create({
       productName,
       price,
       qty,
       total: price * qty,
       paymentMethod,
-      receiptImage: receiptUrl, // 👈 Sekarang isinya adalah Link Google Drive yang sangat ringan!
+      receiptImage: paymentMethod === 'QRIS' ? receiptUrl : null, // 👈 Langsung simpan link URL
       createdAt: new Date(),
     });
 
-  } catch (e: any) {
-    console.error("Error upload:", e.message); // Membantu nge-cek error di terminal
-    return { message: 'Gagal menyimpan data', status: 'error' };
+  } catch (e) {
+    return { message: 'Gagal menyimpan data ke Database', status: 'error' };
   }
 
   revalidatePath('/'); 
@@ -90,38 +101,22 @@ export async function addTransaction(prevState: any, formData: FormData) {
 }
 
 // =========================================================
-// Action untuk Ambil Data Dashboard (Tidak ada yang berubah)
+// ACTION 3: AMBIL DATA DASHBOARD (TETAP SAMA)
 // =========================================================
 export async function getDashboardData() {
   await dbConnect();
-
-  const recentTransactions = await Transaction.find()
-    .sort({ createdAt: -1 })
-    .limit(10)
-    .lean(); 
-
-  const today = new Date();
-  today.setHours(0,0,0,0);
-  
+  const recentTransactions = await Transaction.find().sort({ createdAt: -1 }).limit(10).lean(); 
+  const today = new Date(); today.setHours(0,0,0,0);
   const todayStats = await Transaction.aggregate([
     { $match: { createdAt: { $gte: today } } },
     { $group: { _id: null, totalRevenue: { $sum: "$total" }, count: { $sum: 1 } } }
   ]);
-
-  const sevenDaysAgo = new Date();
-  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-  
+  const sevenDaysAgo = new Date(); sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
   const chartData = await Transaction.aggregate([
     { $match: { createdAt: { $gte: sevenDaysAgo } } },
-    {
-      $group: {
-        _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
-        revenue: { $sum: "$total" }
-      }
-    },
+    { $group: { _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } }, revenue: { $sum: "$total" } } },
     { $sort: { _id: 1 } }
   ]);
-
   return {
     recent: JSON.parse(JSON.stringify(recentTransactions)),
     today: todayStats[0] || { totalRevenue: 0, count: 0 },
