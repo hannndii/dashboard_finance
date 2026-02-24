@@ -6,22 +6,21 @@ import { revalidatePath } from 'next/cache';
 import { google } from 'googleapis';
 import { Readable } from 'stream';
 
-const getDriveService = () => {
-  const auth = new google.auth.GoogleAuth({
-    credentials: {
-      client_email: process.env.GOOGLE_CLIENT_EMAIL,
-      private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'), 
-    },
-    scopes: ['https://www.googleapis.com/auth/drive.file'],
-  });
-  return google.drive({ version: 'v3', auth });
-};
-
 // =========================================================
-// ACTION BARU 1: KHUSUS UPLOAD GAMBAR KE GOOGLE DRIVE
+// ACTION 1: KHUSUS UPLOAD GAMBAR KE GOOGLE DRIVE
 // =========================================================
 export async function uploadToDrive(formData: FormData) {
   try {
+    // 🚨 SISTEM DETEKTOR: Cek apakah Vercel benar-benar memberikan kuncinya ke kodingan
+    const clientEmail = process.env.GOOGLE_CLIENT_EMAIL;
+    const privateKey = process.env.GOOGLE_PRIVATE_KEY;
+    const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID;
+
+    // Jika Vercel menyembunyikan variabelnya, website akan langsung protes!
+    if (!clientEmail) return { status: 'error', message: '❌ ERROR VERCEL: GOOGLE_CLIENT_EMAIL kosong/tidak terbaca!' };
+    if (!privateKey) return { status: 'error', message: '❌ ERROR VERCEL: GOOGLE_PRIVATE_KEY kosong/tidak terbaca!' };
+    if (!folderId) return { status: 'error', message: '❌ ERROR VERCEL: GOOGLE_DRIVE_FOLDER_ID kosong/tidak terbaca!' };
+
     const file = formData.get('file') as File;
     
     if (!file || file.size === 0) {
@@ -31,17 +30,26 @@ export async function uploadToDrive(formData: FormData) {
       return { status: 'error', message: 'Maksimal ukuran gambar adalah 2 MB!' };
     }
 
+    // Hubungkan ke Google Drive
+    const auth = new google.auth.GoogleAuth({
+      credentials: {
+        client_email: clientEmail,
+        private_key: privateKey.replace(/\\n/g, '\n'), 
+      },
+      scopes: ['https://www.googleapis.com/auth/drive.file'],
+    });
+    const drive = google.drive({ version: 'v3', auth });
+
     // Ubah jadi stream dan kirim ke Drive
     const buffer = Buffer.from(await file.arrayBuffer());
     const stream = new Readable();
     stream.push(buffer);
     stream.push(null);
 
-    const drive = getDriveService();
     const driveRes = await drive.files.create({
       requestBody: {
         name: `QRIS_${Date.now()}_${file.name}`, 
-        parents: [process.env.GOOGLE_DRIVE_FOLDER_ID as string], 
+        parents: [folderId], 
       },
       media: {
         mimeType: file.type,
@@ -50,12 +58,11 @@ export async function uploadToDrive(formData: FormData) {
       fields: 'id, webViewLink', 
     });
 
-    // Berhasil! Kembalikan Link Google Drive nya
     return { status: 'success', url: driveRes.data.webViewLink };
 
   } catch (e: any) {
-    console.error("Error Drive:", e.message);
-    return { status: 'error', message: 'Koneksi ke Google Drive Gagal. Cek Kunci Rahasia Anda.' };
+    console.error("Error Drive Asli:", e.message);
+    return { status: 'error', message: `Gagal ke Google Drive: ${e.message}` };
   }
 }
 
@@ -70,8 +77,6 @@ export async function addTransaction(prevState: any, formData: FormData) {
     const price = Number(formData.get('price'));
     const qty = Number(formData.get('qty')) || 1;
     const paymentMethod = formData.get('paymentMethod') || 'Cash';
-    
-    // Tangkap Link Drive Asli dari input tersembunyi
     const receiptUrl = formData.get('receiptUrl') as string;
 
     if (!productName || !price) {
@@ -88,7 +93,7 @@ export async function addTransaction(prevState: any, formData: FormData) {
       qty,
       total: price * qty,
       paymentMethod,
-      receiptImage: paymentMethod === 'QRIS' ? receiptUrl : null, // 👈 Langsung simpan link URL
+      receiptImage: paymentMethod === 'QRIS' ? receiptUrl : null,
       createdAt: new Date(),
     });
 
