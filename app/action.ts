@@ -3,6 +3,20 @@
 import dbConnect from "@/lib/db";
 import Transaction from '@/models/Transaction';
 import { revalidatePath } from 'next/cache';
+import { google } from 'googleapis';
+import { Readable } from 'stream';
+
+// Fungsi untuk inisialisasi koneksi ke Google Drive
+const getDriveService = () => {
+  const auth = new google.auth.GoogleAuth({
+    credentials: {
+      client_email: process.env.GOOGLE_CLIENT_EMAIL,
+      private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'), 
+    },
+    scopes: ['https://www.googleapis.com/auth/drive.file'],
+  });
+  return google.drive({ version: 'v3', auth });
+};
 
 export async function addTransaction(prevState: any, formData: FormData) {
   try {
@@ -17,33 +31,57 @@ export async function addTransaction(prevState: any, formData: FormData) {
         return { message: 'Data tidak lengkap', status: 'error' };
     }
 
-    let receiptBase64 = null;
+    let receiptUrl = null;
     
     if (paymentMethod === 'QRIS') {
       const file = formData.get('receiptImage') as File;
       
       if (file && file.size > 0) {
-        if (file.size > 5242880) {
+        if (file.size > 5242880) { 
           return { message: 'Gagal: Ukuran gambar maksimal 5 MB!', status: 'error' };
         }
+        
+        // 1. Ubah file gambar menjadi Stream agar bisa dikirim ke Google
         const buffer = Buffer.from(await file.arrayBuffer());
-        receiptBase64 = `data:${file.type};base64,${buffer.toString('base64')}`;
+        const stream = new Readable();
+        stream.push(buffer);
+        stream.push(null);
+
+        // 2. Proses Upload ke Google Drive
+        const drive = getDriveService();
+        const driveRes = await drive.files.create({
+          requestBody: {
+            name: `QRIS_${Date.now()}_${file.name}`, 
+            parents: [process.env.GOOGLE_DRIVE_FOLDER_ID as string], 
+          },
+          media: {
+            mimeType: file.type,
+            body: stream,
+          },
+          fields: 'id, webViewLink', 
+        });
+
+        // 3. Tangkap URL gambar dari Google Drive
+        receiptUrl = driveRes.data.webViewLink;
+
       } else {
         return { message: 'Bukti transaksi QRIS wajib diunggah!', status: 'error' };
       }
     }
 
+    // 4. Simpan URL Google Drive tersebut ke MongoDB Anda
     await Transaction.create({
       productName,
       price,
       qty,
       total: price * qty,
       paymentMethod,
-      receiptImage: receiptBase64,
+      receiptImage: receiptUrl, // 👈 Sekarang isinya adalah Link Google Drive yang sangat ringan!
       createdAt: new Date(),
     });
 
-  } catch (e) {
+  } catch (e: any) {
+    console.error("Error upload:", e.message); // Membantu nge-cek error di terminal
     return { message: 'Gagal menyimpan data', status: 'error' };
   }
 
@@ -51,6 +89,9 @@ export async function addTransaction(prevState: any, formData: FormData) {
   return { message: 'Transaksi berhasil disimpan!', status: 'success' };
 }
 
+// =========================================================
+// Action untuk Ambil Data Dashboard (Tidak ada yang berubah)
+// =========================================================
 export async function getDashboardData() {
   await dbConnect();
 
