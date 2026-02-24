@@ -23,16 +23,14 @@ export async function addTransaction(prevState: any, formData: FormData) {
       qty,
       total: price * qty,
       createdAt: new Date(),
-    });
-
-    revalidatePath('/'); // Refresh dashboard
-
-    return { message: 'Transaksi berhasil disimpan!', status: 'success' };
+    });    
   } catch (e) {
     return { message: 'Gagal menyimpan data', status: 'error' };
   }
-  revalidatePath('/input'); 
-  redirect('/');
+
+  revalidatePath('/'); 
+  
+  return { message: 'Transaksi berhasil disimpan!', status: 'success' };
 }
 
 // Action untuk Ambil Data Dashboard
