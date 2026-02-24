@@ -3,9 +3,7 @@
 import dbConnect from "@/lib/db";
 import Transaction from '@/models/Transaction';
 import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
 
-// Action untuk Input Data
 export async function addTransaction(prevState: any, formData: FormData) {
   try {
     await dbConnect();
@@ -26,9 +24,8 @@ export async function addTransaction(prevState: any, formData: FormData) {
       
       if (file && file.size > 0) {
         if (file.size > 5242880) {
-          return { message: 'Gagal: Ukuran gambar bukti maksimal 5 MB!', status: 'error' };
+          return { message: 'Gagal: Ukuran gambar maksimal 5 MB!', status: 'error' };
         }
-
         const buffer = Buffer.from(await file.arrayBuffer());
         receiptBase64 = `data:${file.type};base64,${buffer.toString('base64')}`;
       } else {
@@ -42,7 +39,7 @@ export async function addTransaction(prevState: any, formData: FormData) {
       qty,
       total: price * qty,
       paymentMethod,
-      receiptImage: receiptBase64, 
+      receiptImage: receiptBase64,
       createdAt: new Date(),
     });
 
@@ -54,17 +51,14 @@ export async function addTransaction(prevState: any, formData: FormData) {
   return { message: 'Transaksi berhasil disimpan!', status: 'success' };
 }
 
-// Action untuk Ambil Data Dashboard
 export async function getDashboardData() {
   await dbConnect();
 
-  // 1. Ambil 20 transaksi terakhir
   const recentTransactions = await Transaction.find()
     .sort({ createdAt: -1 })
     .limit(10)
     .lean(); 
 
-  // 2. Hitung Total Omset Hari Ini
   const today = new Date();
   today.setHours(0,0,0,0);
   
@@ -73,7 +67,6 @@ export async function getDashboardData() {
     { $group: { _id: null, totalRevenue: { $sum: "$total" }, count: { $sum: 1 } } }
   ]);
 
-  // 3. Data Grafik 7 Hari Terakhir
   const sevenDaysAgo = new Date();
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
   
