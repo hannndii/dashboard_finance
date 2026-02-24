@@ -93,7 +93,7 @@ export default function InputPage() {
               type="number"
               value={price}
               onChange={(e) => setPrice(e.target.value)}
-              className="w-full p-3 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-600 hover:bg-slate-200 transition-colors"
+              className="w-full p-3 bg-slate-50 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500"
               placeholder="0"
               required 
             />
@@ -101,7 +101,7 @@ export default function InputPage() {
           <div>
             <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Jumlah</label>
             <div className="flex items-center">
-              <button type="button" onClick={() => setQty(Math.max(1, qty - 1))} className="w-10 h-10 bg-slate-100 rounded-l-lg border border-slate-200">-</button>
+              <button type="button" onClick={() => setQty(Math.max(1, qty - 1))} className="w-10 h-10 bg-slate-100 rounded-l-lg border border-slate-200 text-slate-600 hover:bg-slate-200 transition-colors">-</button>
               <input 
                 name="qty"
                 type="number"
