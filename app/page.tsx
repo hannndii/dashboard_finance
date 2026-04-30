@@ -42,8 +42,8 @@ export default async function Dashboard() {
             desc={lastTrxText}
           />
           <Card 
-            title="Status Kantin" 
-            value="Open" 
+            title="Status Kantin"
+            value="Open"
             icon={<Calendar className="text-orange-600" />} 
             desc="Siap menerima pesanan"
           />
