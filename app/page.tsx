@@ -41,9 +41,9 @@ export default async function Dashboard() {
             icon={<ShoppingCart className="text-blue-600" />} 
             desc={lastTrxText}
           />
-          <Card 
-            title="Status Kantin" 
-            value="Open" 
+          <Card
+            title="Status Kantin"
+            value="Open"
             icon={<Calendar className="text-orange-600" />} 
             desc="Siap menerima pesanan"
           />
