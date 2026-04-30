@@ -41,11 +41,7 @@ export default async function Dashboard() {
             icon={<ShoppingCart className="text-blue-600" />} 
             desc={lastTrxText}
           />
-<<<<<<< HEAD
           <Card
-=======
-          <Card 
->>>>>>> development
             title="Status Kantin"
             value="Open"
             icon={<Calendar className="text-orange-600" />} 
@@ -77,7 +73,7 @@ export default async function Dashboard() {
                   <th className="px-6 py-3 text-center">Bukti QRIS</th>
                   <th className="px-6 py-3 text-right">Harga Satuan</th>
                   <th className="px-6 py-3 text-center">Qty</th>
-                  <th className="px-6 py-3 text-right">Total</th>
+                  <th className="px-6 py-3 text-right">Total Harga</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
