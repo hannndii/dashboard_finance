@@ -41,7 +41,11 @@ export default async function Dashboard() {
             icon={<ShoppingCart className="text-blue-600" />} 
             desc={lastTrxText}
           />
+<<<<<<< HEAD
           <Card
+=======
+          <Card 
+>>>>>>> development
             title="Status Kantin"
             value="Open"
             icon={<Calendar className="text-orange-600" />} 
