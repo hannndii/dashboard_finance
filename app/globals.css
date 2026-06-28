@@ -24,3 +24,7 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.sidebar-item {
+  @apply flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 hover:bg-slate-50 transition;
+}
