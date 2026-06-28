@@ -1,211 +1,280 @@
-import { getDashboardData } from '../action';
+'use client'
 
-import {
-  DollarSign,
-  ShoppingCart,
-  TrendingUp,
-  Calendar,
-  LayoutDashboard,
-  Package,
-  FileSpreadsheet,
-  PlusCircle
-} from 'lucide-react';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { addTransaction, uploadToDrive } from '../action';
+import { useFormStatus } from 'react-dom';
+import { Save, RefreshCw, ShoppingBag, CheckCircle2, Image as ImageIcon, X } from 'lucide-react';
 
-import Link from 'next/link';
+const PRESETS = [
+  { name: 'Dimsum Goreng', price: 18000 },
+  { name: 'Dimsum Kukus', price: 18000 },
+  { name: 'Pisang Coklat', price: 1500 },
+  { name: 'Air Mineral', price: 3000 },
+];
 
-import { RevenueChart } from '../component/RevenueCart';
-import { ReceiptViewer } from '../component/ReceiptViewer';
-import GoogleSheetSyncButton from '../component/GoogleSheetSyncButton';
-
-export const dynamic = 'force-dynamic';
-
-export default async function Dashboard() {
-  const data = await getDashboardData();
-
-  const formatRp = (n: number) =>
-    new Intl.NumberFormat('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
-      minimumFractionDigits: 0
-    }).format(n);
-
+function SubmitButton({ isUploading }: { isUploading: boolean }) {
+  const { pending } = useFormStatus();
+  const isDisabled = pending || isUploading;
+  
   return (
-    <div className="flex min-h-screen bg-sky-50">
-
-      {/* SIDEBAR */}
-      <aside className="w-72 bg-white border-r border-blue-100 shadow-sm flex flex-col">
-        <div className="p-6 border-b border-blue-100">
-          <h1 className="text-2xl font-bold text-blue-700">
-            Warung Dashboard
-          </h1>
-          <p className="text-sm text-slate-500 mt-1">
-            Sistem Kasir & Monitoring
-          </p>
-        </div>
-
-        <nav className="flex-1 p-4 space-y-3">
-
-          <Link
-            href="/"
-            className="flex items-center gap-3 p-4 rounded-xl bg-blue-100 text-blue-700 font-semibold"
-          >
-            <LayoutDashboard size={22} />
-            Dashboard
-          </Link>
-
-          <Link
-            href="/input"
-            className="flex items-center gap-3 p-4 rounded-xl hover:bg-blue-50 text-slate-700 font-medium transition"
-          >
-            <PlusCircle size={22} />
-            Input Transaksi
-          </Link>
-
-          <Link
-            href="/stok"
-            className="flex items-center gap-3 p-4 rounded-xl hover:bg-blue-50 text-slate-700 font-medium transition"
-          >
-            <Package size={22} />
-            Kelola Stok
-          </Link>
-
-          <div className="pt-4">
-            <div className="flex items-center gap-2 text-slate-500 text-sm mb-3">
-              <FileSpreadsheet size={18} />
-              Sinkron Spreadsheet
-            </div>
-            <GoogleSheetSyncButton />
-          </div>
-        </nav>
-      </aside>
-
-      {/* MAIN CONTENT */}
-      <main className="flex-1 p-8 space-y-8">
-
-        {/* HEADER */}
-        <div>
-          <h2 className="text-3xl font-bold text-slate-800">
-            Dashboard Penjualan
-          </h2>
-          <p className="text-slate-500 mt-2">
-            Pantau transaksi, omset, dan performa warung.
-          </p>
-        </div>
-
-        {/* CARDS */}
-        <div className="grid md:grid-cols-3 gap-6">
-
-          <Card
-            title="Omset Hari Ini"
-            value={formatRp(data.today.totalRevenue)}
-            icon={<DollarSign className="text-blue-600" />}
-            desc={`${data.today.count} transaksi`}
-          />
-
-          <Card
-            title="Total Transaksi"
-            value={data.today.count.toString()}
-            icon={<ShoppingCart className="text-blue-600" />}
-            desc="Hari ini"
-          />
-
-          <Card
-            title="Status Warung"
-            value="Buka"
-            icon={<Calendar className="text-blue-600" />}
-            desc="Melayani pelanggan"
-          />
-        </div>
-
-        {/* CHART */}
-        <section className="bg-white rounded-2xl shadow-sm border border-blue-100 p-6">
-          <div className="flex items-center gap-2 mb-6">
-            <TrendingUp className="text-blue-600" />
-            <h3 className="text-xl font-bold text-slate-800">
-              Tren Pendapatan
-            </h3>
-          </div>
-
-          <div className="h-[320px]">
-            <RevenueChart data={data.chart} />
-          </div>
-        </section>
-
-        {/* TABLE */}
-        <section className="bg-white rounded-2xl shadow-sm border border-blue-100 overflow-hidden">
-          <div className="p-6 border-b border-blue-100">
-            <h3 className="text-xl font-bold text-slate-800">
-              Riwayat Transaksi
-            </h3>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full text-base">
-              <thead className="bg-blue-50">
-                <tr>
-                  <th className="px-6 py-4 text-left">Produk</th>
-                  <th className="px-6 py-4 text-center">Metode</th>
-                  <th className="px-6 py-4 text-right">Total</th>
-                  <th className="px-6 py-4 text-center">Bukti</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {data.recent.map((trx: any) => (
-                  <tr key={trx._id} className="border-t border-slate-100">
-                    <td className="px-6 py-4 font-medium">
-                      {trx.productName}
-                    </td>
-
-                    <td className="px-6 py-4 text-center">
-                      <span
-                        className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                          trx.paymentMethod === 'QRIS'
-                            ? 'bg-blue-100 text-blue-700'
-                            : 'bg-green-100 text-green-700'
-                        }`}
-                      >
-                        {trx.paymentMethod}
-                      </span>
-                    </td>
-
-                    <td className="px-6 py-4 text-right font-bold text-blue-700">
-                      {formatRp(trx.total)}
-                    </td>
-
-                    <td className="px-6 py-4 text-center">
-                      {trx.paymentMethod === 'QRIS' && trx.receiptImage ? (
-                        <ReceiptViewer base64Image={trx.receiptImage} />
-                      ) : (
-                        '-'
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
-      </main>
-    </div>
+    <button 
+      type="submit" 
+      disabled={isDisabled}
+      className={`w-full font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 disabled:opacity-50 mt-4 ${
+        isUploading ? 'bg-slate-400 text-white' : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-md hover:shadow-lg'
+      }`}
+    >
+      {isDisabled ? <RefreshCw className="animate-spin" /> : <Save size={20} />}
+      {isUploading ? 'Memproses Gambar...' : pending ? 'Menyimpan Transaksi...' : 'Simpan Transaksi'}
+    </button>
   );
 }
 
-function Card({ title, value, icon, desc }: any) {
+export default function InputPage() {
+  const router = useRouter();
+  const [product, setProduct] = useState('');
+  const [price, setPrice] = useState('');
+  const [qty, setQty] = useState(1);
+  const [paymentMethod, setPaymentMethod] = useState('Cash');
+  const [showPopup, setShowPopup] = useState(false);
+  const [message, setMessage] = useState('');
+  
+  const [isUploading, setIsUploading] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null); 
+  const [receiptUrl, setReceiptUrl] = useState<string | null>(null); 
+
+  const selectPreset = (p: typeof PRESETS[0]) => {
+    setProduct(p.name);
+    setPrice(p.price.toString());
+  };
+
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 2097152) {
+      alert("Ukuran gambar melebihi 2 MB!");
+      e.target.value = '';
+      return;
+    }
+
+    setIsUploading(true);
+    setMessage('');
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const res = await uploadToDrive(formData);
+      
+      if (res.status === 'success' && res.url) {
+        setReceiptUrl(res.url); 
+        setPreviewUrl(res.url); 
+      } else {
+        alert(res.message);
+        e.target.value = '';
+      }
+    } catch (error) {
+      alert("Gagal memproses gambar.");
+      e.target.value = '';
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const formAction = async (formData: FormData) => {
+    try {
+      const res = await addTransaction(null, formData);
+      
+      if (res?.status === 'success') {
+        setShowPopup(true);
+        setPreviewUrl(null);
+        setReceiptUrl(null);
+        setTimeout(() => {
+          router.push('/'); 
+        }, 2000); 
+      } else if (res?.status === 'error') {
+        setMessage(res.message);
+      }
+    } catch (error) {
+      setMessage("Koneksi gagal saat menyimpan ke database.");
+    }
+  };
+
   return (
-    <div className="bg-white p-6 rounded-2xl shadow-sm border border-blue-100">
-      <div className="flex justify-between mb-4">
-        <div>
-          <p className="text-base text-slate-500">{title}</p>
-          <h3 className="text-3xl font-bold text-slate-800 mt-2">{value}</h3>
+    <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4 md:p-8">
+      
+      <div className="w-full max-w-5xl bg-white rounded-3xl shadow-xl overflow-hidden flex flex-col md:flex-row">
+        
+        {/* BAGIAN KIRI: Header & Preset Menu */}
+        <div className="w-full md:w-5/12 bg-emerald-50 p-6 md:p-10 border-b md:border-b-0 md:border-r border-emerald-100 flex flex-col justify-center">
+          <header className="mb-8 flex flex-col items-center md:items-start gap-2 text-emerald-800">
+            <div className="bg-emerald-100 p-3 rounded-full mb-2">
+              <ShoppingBag className="w-8 h-8 text-emerald-600" />
+            </div>
+            <h1 className="text-2xl md:text-3xl font-extrabold text-center md:text-left">Kasir Kantin</h1>
+            <p className="text-sm text-emerald-600 text-center md:text-left font-medium">Pilih menu cepat atau ketik manual di samping.</p>
+          </header>
+
+          <div className="grid grid-cols-2 gap-3">
+            {PRESETS.map((p, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => selectPreset(p)}
+                className="p-4 bg-white border border-emerald-200 rounded-xl shadow-sm hover:bg-emerald-600 hover:text-white hover:border-emerald-600 text-left transition-all group"
+              >
+                <div className="font-bold text-slate-800 group-hover:text-white transition-colors">{p.name}</div>
+                <div className="text-emerald-600 text-sm font-semibold group-hover:text-emerald-100 transition-colors mt-1">
+                  Rp {p.price.toLocaleString('id-ID')}
+                </div>
+              </button>
+            ))}
+          </div>
         </div>
 
-        <div className="w-14 h-14 rounded-xl bg-blue-50 flex items-center justify-center">
-          {icon}
+        {/* BAGIAN KANAN: Form Input */}
+        <div className="w-full md:w-7/12 p-6 md:p-10 bg-white">
+          <form action={formAction} className="flex flex-col h-full justify-center space-y-5">
+            
+            <div>
+              <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Nama Produk</label>
+              <input 
+                name="productName"
+                value={product}
+                onChange={(e) => setProduct(e.target.value)}
+                className="w-full p-4 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-800 font-medium transition-all"
+                placeholder="Ketik manual nama produk..."
+                required 
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Harga (Rp)</label>
+                <input 
+                  name="price"
+                  type="number"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                  className="w-full p-4 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-800 font-medium transition-all"
+                  placeholder="0"
+                  required 
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Jumlah</label>
+                <div className="flex items-center h-[58px]">
+                  <button type="button" onClick={() => setQty(Math.max(1, qty - 1))} className="w-14 h-full bg-slate-100 rounded-l-xl border border-slate-200 text-slate-600 hover:bg-slate-200 font-bold text-lg transition-colors">-</button>
+                  <input 
+                    name="qty"
+                    type="number"
+                    value={qty}
+                    readOnly
+                    className="w-full h-full text-center border-y border-slate-200 focus:outline-none text-slate-800 font-bold text-lg bg-white"
+                  />
+                  <button type="button" onClick={() => setQty(qty + 1)} className="w-14 h-full bg-slate-100 rounded-r-xl border border-slate-200 text-slate-600 hover:bg-slate-200 font-bold text-lg transition-colors">+</button>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Metode Pembayaran</label>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod('Cash')}
+                  className={`p-4 rounded-xl border-2 font-bold flex items-center justify-center gap-2 transition-all ${
+                    paymentMethod === 'Cash' ? 'bg-emerald-50 border-emerald-500 text-emerald-700' : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50 hover:border-slate-300'
+                  }`}
+                >
+                  💵 Tunai
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod('QRIS')}
+                  className={`p-4 rounded-xl border-2 font-bold flex items-center justify-center gap-2 transition-all ${
+                    paymentMethod === 'QRIS' ? 'bg-blue-50 border-blue-500 text-blue-700' : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50 hover:border-slate-300'
+                  }`}
+                >
+                  📱 QRIS
+                </button>
+              </div>
+              <input type="hidden" name="paymentMethod" value={paymentMethod} />
+            </div>
+
+            {paymentMethod === 'QRIS' && (
+              <div className="bg-blue-50/50 p-5 rounded-xl border border-blue-100 animate-in fade-in slide-in-from-top-2 duration-300">
+                <label className="block text-xs font-bold text-blue-800 uppercase mb-3">
+                  Upload Bukti Transfer QRIS
+                </label>
+                <div className="flex flex-col items-center justify-center w-full">
+                  
+                  {isUploading ? (
+                    <div className="flex flex-col items-center justify-center w-full h-40 border-2 border-blue-300 border-dashed rounded-xl bg-white/50 animate-pulse">
+                      <RefreshCw className="animate-spin text-blue-500 mb-3" size={28} />
+                      <p className="text-sm font-bold text-blue-600">Memproses Gambar...</p>
+                    </div>
+                  ) : previewUrl ? (
+                    <div className="relative w-full h-48 rounded-xl overflow-hidden border-2 border-blue-300 shadow-sm group">
+                      <img src={previewUrl} alt="Preview Bukti" className="w-full h-full object-cover" />
+                      <button 
+                        type="button" 
+                        onClick={() => {
+                          setPreviewUrl(null);
+                          setReceiptUrl(null);
+                          const fileInput = document.getElementById('dropzone-file') as HTMLInputElement;
+                          if (fileInput) fileInput.value = '';
+                        }} 
+                        className="absolute top-3 right-3 bg-red-500 hover:bg-red-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold shadow-lg transition-transform active:scale-90"
+                      >
+                        <X size={20} />
+                      </button>
+                    </div>
+                  ) : (
+                    <label 
+                      htmlFor="dropzone-file" 
+                      className="flex flex-col items-center justify-center w-full h-40 border-2 border-blue-200 border-dashed rounded-xl cursor-pointer bg-white hover:bg-blue-50 transition-colors"
+                    >
+                      <div className="flex flex-col items-center justify-center pt-5 pb-6 text-blue-500">
+                        <ImageIcon className="w-10 h-10 mb-3 opacity-70" />
+                        <p className="mb-1 text-sm font-bold">Klik untuk memilih gambar</p>
+                        <p className="text-xs text-blue-400 font-medium">Maksimal 2 MB (PNG, JPG, JPEG)</p>
+                      </div>
+                      <input 
+                        id="dropzone-file" 
+                        type="file" 
+                        accept="image/*" 
+                        className="hidden" 
+                        onChange={handleImageChange}
+                      />
+                    </label>
+                  )}
+
+                  <input type="hidden" name="receiptUrl" value={receiptUrl || ''} />
+                </div>
+              </div>
+            )}
+
+            {message && <p className="text-center text-red-500 text-sm font-bold bg-red-50 p-3 rounded-lg">{message}</p>}
+
+            <SubmitButton isUploading={isUploading} />
+          </form>
         </div>
       </div>
 
-      <p className="text-sm text-slate-400">{desc}</p>
+      {showPopup && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white p-8 rounded-3xl shadow-2xl flex flex-col items-center max-w-[320px] w-full text-center animate-in fade-in zoom-in duration-300">
+            <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-5">
+              <CheckCircle2 size={48} />
+            </div>
+            <h3 className="text-2xl font-extrabold text-slate-800 mb-2">Sukses!</h3>
+            <p className="text-slate-500 font-medium">Transaksi berhasil dicatat.<br/>Kembali ke beranda...</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
