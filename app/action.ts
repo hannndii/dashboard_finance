@@ -3,6 +3,8 @@
 import dbConnect from "@/lib/db";
 import Transaction from '@/models/Transaction';
 import { revalidatePath } from 'next/cache';
+import { appendRowToGoogleSheet } from '@/lib/googleSheets';
+
 
 // =========================================================
 // ACTION 1: PROSES GAMBAR MENJADI TEKS (BASE64)
@@ -42,13 +44,13 @@ export async function addTransaction(prevState: any, formData: FormData) {
   try {
     await dbConnect();
     
-    const productName = formData.get('productName');
+    const productName = String(formData.get('productName') ?? '');
     const price = Number(formData.get('price'));
-    const qty = Number(formData.get('qty')) || 1;
-    const paymentMethod = formData.get('paymentMethod') || 'Cash';
+    const qty = Number(formData.get('qty')) ?? 1;
+    const paymentMethod = String(formData.get('paymentMethod') ?? 'Cash');
     
     // Tangkap kode Base64 gambar dari input tersembunyi
-    const receiptUrl = formData.get('receiptUrl') as string;
+    const receiptUrl = String(formData.get('receiptUrl') ?? '');
 
     if (!productName || !price) {
         return { message: 'Data tidak lengkap', status: 'error' };
@@ -59,15 +61,34 @@ export async function addTransaction(prevState: any, formData: FormData) {
     }
 
     // Simpan semua data langsung ke dalam MongoDB Anda
-    await Transaction.create({
+    const createdAt = new Date();
+    const trx = await Transaction.create({
       productName,
       price,
       qty,
       total: price * qty,
       paymentMethod,
-      receiptImage: paymentMethod === 'QRIS' ? receiptUrl : null, 
-      createdAt: new Date(),
+      receiptImage: paymentMethod === 'QRIS' ? receiptUrl : null,
+      createdAt,
     });
+
+    // Real-time append ke Google Spreadsheet (jika konfigurasi env tersedia)
+    try {
+      await appendRowToGoogleSheet({
+        createdAt: createdAt.toISOString(),
+        productName,
+        paymentMethod,
+        price,
+        qty,
+        total: price * qty,
+        receiptImage: paymentMethod === 'QRIS' ? receiptUrl : null,
+      });
+    } catch (e) {
+      console.error('Google Sheets append gagal:', e);
+      // transaksi tetap dianggap sukses (kegagalan export tidak menggagalkan input kasir)
+    }
+
+
 
   } catch (e) {
     return { message: 'Gagal menyimpan data ke Database', status: 'error' };
