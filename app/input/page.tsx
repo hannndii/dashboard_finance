@@ -1,18 +1,16 @@
-import { getDashboardData } from './action';
+import { getDashboardData } from '../action';
+
 import {
   DollarSign,
   ShoppingCart,
-  TrendingUp,
-  Calendar,
-  LayoutDashboard,
-  Package,
-  FileSpreadsheet,
-  PlusCircle
+  ArrowLeft,
 } from 'lucide-react';
+
 import Link from 'next/link';
-import { RevenueChart } from './component/RevenueCart';
-import { ReceiptViewer } from './component/ReceiptViewer';
-import GoogleSheetSyncButton from './component/GoogleSheetSyncButton';
+
+import { RevenueChart } from '../component/RevenueCart';
+import { ReceiptViewer } from '../component/ReceiptViewer';
+import GoogleSheetSyncButton from '../component/GoogleSheetSyncButton';
 
 export const dynamic = 'force-dynamic';
 
