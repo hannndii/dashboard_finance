@@ -3,6 +3,8 @@ import { DollarSign, ShoppingCart, TrendingUp, Calendar, ExternalLink } from 'lu
 import Link from 'next/link';
 import { RevenueChart } from './component/RevenueCart'; 
 import { ReceiptViewer } from './component/ReceiptViewer';
+import GoogleSheetSyncButton from './component/GoogleSheetSyncButton';
+
 
 export const dynamic = 'force-dynamic';
 
@@ -59,10 +61,19 @@ export default async function Dashboard() {
           </div>
         </div>
 
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+          <h2 className="font-bold text-slate-800 mb-2">Sinkron Google Spreadsheet</h2>
+          <p className="text-xs text-slate-500 mb-4">
+            Tekan tombol ini untuk mengirim/append semua transaksi yang ada ke tab <span className="font-semibold">Juni</span>.
+          </p>
+          <GoogleSheetSyncButton />
+        </div>
+
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
           <div className="p-6 border-b border-slate-100">
             <h2 className="font-bold text-slate-800">Transaksi Terakhir</h2>
           </div>
+
           <div className="overflow-x-auto">
             <table className="w-full text-sm text-left">
               <thead className="bg-slate-50 text-slate-500 font-medium">
