@@ -3,7 +3,12 @@ import { getDashboardData } from '../action';
 import {
   DollarSign,
   ShoppingCart,
-  ArrowLeft,
+  TrendingUp,
+  Calendar,
+  LayoutDashboard,
+  Package,
+  FileSpreadsheet,
+  PlusCircle
 } from 'lucide-react';
 
 import Link from 'next/link';
