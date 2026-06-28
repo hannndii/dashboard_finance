@@ -72,7 +72,7 @@ export default async function Dashboard() {
                   <th className="px-6 py-3 text-center">Pembayaran</th>
                   <th className="px-6 py-3 text-center">Bukti QRIS</th>
                   <th className="px-6 py-3 text-right">Harga Satuan</th>
-                  <th className="px-6 py-3 text-center">Qty</th>
+                  <th className="px-6 py-3 text-center">Jumlah Barang</th>
                   <th className="px-6 py-3 text-right">Total Harga</th>
                 </tr>
               </thead>
