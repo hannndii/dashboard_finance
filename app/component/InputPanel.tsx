@@ -6,7 +6,6 @@ import { useFormStatus } from "react-dom";
 import {
   Save,
   RefreshCw,
-  ShoppingBag,
   CheckCircle2,
   Image as ImageIcon,
   X,
@@ -33,18 +32,26 @@ function SubmitButton({ isUploading }: { isUploading: boolean }) {
           : "bg-blue-600 hover:bg-blue-700 text-white shadow-md"
       }`}
     >
-      {isDisabled ? <RefreshCw className="animate-spin" /> : <Save size={20} />}
+      {isDisabled ? (
+        <RefreshCw className="animate-spin" />
+      ) : (
+        <Save size={20} />
+      )}
 
       {isUploading
         ? "Memproses Gambar..."
         : pending
-          ? "Menyimpan Transaksi..."
-          : "Simpan Transaksi"}
+        ? "Menyimpan Transaksi..."
+        : "Simpan Transaksi"}
     </button>
   );
 }
 
-export default function InputPanel({ onClose }: { onClose: () => void }) {
+export default function InputPanel({
+  onClose,
+}: {
+  onClose: () => void;
+}) {
   const [product, setProduct] = useState("");
   const [price, setPrice] = useState("");
   const [qty, setQty] = useState(1);
@@ -63,7 +70,9 @@ export default function InputPanel({ onClose }: { onClose: () => void }) {
 
   const total = Number(price || 0) * qty;
 
-  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -126,12 +135,17 @@ export default function InputPanel({ onClose }: { onClose: () => void }) {
   return (
     <>
       <div className="fixed inset-0 bg-black/40 z-50 flex justify-end">
-        <div className="w-[760px] h-full bg-white shadow-2xl overflow-y-auto">
+        <div className="w-[760px] h-full bg-slate-50 shadow-2xl overflow-y-auto text-black">
+
           {/* HEADER */}
           <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-indigo-500 p-6 flex justify-between items-center z-10">
             <div>
-              <h2 className="text-white text-2xl font-bold">Input Transaksi</h2>
-              <p className="text-blue-100 text-sm">Tambahkan transaksi baru</p>
+              <h2 className="text-white text-2xl font-bold">
+                Input Transaksi
+              </h2>
+              <p className="text-blue-100 text-sm">
+                Tambahkan transaksi baru
+              </p>
             </div>
 
             <button
@@ -143,10 +157,11 @@ export default function InputPanel({ onClose }: { onClose: () => void }) {
           </div>
 
           {/* CONTENT */}
-          <div className="p-6 space-y-6">
+          <div className="p-6 space-y-6 bg-slate-50">
+
             {/* PRESET */}
             <div>
-              <h3 className="text-lg font-bold text-slate-700 mb-4">
+              <h3 className="text-lg font-bold text-black mb-4">
                 Menu Cepat
               </h3>
 
@@ -156,13 +171,25 @@ export default function InputPanel({ onClose }: { onClose: () => void }) {
                     key={idx}
                     type="button"
                     onClick={() => selectPreset(p)}
-                    className="p-4 bg-white border border-blue-200 rounded-xl shadow-sm transition-all text-left hover:bg-blue-600 hover:border-blue-600 group"
+                    className="
+                      p-4
+                      bg-white
+                      border-2
+                      border-slate-300
+                      rounded-xl
+                      shadow-sm
+                      transition-all
+                      text-left
+                      hover:bg-blue-600
+                      hover:border-blue-600
+                      group
+                    "
                   >
-                    <div className="font-bold text-slate-800 group-hover:text-white transition-colors">
+                    <div className="font-bold text-black group-hover:text-white transition-colors">
                       {p.name}
                     </div>
 
-                    <div className="text-sm mt-1 text-slate-500 group-hover:text-blue-100 transition-colors">
+                    <div className="text-sm mt-1 text-slate-700 group-hover:text-blue-100 transition-colors">
                       Rp {p.price.toLocaleString("id-ID")}
                     </div>
                   </button>
@@ -172,24 +199,37 @@ export default function InputPanel({ onClose }: { onClose: () => void }) {
 
             {/* FORM */}
             <form action={formAction} className="space-y-5">
+
               {/* Product */}
               <div>
-                <label className="block text-sm font-semibold mb-2">
+                <label className="block text-sm font-bold text-black mb-2">
                   Nama Produk
                 </label>
                 <input
                   name="productName"
                   value={product}
                   onChange={(e) => setProduct(e.target.value)}
-                  className="w-full p-4 border rounded-xl"
+                  className="
+                    w-full
+                    p-4
+                    border-2
+                    border-slate-300
+                    rounded-xl
+                    bg-white
+                    text-black
+                    placeholder:text-slate-500
+                    focus:border-blue-500
+                    outline-none
+                  "
                   required
                 />
               </div>
 
               {/* Price + Qty */}
               <div className="grid grid-cols-2 gap-4">
+
                 <div>
-                  <label className="block text-sm font-semibold mb-2">
+                  <label className="block text-sm font-bold text-black mb-2">
                     Harga
                   </label>
                   <input
@@ -197,21 +237,32 @@ export default function InputPanel({ onClose }: { onClose: () => void }) {
                     type="number"
                     value={price}
                     onChange={(e) => setPrice(e.target.value)}
-                    className="w-full p-4 border rounded-xl"
+                    className="
+                      w-full
+                      p-4
+                      border-2
+                      border-slate-300
+                      rounded-xl
+                      bg-white
+                      text-black
+                      focus:border-blue-500
+                      outline-none
+                    "
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold mb-2">
+                  <label className="block text-sm font-bold text-black mb-2">
                     Jumlah
                   </label>
 
                   <div className="flex items-center h-[56px]">
+
                     <button
                       type="button"
                       onClick={() => setQty(Math.max(1, qty - 1))}
-                      className="w-14 h-full bg-slate-100 rounded-l-xl"
+                      className="w-14 h-full bg-slate-200 text-black font-bold rounded-l-xl border-2 border-slate-300"
                     >
                       -
                     </button>
@@ -220,42 +271,46 @@ export default function InputPanel({ onClose }: { onClose: () => void }) {
                       name="qty"
                       value={qty}
                       readOnly
-                      className="w-full text-center border-y h-full"
+                      className="w-full text-center border-y-2 border-slate-300 h-full bg-white text-black font-bold"
                     />
 
                     <button
                       type="button"
                       onClick={() => setQty(qty + 1)}
-                      className="w-14 h-full bg-slate-100 rounded-r-xl"
+                      className="w-14 h-full bg-slate-200 text-black font-bold rounded-r-xl border-2 border-slate-300"
                     >
                       +
                     </button>
+
                   </div>
                 </div>
               </div>
 
               {/* Total */}
-              <div className="bg-blue-50 rounded-xl p-4">
-                <p className="text-sm text-slate-500">Total</p>
-                <h3 className="text-3xl font-bold text-blue-700">
+              <div className="bg-blue-50 rounded-xl p-4 border-2 border-blue-200">
+                <p className="text-sm text-slate-700 font-semibold">
+                  Total
+                </p>
+                <h3 className="text-3xl font-bold text-black">
                   {formatRp(total)}
                 </h3>
               </div>
 
               {/* Payment */}
               <div>
-                <label className="block text-sm font-semibold mb-2">
+                <label className="block text-sm font-bold text-black mb-2">
                   Metode Pembayaran
                 </label>
 
                 <div className="grid grid-cols-2 gap-3">
+
                   <button
                     type="button"
                     onClick={() => setPaymentMethod("Cash")}
-                    className={`p-4 rounded-xl border ${
+                    className={`p-4 rounded-xl border-2 font-bold text-black ${
                       paymentMethod === "Cash"
                         ? "bg-green-50 border-green-500"
-                        : ""
+                        : "bg-white border-slate-300"
                     }`}
                   >
                     Tunai
@@ -264,14 +319,15 @@ export default function InputPanel({ onClose }: { onClose: () => void }) {
                   <button
                     type="button"
                     onClick={() => setPaymentMethod("QRIS")}
-                    className={`p-4 rounded-xl border ${
+                    className={`p-4 rounded-xl border-2 font-bold text-black ${
                       paymentMethod === "QRIS"
                         ? "bg-blue-50 border-blue-500"
-                        : ""
+                        : "bg-white border-slate-300"
                     }`}
                   >
                     QRIS
                   </button>
+
                 </div>
 
                 <input
@@ -283,7 +339,8 @@ export default function InputPanel({ onClose }: { onClose: () => void }) {
 
               {/* QRIS Upload */}
               {paymentMethod === "QRIS" && (
-                <div className="border border-blue-200 rounded-xl p-4">
+                <div className="border-2 border-slate-300 bg-white rounded-xl p-4">
+
                   {previewUrl ? (
                     <img
                       src={previewUrl}
@@ -293,10 +350,16 @@ export default function InputPanel({ onClose }: { onClose: () => void }) {
                   ) : (
                     <label
                       htmlFor="file-upload"
-                      className="flex flex-col items-center justify-center h-40 border-2 border-dashed rounded-xl cursor-pointer"
+                      className="
+                        flex flex-col items-center justify-center h-40
+                        border-2 border-dashed border-slate-400
+                        rounded-xl cursor-pointer bg-slate-50 text-black
+                      "
                     >
                       <ImageIcon size={30} />
-                      <p>Upload bukti QRIS</p>
+                      <p className="text-black font-medium mt-2">
+                        Upload bukti QRIS
+                      </p>
                     </label>
                   )}
 
@@ -318,7 +381,7 @@ export default function InputPanel({ onClose }: { onClose: () => void }) {
 
               {/* ERROR */}
               {message && (
-                <p className="text-red-500 text-sm font-bold">{message}</p>
+                <p className="text-red-600 text-sm font-bold">{message}</p>
               )}
 
               <SubmitButton isUploading={isUploading} />
@@ -331,9 +394,12 @@ export default function InputPanel({ onClose }: { onClose: () => void }) {
       {showPopup && (
         <div className="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center">
           <div className="bg-white p-8 rounded-2xl shadow-xl text-center">
-            <CheckCircle2 size={60} className="text-green-500 mx-auto mb-4" />
+            <CheckCircle2
+              size={60}
+              className="text-green-500 mx-auto mb-4"
+            />
 
-            <h3 className="text-2xl font-bold text-slate-700">
+            <h3 className="text-2xl font-bold text-black">
               Transaksi Berhasil
             </h3>
           </div>
