@@ -1,9 +1,15 @@
-'use client';
+"use client";
 
 import { useState } from "react";
 import InputPanel from "./InputPanel";
 
-export default function DashboardClient({ children }: any) {
+export default function DashboardClient({
+  children,
+  products,
+}: {
+  children: React.ReactNode;
+  products: any[];
+}) {
   const [showInput, setShowInput] = useState(false);
 
   return (
@@ -16,8 +22,13 @@ export default function DashboardClient({ children }: any) {
       </button>
 
       {showInput && (
-        <InputPanel onClose={() => setShowInput(false)} />
+        <InputPanel
+          products={products}
+          onClose={() => setShowInput(false)}
+        />
       )}
+
+      {children}
     </>
   );
 }

@@ -147,7 +147,12 @@ export default function DashboardView({ data }: any) {
       </div>
 
       {/* INPUT PANEL */}
-      {showInput && <InputPanel onClose={() => setShowInput(false)} />}
+      {showInput && (
+        <InputPanel
+          products={data.products}
+          onClose={() => setShowInput(false)}
+        />
+      )}
     </>
   );
 }
