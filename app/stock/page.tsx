@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Sidebar from "../component/Sidebar";
 import Topbar from "../component/Topbar";
 import ProductModal from "../component/ProductModal";
+import EditProductModal from "../component/EditProductModal";
 
 import {
   getProducts,
@@ -23,6 +24,10 @@ export default function StockPage() {
   const [products, setProducts] = useState<any[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<any[]>([]);
   const [showModal, setShowModal] = useState(false);
+
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
+
   const [search, setSearch] = useState("");
 
   async function loadProducts() {
@@ -98,7 +103,6 @@ export default function StockPage() {
 
           {/* TABLE */}
           <div className="bg-white rounded-xl shadow-sm p-6">
-
             <table className="w-full">
               <thead>
                 <tr className="border-b text-left text-slate-400">
@@ -117,7 +121,6 @@ export default function StockPage() {
                       key={product._id}
                       className="border-b hover:bg-slate-50 transition"
                     >
-
                       {/* Product */}
                       <td className="py-4">
                         <div className="flex items-center gap-3">
@@ -162,11 +165,11 @@ export default function StockPage() {
                         )}
                       </td>
 
-                      {/* Actions */}
+                      {/* ACTIONS */}
                       <td>
                         <div className="flex gap-2">
 
-                          {/* Quick Stock */}
+                          {/* Quick Add Stock */}
                           <button
                             onClick={() => handleAddStock(product._id)}
                             className="bg-blue-100 text-blue-600 px-3 py-2 rounded-lg text-sm font-bold"
@@ -175,7 +178,13 @@ export default function StockPage() {
                           </button>
 
                           {/* Edit */}
-                          <button className="bg-yellow-100 text-yellow-600 p-2 rounded-lg">
+                          <button
+                            onClick={() => {
+                              setSelectedProduct(product);
+                              setShowEditModal(true);
+                            }}
+                            className="bg-yellow-100 text-yellow-600 p-2 rounded-lg"
+                          >
                             <Pencil size={16} />
                           </button>
 
@@ -208,11 +217,23 @@ export default function StockPage() {
         </main>
       </div>
 
-      {/* MODAL TAMBAH PRODUCT */}
+      {/* ADD MODAL */}
       {showModal && (
         <ProductModal
           onClose={() => {
             setShowModal(false);
+            loadProducts();
+          }}
+        />
+      )}
+
+      {/* EDIT MODAL */}
+      {showEditModal && selectedProduct && (
+        <EditProductModal
+          product={selectedProduct}
+          onClose={() => {
+            setShowEditModal(false);
+            setSelectedProduct(null);
             loadProducts();
           }}
         />
