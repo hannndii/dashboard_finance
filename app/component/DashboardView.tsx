@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import {
   LayoutDashboard,
   ShoppingCart,
@@ -30,7 +31,6 @@ export default function DashboardView({ data }: any) {
   return (
     <>
       <div className="min-h-screen bg-slate-100 flex">
-
         {/* SIDEBAR */}
         <aside className="w-64 bg-white border-r border-slate-200 min-h-screen">
           <div className="h-16 bg-gradient-to-r from-blue-600 to-indigo-500 flex items-center px-6">
@@ -38,16 +38,33 @@ export default function DashboardView({ data }: any) {
           </div>
 
           <div className="p-5 space-y-2">
-            <SidebarItem icon={<LayoutDashboard size={18} />} label="Dashboard" active />
-            <SidebarItem icon={<ShoppingCart size={18} />} label="Transaksi" />
-            <SidebarItem icon={<Package size={18} />} label="Stok Barang" />
-            <SidebarItem icon={<BarChart3 size={18} />} label="Laporan" />
+            <Link href="/">
+              <SidebarItem
+                icon={<LayoutDashboard size={18} />}
+                label="Dashboard"
+                active
+              />
+            </Link>
+
+            <Link href="/transaction">
+              <SidebarItem
+                icon={<ShoppingCart size={18} />}
+                label="Transaksi"
+              />
+            </Link>
+
+            <Link href="/stock">
+              <SidebarItem icon={<Package size={18} />} label="Stok Barang" />
+            </Link>
+
+            <Link href="/report">
+              <SidebarItem icon={<BarChart3 size={18} />} label="Laporan" />
+            </Link>
           </div>
         </aside>
 
         {/* CONTENT */}
         <div className="flex-1">
-
           {/* TOPBAR */}
           <header className="h-16 bg-gradient-to-r from-blue-600 to-indigo-500 flex items-center justify-between px-8">
             <div className="flex items-center gap-4 text-white">
@@ -69,12 +86,9 @@ export default function DashboardView({ data }: any) {
 
           {/* MAIN */}
           <main className="p-8">
-
             {/* PAGE TITLE */}
             <div className="flex justify-between mb-8">
-              <h2 className="text-4xl font-light text-slate-700">
-                Dashboard
-              </h2>
+              <h2 className="text-4xl font-light text-slate-700">Dashboard</h2>
 
               <button
                 onClick={() => setShowInput(true)}
@@ -128,15 +142,12 @@ export default function DashboardView({ data }: any) {
                 </div>
               </div>
             </div>
-
           </main>
         </div>
       </div>
 
       {/* INPUT PANEL */}
-      {showInput && (
-        <InputPanel onClose={() => setShowInput(false)} />
-      )}
+      {showInput && <InputPanel onClose={() => setShowInput(false)} />}
     </>
   );
 }
@@ -144,7 +155,7 @@ export default function DashboardView({ data }: any) {
 function SidebarItem({ icon, label, active = false }: any) {
   return (
     <div
-      className={`flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer ${
+      className={`flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition-all ${
         active
           ? "bg-blue-50 text-blue-600 font-semibold"
           : "text-slate-500 hover:bg-slate-50"
@@ -163,7 +174,9 @@ function StatCard({ title, value, icon, growth, danger = false }: any) {
         <div>
           <p className="text-xs text-slate-400 font-semibold">{title}</p>
           <h3 className="text-3xl font-bold text-slate-700 mt-2">{value}</h3>
-          <p className={`text-sm mt-2 ${danger ? "text-red-500" : "text-green-500"}`}>
+          <p
+            className={`text-sm mt-2 ${danger ? "text-red-500" : "text-green-500"}`}
+          >
             {growth}
           </p>
         </div>
