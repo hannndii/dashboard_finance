@@ -115,6 +115,73 @@ export async function addTransaction(prevState: any, formData: FormData) {
   }
 }
 
+export async function getAllTransactions() {
+  try {
+    await dbConnect();
+
+    const transactions = await Transaction.find().sort({
+      createdAt: -1,
+    });
+
+    return JSON.parse(JSON.stringify(transactions));
+  } catch (error) {
+    console.error("Get Transactions Error:", error);
+    return [];
+  }
+}
+
+export async function deleteTransaction(id: string) {
+  try {
+    await dbConnect();
+
+    await Transaction.findByIdAndDelete(id);
+
+    revalidatePath("/transaction");
+
+    return {
+      status: "success",
+    };
+  } catch (error) {
+    console.error("Delete Transaction Error:", error);
+
+    return {
+      status: "error",
+    };
+  }
+}
+
+export async function updateTransaction(
+  id: string,
+  formData: FormData
+) {
+  try {
+    await dbConnect();
+
+    const price = Number(formData.get("price"));
+    const qty = Number(formData.get("qty"));
+
+    await Transaction.findByIdAndUpdate(id, {
+      productName: formData.get("productName"),
+      paymentMethod: formData.get("paymentMethod"),
+      price,
+      qty,
+      total: price * qty,
+    });
+
+    revalidatePath("/transaction");
+
+    return {
+      status: "success",
+    };
+  } catch (error) {
+    console.error("Update Transaction Error:", error);
+
+    return {
+      status: "error",
+    };
+  }
+}
+
 // =========================================================
 // ACTION 3: Dashboard Data
 // =========================================================
