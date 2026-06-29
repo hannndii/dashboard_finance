@@ -5,7 +5,9 @@ import Transaction from "@/models/Transaction";
 import Product from "@/models/Product";
 import { appendRowToGoogleSheet } from "@/lib/googleSheets";
 import { revalidatePath } from "next/cache";
-
+import Admin from "@/models/Admin";
+import { comparePassword } from "@/lib/auth";
+import { cookies } from "next/headers";
 
 // =========================================================
 // ACTION 1: Upload Receipt (Base64)
@@ -430,6 +432,56 @@ export async function addStock(id: string, qty: number) {
 
     return {
       status: "error",
+    };
+  }
+}
+
+// =========================================================
+// ACTION 12: Admin Login
+// =========================================================
+export async function loginAdmin(formData: FormData) {
+  try {
+    await dbConnect();
+
+    const username = String(formData.get("username"));
+    const password = String(formData.get("password"));
+
+    const admin = await Admin.findOne({ username });
+
+    if (!admin) {
+      return {
+        status: "error",
+        message: "Admin tidak ditemukan",
+      };
+    }
+
+    const validPassword = await comparePassword(
+      password,
+      admin.password
+    );
+
+    if (!validPassword) {
+      return {
+        status: "error",
+        message: "Password salah",
+      };
+    }
+
+    (await cookies()).set("admin_session", admin._id.toString(), {
+      httpOnly: true,
+      secure: true,
+      path: "/",
+    });
+
+    return {
+      status: "success",
+    };
+  } catch (error) {
+    console.error(error);
+
+    return {
+      status: "error",
+      message: "Login gagal",
     };
   }
 }
