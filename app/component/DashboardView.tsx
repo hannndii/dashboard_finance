@@ -34,7 +34,7 @@ export default function DashboardView({ data }: any) {
         {/* SIDEBAR */}
         <aside className="w-64 bg-white border-r border-slate-200 min-h-screen">
           <div className="h-16 bg-gradient-to-r from-blue-600 to-indigo-500 flex items-center px-6">
-            <h1 className="text-white font-bold text-xl">KantinAdmin</h1>
+            <h1 className="text-white font-bold text-xl">Kantin PB AU</h1>
           </div>
 
           <div className="p-5 space-y-2">
@@ -62,7 +62,7 @@ export default function DashboardView({ data }: any) {
                 <div className="w-10 h-10 rounded-full bg-white text-blue-600 flex items-center justify-center font-bold">
                   M
                 </div>
-                <span className="font-medium">Maman Ketoprak</span>
+                <span className="font-medium">Administrator</span>
               </div>
             </div>
           </header>
