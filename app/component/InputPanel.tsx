@@ -33,26 +33,18 @@ function SubmitButton({ isUploading }: { isUploading: boolean }) {
           : "bg-blue-600 hover:bg-blue-700 text-white shadow-md"
       }`}
     >
-      {isDisabled ? (
-        <RefreshCw className="animate-spin" />
-      ) : (
-        <Save size={20} />
-      )}
+      {isDisabled ? <RefreshCw className="animate-spin" /> : <Save size={20} />}
 
       {isUploading
         ? "Memproses Gambar..."
         : pending
-        ? "Menyimpan Transaksi..."
-        : "Simpan Transaksi"}
+          ? "Menyimpan Transaksi..."
+          : "Simpan Transaksi"}
     </button>
   );
 }
 
-export default function InputPanel({
-  onClose,
-}: {
-  onClose: () => void;
-}) {
+export default function InputPanel({ onClose }: { onClose: () => void }) {
   const [product, setProduct] = useState("");
   const [price, setPrice] = useState("");
   const [qty, setQty] = useState(1);
@@ -71,9 +63,7 @@ export default function InputPanel({
 
   const total = Number(price || 0) * qty;
 
-  const handleImageChange = async (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -137,16 +127,11 @@ export default function InputPanel({
     <>
       <div className="fixed inset-0 bg-black/40 z-50 flex justify-end">
         <div className="w-[760px] h-full bg-white shadow-2xl overflow-y-auto">
-
           {/* HEADER */}
           <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-indigo-500 p-6 flex justify-between items-center z-10">
             <div>
-              <h2 className="text-white text-2xl font-bold">
-                Input Transaksi
-              </h2>
-              <p className="text-blue-100 text-sm">
-                Tambahkan transaksi baru
-              </p>
+              <h2 className="text-white text-2xl font-bold">Input Transaksi</h2>
+              <p className="text-blue-100 text-sm">Tambahkan transaksi baru</p>
             </div>
 
             <button
@@ -159,7 +144,6 @@ export default function InputPanel({
 
           {/* CONTENT */}
           <div className="p-6 space-y-6">
-
             {/* PRESET */}
             <div>
               <h3 className="text-lg font-bold text-slate-700 mb-4">
@@ -172,10 +156,13 @@ export default function InputPanel({
                     key={idx}
                     type="button"
                     onClick={() => selectPreset(p)}
-                    className="p-4 bg-white border border-blue-200 rounded-xl shadow-sm hover:bg-blue-600 hover:text-white transition-all text-left"
+                    className="p-4 bg-white border border-blue-200 rounded-xl shadow-sm transition-all text-left hover:bg-blue-600 hover:border-blue-600 group"
                   >
-                    <div className="font-bold">{p.name}</div>
-                    <div className="text-sm mt-1">
+                    <div className="font-bold text-slate-800 group-hover:text-white transition-colors">
+                      {p.name}
+                    </div>
+
+                    <div className="text-sm mt-1 text-slate-500 group-hover:text-blue-100 transition-colors">
                       Rp {p.price.toLocaleString("id-ID")}
                     </div>
                   </button>
@@ -185,7 +172,6 @@ export default function InputPanel({
 
             {/* FORM */}
             <form action={formAction} className="space-y-5">
-
               {/* Product */}
               <div>
                 <label className="block text-sm font-semibold mb-2">
@@ -202,7 +188,6 @@ export default function InputPanel({
 
               {/* Price + Qty */}
               <div className="grid grid-cols-2 gap-4">
-
                 <div>
                   <label className="block text-sm font-semibold mb-2">
                     Harga
@@ -299,7 +284,6 @@ export default function InputPanel({
               {/* QRIS Upload */}
               {paymentMethod === "QRIS" && (
                 <div className="border border-blue-200 rounded-xl p-4">
-
                   {previewUrl ? (
                     <img
                       src={previewUrl}
@@ -347,10 +331,7 @@ export default function InputPanel({
       {showPopup && (
         <div className="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center">
           <div className="bg-white p-8 rounded-2xl shadow-xl text-center">
-            <CheckCircle2
-              size={60}
-              className="text-green-500 mx-auto mb-4"
-            />
+            <CheckCircle2 size={60} className="text-green-500 mx-auto mb-4" />
 
             <h3 className="text-2xl font-bold text-slate-700">
               Transaksi Berhasil
