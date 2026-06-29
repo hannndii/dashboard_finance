@@ -6,6 +6,7 @@ import Product from "@/models/Product";
 import { appendRowToGoogleSheet } from "@/lib/googleSheets";
 import { revalidatePath } from "next/cache";
 
+
 // =========================================================
 // ACTION 1: Upload Receipt (Base64)
 // =========================================================
@@ -36,7 +37,7 @@ export async function uploadToDrive(formData: FormData) {
       url: base64Image,
     };
   } catch (e: any) {
-    console.error("Error konversi gambar:", e.message);
+    console.error("Upload Error:", e.message);
 
     return {
       status: "error",
@@ -45,8 +46,9 @@ export async function uploadToDrive(formData: FormData) {
   }
 }
 
+
 // =========================================================
-// ACTION 2: Add Transaction
+// ACTION 2: Add Transaction (POS Multi Item)
 // =========================================================
 export async function addTransaction(
   prevState: any,
@@ -55,7 +57,6 @@ export async function addTransaction(
   try {
     await dbConnect();
 
-    // Ambil cart dari hidden input
     const cartRaw = String(formData.get("cart") ?? "[]");
     const cart = JSON.parse(cartRaw);
 
@@ -67,28 +68,26 @@ export async function addTransaction(
       formData.get("receiptUrl") ?? ""
     );
 
-    // Validasi cart kosong
     if (!cart || cart.length === 0) {
       return {
-        message: "Keranjang masih kosong.",
         status: "error",
+        message: "Keranjang masih kosong.",
       };
     }
 
-    // Validasi QRIS
     if (paymentMethod === "QRIS" && !receiptUrl) {
       return {
-        message: "Bukti transaksi QRIS wajib diunggah.",
         status: "error",
+        message: "Bukti transaksi QRIS wajib diunggah.",
       };
     }
 
     const createdAt = new Date();
 
-    // Simpan semua item ke MongoDB
     for (const item of cart) {
       const total = item.price * item.qty;
 
+      // Save transaction
       await Transaction.create({
         productName: item.productName,
         price: item.price,
@@ -100,7 +99,20 @@ export async function addTransaction(
         createdAt,
       });
 
-      // Append ke Google Sheets per item
+      // Reduce stock if product exists
+      const product = await Product.findOne({
+        name: item.productName,
+      });
+
+      if (product) {
+        await Product.findByIdAndUpdate(product._id, {
+          $inc: {
+            stock: -item.qty,
+          },
+        });
+      }
+
+      // Append Google Sheets
       try {
         await appendRowToGoogleSheet({
           createdAt: createdAt.toISOString(),
@@ -113,30 +125,32 @@ export async function addTransaction(
             paymentMethod === "QRIS" ? receiptUrl : null,
         });
       } catch (e) {
-        console.error(
-          "Google Sheets append gagal:",
-          e
-        );
+        console.error("Google Sheets Error:", e);
       }
     }
 
     revalidatePath("/");
     revalidatePath("/transaction");
+    revalidatePath("/stock");
 
     return {
-      message: "Transaksi berhasil disimpan!",
       status: "success",
+      message: "Transaksi berhasil disimpan!",
     };
   } catch (e: any) {
     console.error("Add Transaction Error:", e);
 
     return {
-      message: "Gagal menyimpan transaksi ke database.",
       status: "error",
+      message: "Gagal menyimpan transaksi.",
     };
   }
 }
 
+
+// =========================================================
+// ACTION 3: Get All Transactions
+// =========================================================
 export async function getAllTransactions() {
   try {
     await dbConnect();
@@ -152,6 +166,10 @@ export async function getAllTransactions() {
   }
 }
 
+
+// =========================================================
+// ACTION 4: Delete Transaction
+// =========================================================
 export async function deleteTransaction(id: string) {
   try {
     await dbConnect();
@@ -172,6 +190,10 @@ export async function deleteTransaction(id: string) {
   }
 }
 
+
+// =========================================================
+// ACTION 5: Update Transaction
+// =========================================================
 export async function updateTransaction(
   id: string,
   formData: FormData
@@ -204,8 +226,9 @@ export async function updateTransaction(
   }
 }
 
+
 // =========================================================
-// ACTION 3: Dashboard Data
+// ACTION 6: Dashboard Data
 // =========================================================
 export async function getDashboardData() {
   await dbConnect();
@@ -213,6 +236,10 @@ export async function getDashboardData() {
   const recentTransactions = await Transaction.find()
     .sort({ createdAt: -1 })
     .limit(10)
+    .lean();
+
+  const products = await Product.find()
+    .sort({ createdAt: -1 })
     .lean();
 
   const today = new Date();
@@ -258,6 +285,7 @@ export async function getDashboardData() {
 
   return {
     recent: JSON.parse(JSON.stringify(recentTransactions)),
+    products: JSON.parse(JSON.stringify(products)),
     today: todayStats[0] || {
       totalRevenue: 0,
       count: 0,
@@ -266,8 +294,9 @@ export async function getDashboardData() {
   };
 }
 
+
 // =========================================================
-// ACTION 4: Get Products
+// ACTION 7: Get Products
 // =========================================================
 export async function getProducts() {
   try {
@@ -284,8 +313,9 @@ export async function getProducts() {
   }
 }
 
+
 // =========================================================
-// ACTION 5: Add Product
+// ACTION 8: Add Product
 // =========================================================
 export async function addProduct(formData: FormData) {
   try {
@@ -323,8 +353,9 @@ export async function addProduct(formData: FormData) {
   }
 }
 
+
 // =========================================================
-// ACTION 6: Delete Product
+// ACTION 9: Delete Product
 // =========================================================
 export async function deleteProduct(id: string) {
   try {
@@ -346,8 +377,9 @@ export async function deleteProduct(id: string) {
   }
 }
 
+
 // =========================================================
-// ACTION 7: Update Product
+// ACTION 10: Update Product
 // =========================================================
 export async function updateProduct(id: string, formData: FormData) {
   try {
@@ -374,15 +406,18 @@ export async function updateProduct(id: string, formData: FormData) {
   }
 }
 
+
 // =========================================================
-// ACTION 8: Add Stock
+// ACTION 11: Add Stock
 // =========================================================
 export async function addStock(id: string, qty: number) {
   try {
     await dbConnect();
 
     await Product.findByIdAndUpdate(id, {
-      $inc: { stock: qty },
+      $inc: {
+        stock: qty,
+      },
     });
 
     revalidatePath("/stock");
