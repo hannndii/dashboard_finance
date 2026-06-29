@@ -38,11 +38,11 @@ export default async function StockPage() {
             <table className="w-full">
               <thead>
                 <tr className="border-b text-left text-slate-400">
-                  <th className="py-4">Produk</th>
-                  <th>Harga</th>
-                  <th>Stok</th>
-                  <th>Status</th>
-                  <th>Aksi</th>
+                  <th className="py-4 text-black">Produk</th>
+                  <th className="py-4 text-black">Harga</th>
+                  <th className="py-4 text-black">Stok</th>
+                  <th className="py-4 text-black">Status</th>
+                  <th className="py-4 text-black">Aksi</th>
                 </tr>
               </thead>
 
