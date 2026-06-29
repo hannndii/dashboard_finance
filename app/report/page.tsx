@@ -65,7 +65,7 @@ export default async function ReportPage() {
             <GoogleSheetSyncButton />
 
             <a
-              href="/api/export/excel"
+              href="/api/excel"
               className="px-4 py-3 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 flex items-center gap-2 font-semibold"
             >
               <FileSpreadsheet size={18} />
@@ -73,7 +73,7 @@ export default async function ReportPage() {
             </a>
 
             <a
-              href="/api/export/pdf"
+              href="/api/pdf"
               className="px-4 py-3 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 flex items-center gap-2 font-semibold"
             >
               <FileText size={18} />
