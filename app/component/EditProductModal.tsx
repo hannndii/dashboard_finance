@@ -57,47 +57,72 @@ export default function EditProductModal({
           </button>
         </div>
 
-        {/* Form */}
-        <form action={handleSubmit} className="space-y-4">
+        <form action={handleSubmit} className="space-y-5">
 
-          <input
-            name="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full p-4 border-2 border-slate-300 rounded-lg text-black"
-          />
+          {/* Nama Produk */}
+          <div>
+            <label className="block text-sm font-semibold text-slate-700 mb-2">
+              Nama Produk
+            </label>
+            <input
+              name="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full p-4 border-2 border-slate-300 rounded-lg text-black"
+            />
+          </div>
 
-          <input
-            name="price"
-            type="number"
-            value={price}
-            onChange={(e) => setPrice(Number(e.target.value))}
-            className="w-full p-4 border-2 border-slate-300 rounded-lg text-black"
-          />
+          {/* Harga */}
+          <div>
+            <label className="block text-sm font-semibold text-slate-700 mb-2">
+              Harga Produk (Rp)
+            </label>
+            <input
+              name="price"
+              type="number"
+              value={price}
+              onChange={(e) => setPrice(Number(e.target.value))}
+              className="w-full p-4 border-2 border-slate-300 rounded-lg text-black"
+            />
+          </div>
 
-          <input
-            name="stock"
-            type="number"
-            value={stock}
-            onChange={(e) => setStock(Number(e.target.value))}
-            className="w-full p-4 border-2 border-slate-300 rounded-lg text-black"
-          />
+          {/* Stok */}
+          <div>
+            <label className="block text-sm font-semibold text-slate-700 mb-2">
+              Jumlah Stok Saat Ini
+            </label>
+            <input
+              name="stock"
+              type="number"
+              value={stock}
+              onChange={(e) => setStock(Number(e.target.value))}
+              className="w-full p-4 border-2 border-slate-300 rounded-lg text-black"
+            />
+          </div>
 
-          <input
-            name="minStock"
-            type="number"
-            value={minStock}
-            onChange={(e) => setMinStock(Number(e.target.value))}
-            className="w-full p-4 border-2 border-slate-300 rounded-lg text-black"
-          />
+          {/* Minimum Stock */}
+          <div>
+            <label className="block text-sm font-semibold text-slate-700 mb-2">
+              Minimal Stok Alert
+            </label>
+            <input
+              name="minStock"
+              type="number"
+              value={minStock}
+              onChange={(e) => setMinStock(Number(e.target.value))}
+              className="w-full p-4 border-2 border-slate-300 rounded-lg text-black"
+            />
+          </div>
 
+          {/* Error */}
           {error && (
             <p className="text-red-500 text-sm font-semibold">
               {error}
             </p>
           )}
 
-          <div className="flex gap-3">
+          {/* Buttons */}
+          <div className="flex gap-3 pt-2">
 
             {/* Save */}
             <button
