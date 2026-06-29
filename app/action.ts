@@ -2,8 +2,9 @@
 
 import dbConnect from "@/lib/db";
 import Transaction from '@/models/Transaction';
-import { revalidatePath } from 'next/cache';
 import { appendRowToGoogleSheet } from '@/lib/googleSheets';
+import Product from "@/models/Product";
+import { revalidatePath } from "next/cache";
 
 // =========================================================
 // ACTION 1: PROSES GAMBAR MENJADI TEKS (BASE64)
@@ -123,3 +124,49 @@ export async function getDashboardData() {
     chart: chartData
   };
 }
+
+export async function getProducts() {
+  const products = await Product.find().sort({ createdAt: -1 });
+  return JSON.parse(JSON.stringify(products));
+}
+
+export async function addProduct(formData: FormData) {
+  const name = formData.get("name");
+  const price = Number(formData.get("price"));
+  const stock = Number(formData.get("stock"));
+  const minStock = Number(formData.get("minStock"));
+
+  await Product.create({
+    name,
+    price,
+    stock,
+    minStock,
+  });
+
+  revalidatePath("/stock");
+
+  return {
+    status: "success",
+  };
+}
+
+export async function deleteProduct(id: string) {
+  await Product.findByIdAndDelete(id);
+
+  revalidatePath("/stock");
+}
+
+export async function updateProduct(
+  id: string,
+  formData: FormData
+) {
+  await Product.findByIdAndUpdate(id, {
+    name: formData.get("name"),
+    price: Number(formData.get("price")),
+    stock: Number(formData.get("stock")),
+    minStock: Number(formData.get("minStock")),
+  });
+
+  revalidatePath("/stock");
+}
+
