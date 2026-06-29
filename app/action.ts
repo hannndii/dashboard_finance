@@ -6,7 +6,6 @@ import Product from "@/models/Product";
 import { appendRowToGoogleSheet } from "@/lib/googleSheets";
 import { revalidatePath } from "next/cache";
 
-
 // =========================================================
 // ACTION 1: Upload Receipt (Base64)
 // =========================================================
@@ -30,9 +29,7 @@ export async function uploadToDrive(formData: FormData) {
 
     const buffer = Buffer.from(await file.arrayBuffer());
 
-    const base64Image = `data:${file.type};base64,${buffer.toString(
-      "base64"
-    )}`;
+    const base64Image = `data:${file.type};base64,${buffer.toString("base64")}`;
 
     return {
       status: "success",
@@ -48,23 +45,17 @@ export async function uploadToDrive(formData: FormData) {
   }
 }
 
-
 // =========================================================
 // ACTION 2: Add Transaction
 // =========================================================
-export async function addTransaction(
-  prevState: any,
-  formData: FormData
-) {
+export async function addTransaction(prevState: any, formData: FormData) {
   try {
     await dbConnect();
 
     const productName = String(formData.get("productName") ?? "");
     const price = Number(formData.get("price"));
     const qty = Number(formData.get("qty")) || 1;
-    const paymentMethod = String(
-      formData.get("paymentMethod") ?? "Cash"
-    );
+    const paymentMethod = String(formData.get("paymentMethod") ?? "Cash");
 
     const receiptUrl = String(formData.get("receiptUrl") ?? "");
 
@@ -123,7 +114,6 @@ export async function addTransaction(
     };
   }
 }
-
 
 // =========================================================
 // ACTION 3: Dashboard Data
@@ -187,7 +177,6 @@ export async function getDashboardData() {
   };
 }
 
-
 // =========================================================
 // ACTION 4: Get Products
 // =========================================================
@@ -205,7 +194,6 @@ export async function getProducts() {
     return [];
   }
 }
-
 
 // =========================================================
 // ACTION 5: Add Product
@@ -246,7 +234,6 @@ export async function addProduct(formData: FormData) {
   }
 }
 
-
 // =========================================================
 // ACTION 6: Delete Product
 // =========================================================
@@ -270,14 +257,10 @@ export async function deleteProduct(id: string) {
   }
 }
 
-
 // =========================================================
 // ACTION 7: Update Product
 // =========================================================
-export async function updateProduct(
-  id: string,
-  formData: FormData
-) {
+export async function updateProduct(id: string, formData: FormData) {
   try {
     await dbConnect();
 
@@ -301,7 +284,6 @@ export async function updateProduct(
     };
   }
 }
-
 
 // =========================================================
 // ACTION 8: Add Stock
