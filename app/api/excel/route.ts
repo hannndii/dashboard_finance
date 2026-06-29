@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
+import * as XLSX from "xlsx";
 import dbConnect from "@/lib/db";
 import Transaction from "@/models/Transaction";
-import ExcelJS from "exceljs";
 
 export async function GET() {
   await dbConnect();
@@ -10,30 +10,30 @@ export async function GET() {
     createdAt: -1,
   });
 
-  const workbook = new ExcelJS.Workbook();
-  const sheet = workbook.addWorksheet("Laporan");
+  const rows = transactions.map((trx) => ({
+    Produk: trx.productName,
+    Qty: trx.qty,
+    Metode: trx.paymentMethod,
+    Harga: trx.price,
+    Total: trx.total,
+    Tanggal: new Date(trx.createdAt).toLocaleString("id-ID"),
+  }));
 
-  sheet.columns = [
-    { header: "Produk", key: "productName", width: 30 },
-    { header: "Qty", key: "qty", width: 10 },
-    { header: "Metode", key: "paymentMethod", width: 15 },
-    { header: "Total", key: "total", width: 20 },
-    { header: "Tanggal", key: "createdAt", width: 20 },
-  ];
+  const worksheet = XLSX.utils.json_to_sheet(rows);
+  const workbook = XLSX.utils.book_new();
 
-  transactions.forEach((trx) => {
-    sheet.addRow({
-      productName: trx.productName,
-      qty: trx.qty,
-      paymentMethod: trx.paymentMethod,
-      total: trx.total,
-      createdAt: trx.createdAt.toLocaleDateString("id-ID"),
-    });
+  XLSX.utils.book_append_sheet(
+    workbook,
+    worksheet,
+    "Laporan"
+  );
+
+  const excelBuffer = XLSX.write(workbook, {
+    type: "buffer",
+    bookType: "xlsx",
   });
 
-  const buffer = await workbook.xlsx.writeBuffer();
-
-  return new NextResponse(buffer, {
+  return new Response(excelBuffer, {
     headers: {
       "Content-Type":
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",

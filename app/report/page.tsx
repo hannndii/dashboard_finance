@@ -1,21 +1,16 @@
 import Sidebar from "../component/Sidebar";
 import Topbar from "../component/Topbar";
 import GoogleSheetSyncButton from "../component/GoogleSheetSyncButton";
-import {
-  getAllTransactions,
-} from "../action";
+import { getAllTransactions } from "../action";
 
-import {
-  FileSpreadsheet,
-  FileText,
-} from "lucide-react";
+import { FileSpreadsheet, FileText } from "lucide-react";
 
 export default async function ReportPage() {
   const transactions = await getAllTransactions();
 
   const totalRevenue = transactions.reduce(
     (sum: number, trx: any) => sum + trx.total,
-    0
+    0,
   );
 
   const totalTransactions = transactions.length;
@@ -28,7 +23,6 @@ export default async function ReportPage() {
         <Topbar />
 
         <main className="p-4 md:p-6 lg:p-8">
-
           {/* HEADER */}
           <div className="mb-8">
             <h1 className="text-2xl md:text-4xl font-light text-slate-700">
@@ -42,7 +36,6 @@ export default async function ReportPage() {
 
           {/* SUMMARY */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-
             <div className="bg-white rounded-xl p-6 shadow-sm">
               <p className="text-slate-400 text-sm">Total Pendapatan</p>
               <h3 className="text-3xl font-bold text-black mt-2">
@@ -56,30 +49,57 @@ export default async function ReportPage() {
                 {totalTransactions}
               </h3>
             </div>
-
           </div>
 
           {/* ACTIONS */}
-          <div className="bg-white rounded-xl p-6 shadow-sm mb-8 flex flex-col md:flex-row gap-4">
+          <div className="bg-white rounded-xl p-6 shadow-sm mb-8">
+            <div className="flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
+              {/* Google Sheet Sync */}
+              <GoogleSheetSyncButton />
 
-            <GoogleSheetSyncButton />
+              {/* Export Buttons */}
+              <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                {/* Export Excel */}
+                <a
+                  href="/api/excel"
+                  className="
+          flex items-center justify-center gap-2
+          px-5 py-3
+          rounded-xl
+          bg-emerald-600
+          hover:bg-emerald-700
+          text-white
+          font-semibold
+          transition-all
+          shadow-sm
+          w-full sm:w-auto
+        "
+                >
+                  <FileSpreadsheet size={18} />
+                  Export Excel
+                </a>
 
-            <a
-              href="/api/excel"
-              className="px-4 py-3 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 flex items-center gap-2 font-semibold"
-            >
-              <FileSpreadsheet size={18} />
-              Export Excel
-            </a>
-
-            <a
-              href="/api/pdf"
-              className="px-4 py-3 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 flex items-center gap-2 font-semibold"
-            >
-              <FileText size={18} />
-              Export PDF
-            </a>
-
+                {/* Export PDF */}
+                <a
+                  href="/api/pdf"
+                  className="
+          flex items-center justify-center gap-2
+          px-5 py-3
+          rounded-xl
+          bg-red-600
+          hover:bg-red-700
+          text-white
+          font-semibold
+          transition-all
+          shadow-sm
+          w-full sm:w-auto
+        "
+                >
+                  <FileText size={18} />
+                  Export PDF
+                </a>
+              </div>
+            </div>
           </div>
 
           {/* TABLE */}
@@ -112,7 +132,6 @@ export default async function ReportPage() {
               </tbody>
             </table>
           </div>
-
         </main>
       </div>
     </div>
