@@ -58,18 +58,17 @@ export default function TransactionPage() {
     <div className="flex min-h-screen bg-slate-100">
       <Sidebar />
 
-      <div className="flex-1">
+      <div className="flex-1 min-w-0">
         <Topbar />
 
-        <main className="p-8">
-
+        <main className="p-4 md:p-6 lg:p-8">
           {/* HEADER */}
           <div className="mb-8">
-            <h1 className="text-4xl font-light text-slate-700">
+            <h1 className="text-2xl md:text-4xl font-light text-slate-700">
               Riwayat Transaksi
             </h1>
 
-            <p className="text-slate-600 mt-2 text-lg">
+            <p className="text-slate-500 mt-2 text-sm md:text-base">
               Semua transaksi yang telah tersimpan
             </p>
           </div>
@@ -83,21 +82,21 @@ export default function TransactionPage() {
               placeholder="Cari transaksi..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full outline-none text-black placeholder:text-slate-400"
+              className="w-full outline-none text-black"
             />
           </div>
 
           {/* TABLE */}
-          <div className="bg-white rounded-xl shadow-sm p-6">
-            <table className="w-full">
+          <div className="bg-white rounded-xl shadow-sm p-4 md:p-6 overflow-x-auto">
+            <table className="w-full min-w-[900px]">
               <thead>
                 <tr className="border-b border-slate-200 text-left">
-                  <th className="py-4 text-black font-semibold">Produk</th>
-                  <th className="py-4 text-black font-semibold">Qty</th>
-                  <th className="py-4 text-black font-semibold">Metode</th>
-                  <th className="py-4 text-black font-semibold">Total</th>
-                  <th className="py-4 text-black font-semibold">Tanggal</th>
-                  <th className="py-4 text-black font-semibold">Aksi</th>
+                  <th className="py-4 text-black">Produk</th>
+                  <th className="py-4 text-black">Qty</th>
+                  <th className="py-4 text-black">Metode</th>
+                  <th className="py-4 text-black">Total</th>
+                  <th className="py-4 text-black">Tanggal</th>
+                  <th className="py-4 text-black">Aksi</th>
                 </tr>
               </thead>
 
@@ -106,97 +105,59 @@ export default function TransactionPage() {
                   filteredTransactions.map((trx) => (
                     <tr
                       key={trx._id}
-                      className="border-b border-slate-100 hover:bg-slate-50 transition"
+                      className="border-b hover:bg-slate-50 transition"
                     >
-                      {/* Produk */}
-                      <td className="py-5">
-                        <div>
-                          <p className="font-semibold text-black text-base">
-                            {trx.productName}
-                          </p>
-                        </div>
+                      <td className="py-4 font-semibold text-black">
+                        {trx.productName}
                       </td>
 
-                      {/* Qty */}
-                      <td>
-                        <span className="font-semibold text-black">
-                          {trx.qty}
-                        </span>
-                      </td>
+                      <td className="text-black">{trx.qty}</td>
 
-                      {/* Metode */}
                       <td>
                         <span
-                          className={`px-3 py-1 rounded-full text-sm font-medium ${
+                          className={`px-3 py-1 rounded-full text-sm ${
                             trx.paymentMethod === "QRIS"
-                              ? "bg-blue-100 text-blue-700"
-                              : "bg-green-100 text-green-700"
+                              ? "bg-blue-100 text-blue-600"
+                              : "bg-green-100 text-green-600"
                           }`}
                         >
                           {trx.paymentMethod}
                         </span>
                       </td>
 
-                      {/* Total */}
-                      <td>
-                        <span className="font-semibold text-black">
-                          {formatRp(trx.total)}
-                        </span>
+                      <td className="font-semibold text-black">
+                        {formatRp(trx.total)}
                       </td>
 
-                      {/* Tanggal */}
-                      <td>
-                        <div>
-                          <p className="text-black font-medium">
-                            {new Date(trx.createdAt).toLocaleDateString(
-                              "id-ID"
-                            )}
-                          </p>
-                          <p className="text-sm text-slate-500">
-                            {new Date(trx.createdAt).toLocaleTimeString(
-                              "id-ID",
-                              {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              }
-                            )}
-                          </p>
-                        </div>
+                      <td className="text-black">
+                        {new Date(trx.createdAt).toLocaleDateString("id-ID")}
                       </td>
 
-                      {/* Aksi */}
                       <td>
                         <div className="flex gap-2">
-
-                          {/* Edit */}
                           <button
                             onClick={() => {
                               setSelectedTransaction(trx);
                               setShowEditModal(true);
                             }}
-                            className="bg-yellow-100 hover:bg-yellow-200 text-yellow-600 p-2 rounded-lg transition"
+                            className="bg-yellow-100 text-yellow-600 p-2 rounded-lg"
                           >
                             <Pencil size={16} />
                           </button>
 
-                          {/* Delete */}
                           <button
                             onClick={() => handleDelete(trx._id)}
-                            className="bg-red-100 hover:bg-red-200 text-red-600 p-2 rounded-lg transition"
+                            className="bg-red-100 text-red-600 p-2 rounded-lg"
                           >
                             <Trash2 size={16} />
                           </button>
-
                         </div>
                       </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td
-                      colSpan={6}
-                      className="text-center py-8 text-slate-400"
-                    >
+                    <td colSpan={6} className="text-center py-8 text-slate-400">
                       Tidak ada transaksi ditemukan
                     </td>
                   </tr>
@@ -204,11 +165,9 @@ export default function TransactionPage() {
               </tbody>
             </table>
           </div>
-
         </main>
       </div>
 
-      {/* EDIT MODAL */}
       {showEditModal && selectedTransaction && (
         <EditTransactionModal
           transaction={selectedTransaction}
