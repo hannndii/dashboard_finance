@@ -48,68 +48,90 @@ export async function uploadToDrive(formData: FormData) {
 // =========================================================
 // ACTION 2: Add Transaction
 // =========================================================
-export async function addTransaction(prevState: any, formData: FormData) {
+export async function addTransaction(
+  prevState: any,
+  formData: FormData
+) {
   try {
     await dbConnect();
 
-    const productName = String(formData.get("productName") ?? "");
-    const price = Number(formData.get("price"));
-    const qty = Number(formData.get("qty")) || 1;
-    const paymentMethod = String(formData.get("paymentMethod") ?? "Cash");
+    // Ambil cart dari hidden input
+    const cartRaw = String(formData.get("cart") ?? "[]");
+    const cart = JSON.parse(cartRaw);
 
-    const receiptUrl = String(formData.get("receiptUrl") ?? "");
+    const paymentMethod = String(
+      formData.get("paymentMethod") ?? "Cash"
+    );
 
-    if (!productName || !price) {
+    const receiptUrl = String(
+      formData.get("receiptUrl") ?? ""
+    );
+
+    // Validasi cart kosong
+    if (!cart || cart.length === 0) {
       return {
-        message: "Data tidak lengkap",
+        message: "Keranjang masih kosong.",
         status: "error",
       };
     }
 
+    // Validasi QRIS
     if (paymentMethod === "QRIS" && !receiptUrl) {
       return {
-        message: "Bukti transaksi QRIS wajib diunggah!",
+        message: "Bukti transaksi QRIS wajib diunggah.",
         status: "error",
       };
     }
 
     const createdAt = new Date();
 
-    await Transaction.create({
-      productName,
-      price,
-      qty,
-      total: price * qty,
-      paymentMethod,
-      receiptImage: paymentMethod === "QRIS" ? receiptUrl : null,
-      createdAt,
-    });
+    // Simpan semua item ke MongoDB
+    for (const item of cart) {
+      const total = item.price * item.qty;
 
-    try {
-      await appendRowToGoogleSheet({
-        createdAt: createdAt.toISOString(),
-        productName,
+      await Transaction.create({
+        productName: item.productName,
+        price: item.price,
+        qty: item.qty,
+        total,
         paymentMethod,
-        price,
-        qty,
-        total: price * qty,
-        receiptImage: paymentMethod === "QRIS" ? receiptUrl : null,
+        receiptImage:
+          paymentMethod === "QRIS" ? receiptUrl : null,
+        createdAt,
       });
-    } catch (e) {
-      console.error("Google Sheets append gagal:", e);
+
+      // Append ke Google Sheets per item
+      try {
+        await appendRowToGoogleSheet({
+          createdAt: createdAt.toISOString(),
+          productName: item.productName,
+          paymentMethod,
+          price: item.price,
+          qty: item.qty,
+          total,
+          receiptImage:
+            paymentMethod === "QRIS" ? receiptUrl : null,
+        });
+      } catch (e) {
+        console.error(
+          "Google Sheets append gagal:",
+          e
+        );
+      }
     }
 
     revalidatePath("/");
+    revalidatePath("/transaction");
 
     return {
       message: "Transaksi berhasil disimpan!",
       status: "success",
     };
-  } catch (e) {
+  } catch (e: any) {
     console.error("Add Transaction Error:", e);
 
     return {
-      message: "Gagal menyimpan transaksi",
+      message: "Gagal menyimpan transaksi ke database.",
       status: "error",
     };
   }

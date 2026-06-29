@@ -9,6 +9,7 @@ import {
   CheckCircle2,
   Image as ImageIcon,
   X,
+  Trash2,
 } from "lucide-react";
 
 const PRESETS = [
@@ -52,9 +53,14 @@ export default function InputPanel({
 }: {
   onClose: () => void;
 }) {
-  const [product, setProduct] = useState("");
-  const [price, setPrice] = useState("");
-  const [qty, setQty] = useState(1);
+  const [cart, setCart] = useState<
+    {
+      productName: string;
+      price: number;
+      qty: number;
+    }[]
+  >([]);
+
   const [paymentMethod, setPaymentMethod] = useState("Cash");
   const [showPopup, setShowPopup] = useState(false);
   const [message, setMessage] = useState("");
@@ -63,12 +69,53 @@ export default function InputPanel({
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [receiptUrl, setReceiptUrl] = useState<string | null>(null);
 
-  const selectPreset = (p: (typeof PRESETS)[0]) => {
-    setProduct(p.name);
-    setPrice(p.price.toString());
+  const addToCart = (name: string, price: number) => {
+    const existing = cart.find((item) => item.productName === name);
+
+    if (existing) {
+      setCart(
+        cart.map((item) =>
+          item.productName === name
+            ? { ...item, qty: item.qty + 1 }
+            : item
+        )
+      );
+    } else {
+      setCart([
+        ...cart,
+        {
+          productName: name,
+          price,
+          qty: 1,
+        },
+      ]);
+    }
   };
 
-  const total = Number(price || 0) * qty;
+  const removeItem = (index: number) => {
+    setCart(cart.filter((_, i) => i !== index));
+  };
+
+  const updateQty = (index: number, type: "plus" | "minus") => {
+    setCart(
+      cart.map((item, i) =>
+        i === index
+          ? {
+              ...item,
+              qty:
+                type === "plus"
+                  ? item.qty + 1
+                  : Math.max(1, item.qty - 1),
+            }
+          : item
+      )
+    );
+  };
+
+  const total = cart.reduce(
+    (sum, item) => sum + item.price * item.qty,
+    0
+  );
 
   const handleImageChange = async (
     e: React.ChangeEvent<HTMLInputElement>
@@ -78,12 +125,10 @@ export default function InputPanel({
 
     if (file.size > 2097152) {
       alert("Ukuran gambar melebihi 2 MB!");
-      e.target.value = "";
       return;
     }
 
     setIsUploading(true);
-    setMessage("");
 
     const formData = new FormData();
     formData.append("file", file);
@@ -94,13 +139,7 @@ export default function InputPanel({
       if (res.status === "success" && res.url) {
         setReceiptUrl(res.url);
         setPreviewUrl(res.url);
-      } else {
-        alert(res.message);
-        e.target.value = "";
       }
-    } catch {
-      alert("Gagal upload gambar.");
-      e.target.value = "";
     } finally {
       setIsUploading(false);
     }
@@ -117,7 +156,7 @@ export default function InputPanel({
           setShowPopup(false);
           onClose();
         }, 1500);
-      } else if (res?.status === "error") {
+      } else {
         setMessage(res.message);
       }
     } catch {
@@ -156,10 +195,9 @@ export default function InputPanel({
             </button>
           </div>
 
-          {/* CONTENT */}
-          <div className="p-6 space-y-6 bg-slate-50">
+          <div className="p-6 space-y-6">
 
-            {/* PRESET */}
+            {/* PRESETS */}
             <div>
               <h3 className="text-lg font-bold text-black mb-4">
                 Menu Cepat
@@ -170,26 +208,14 @@ export default function InputPanel({
                   <button
                     key={idx}
                     type="button"
-                    onClick={() => selectPreset(p)}
-                    className="
-                      p-4
-                      bg-white
-                      border-2
-                      border-slate-300
-                      rounded-xl
-                      shadow-sm
-                      transition-all
-                      text-left
-                      hover:bg-blue-600
-                      hover:border-blue-600
-                      group
-                    "
+                    onClick={() => addToCart(p.name, p.price)}
+                    className="p-4 bg-white border-2 border-slate-300 rounded-xl shadow-sm text-left hover:bg-blue-600 hover:border-blue-600 group"
                   >
-                    <div className="font-bold text-black group-hover:text-white transition-colors">
+                    <div className="font-bold text-black group-hover:text-white">
                       {p.name}
                     </div>
 
-                    <div className="text-sm mt-1 text-slate-700 group-hover:text-blue-100 transition-colors">
+                    <div className="text-sm mt-1 text-slate-700 group-hover:text-blue-100">
                       Rp {p.price.toLocaleString("id-ID")}
                     </div>
                   </button>
@@ -197,106 +223,85 @@ export default function InputPanel({
               </div>
             </div>
 
+            {/* CART */}
+            <div>
+              <h3 className="text-lg font-bold text-black mb-4">
+                Daftar Pesanan
+              </h3>
+
+              <div className="space-y-3">
+                {cart.map((item, index) => (
+                  <div
+                    key={index}
+                    className="bg-white border rounded-xl p-4 flex justify-between items-center"
+                  >
+                    <div>
+                      <p className="font-bold text-black">
+                        {item.productName}
+                      </p>
+
+                      <p className="text-slate-500">
+                        Rp {item.price.toLocaleString("id-ID")}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+
+                      <button
+                        type="button"
+                        onClick={() => updateQty(index, "minus")}
+                        className="w-10 h-10 bg-slate-200 rounded-lg"
+                      >
+                        -
+                      </button>
+
+                      <span className="font-bold text-black">
+                        {item.qty}
+                      </span>
+
+                      <button
+                        type="button"
+                        onClick={() => updateQty(index, "plus")}
+                        className="w-10 h-10 bg-slate-200 rounded-lg"
+                      >
+                        +
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => removeItem(index)}
+                        className="bg-red-100 text-red-600 p-2 rounded-lg"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             {/* FORM */}
             <form action={formAction} className="space-y-5">
 
-              {/* Product */}
-              <div>
-                <label className="block text-sm font-bold text-black mb-2">
-                  Nama Produk
-                </label>
-                <input
-                  name="productName"
-                  value={product}
-                  onChange={(e) => setProduct(e.target.value)}
-                  className="
-                    w-full
-                    p-4
-                    border-2
-                    border-slate-300
-                    rounded-xl
-                    bg-white
-                    text-black
-                    placeholder:text-slate-500
-                    focus:border-blue-500
-                    outline-none
-                  "
-                  required
-                />
-              </div>
+              <input
+                type="hidden"
+                name="cart"
+                value={JSON.stringify(cart)}
+              />
 
-              {/* Price + Qty */}
-              <div className="grid grid-cols-2 gap-4">
-
-                <div>
-                  <label className="block text-sm font-bold text-black mb-2">
-                    Harga
-                  </label>
-                  <input
-                    name="price"
-                    type="number"
-                    value={price}
-                    onChange={(e) => setPrice(e.target.value)}
-                    className="
-                      w-full
-                      p-4
-                      border-2
-                      border-slate-300
-                      rounded-xl
-                      bg-white
-                      text-black
-                      focus:border-blue-500
-                      outline-none
-                    "
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-bold text-black mb-2">
-                    Jumlah
-                  </label>
-
-                  <div className="flex items-center h-[56px]">
-
-                    <button
-                      type="button"
-                      onClick={() => setQty(Math.max(1, qty - 1))}
-                      className="w-14 h-full bg-slate-200 text-black font-bold rounded-l-xl border-2 border-slate-300"
-                    >
-                      -
-                    </button>
-
-                    <input
-                      name="qty"
-                      value={qty}
-                      readOnly
-                      className="w-full text-center border-y-2 border-slate-300 h-full bg-white text-black font-bold"
-                    />
-
-                    <button
-                      type="button"
-                      onClick={() => setQty(qty + 1)}
-                      className="w-14 h-full bg-slate-200 text-black font-bold rounded-r-xl border-2 border-slate-300"
-                    >
-                      +
-                    </button>
-
-                  </div>
-                </div>
-              </div>
-
-              {/* Total */}
+              {/* TOTAL */}
               <div className="bg-blue-50 rounded-xl p-4 border-2 border-blue-200">
                 <p className="text-sm text-slate-700 font-semibold">
-                  Total
+                  Total Pembayaran
                 </p>
+
                 <h3 className="text-3xl font-bold text-black">
                   {formatRp(total)}
                 </h3>
               </div>
 
-              {/* Payment */}
+              {/* PAYMENT */}
               <div>
                 <label className="block text-sm font-bold text-black mb-2">
                   Metode Pembayaran
@@ -307,7 +312,7 @@ export default function InputPanel({
                   <button
                     type="button"
                     onClick={() => setPaymentMethod("Cash")}
-                    className={`p-4 rounded-xl border-2 font-bold text-black ${
+                    className={`p-4 rounded-xl border-2 font-bold ${
                       paymentMethod === "Cash"
                         ? "bg-green-50 border-green-500"
                         : "bg-white border-slate-300"
@@ -319,7 +324,7 @@ export default function InputPanel({
                   <button
                     type="button"
                     onClick={() => setPaymentMethod("QRIS")}
-                    className={`p-4 rounded-xl border-2 font-bold text-black ${
+                    className={`p-4 rounded-xl border-2 font-bold ${
                       paymentMethod === "QRIS"
                         ? "bg-blue-50 border-blue-500"
                         : "bg-white border-slate-300"
@@ -337,10 +342,9 @@ export default function InputPanel({
                 />
               </div>
 
-              {/* QRIS Upload */}
+              {/* QRIS */}
               {paymentMethod === "QRIS" && (
                 <div className="border-2 border-slate-300 bg-white rounded-xl p-4">
-
                   {previewUrl ? (
                     <img
                       src={previewUrl}
@@ -350,14 +354,10 @@ export default function InputPanel({
                   ) : (
                     <label
                       htmlFor="file-upload"
-                      className="
-                        flex flex-col items-center justify-center h-40
-                        border-2 border-dashed border-slate-400
-                        rounded-xl cursor-pointer bg-slate-50 text-black
-                      "
+                      className="flex flex-col items-center justify-center h-40 border-2 border-dashed border-slate-400 rounded-xl cursor-pointer"
                     >
                       <ImageIcon size={30} />
-                      <p className="text-black font-medium mt-2">
+                      <p className="font-medium mt-2">
                         Upload bukti QRIS
                       </p>
                     </label>
@@ -379,18 +379,20 @@ export default function InputPanel({
                 </div>
               )}
 
-              {/* ERROR */}
               {message && (
-                <p className="text-red-600 text-sm font-bold">{message}</p>
+                <p className="text-red-600 text-sm font-bold">
+                  {message}
+                </p>
               )}
 
               <SubmitButton isUploading={isUploading} />
+
             </form>
           </div>
         </div>
       </div>
 
-      {/* SUCCESS POPUP */}
+      {/* SUCCESS */}
       {showPopup && (
         <div className="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center">
           <div className="bg-white p-8 rounded-2xl shadow-xl text-center">
