@@ -47,6 +47,13 @@ export default function TransactionPage() {
     await loadTransactions();
   }
 
+  const formatRp = (n: number) =>
+    new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+    }).format(n);
+
   return (
     <div className="flex min-h-screen bg-slate-100">
       <Sidebar />
@@ -56,80 +63,144 @@ export default function TransactionPage() {
 
         <main className="p-8">
 
+          {/* HEADER */}
           <div className="mb-8">
             <h1 className="text-4xl font-light text-slate-700">
               Riwayat Transaksi
             </h1>
 
-            <p className="text-slate-500 mt-2">
+            <p className="text-slate-600 mt-2 text-lg">
               Semua transaksi yang telah tersimpan
             </p>
           </div>
 
-          {/* Search */}
-          <div className="bg-white rounded-xl shadow-sm p-4 mb-6 flex items-center gap-3">
-            <Search size={18} className="text-slate-400" />
+          {/* SEARCH */}
+          <div className="bg-white rounded-xl shadow-sm p-4 mb-6 flex items-center gap-3 border border-slate-200">
+            <Search size={18} className="text-slate-500" />
 
             <input
               type="text"
               placeholder="Cari transaksi..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full outline-none text-black"
+              className="w-full outline-none text-black placeholder:text-slate-400"
             />
           </div>
 
-          {/* Table */}
+          {/* TABLE */}
           <div className="bg-white rounded-xl shadow-sm p-6">
             <table className="w-full">
               <thead>
-                <tr className="border-b text-left text-slate-400">
-                  <th className="py-4 text-black">Produk</th>
-                  <th className="py-4 text-black">Qty</th>
-                  <th className="py-4 text-black">Metode</th>
-                  <th className="py-4 text-black">Total</th>
-                  <th className="py-4 text-black">Tanggal</th>
-                  <th className="py-4 text-black">Aksi</th>
+                <tr className="border-b border-slate-200 text-left">
+                  <th className="py-4 text-black font-semibold">Produk</th>
+                  <th className="py-4 text-black font-semibold">Qty</th>
+                  <th className="py-4 text-black font-semibold">Metode</th>
+                  <th className="py-4 text-black font-semibold">Total</th>
+                  <th className="py-4 text-black font-semibold">Tanggal</th>
+                  <th className="py-4 text-black font-semibold">Aksi</th>
                 </tr>
               </thead>
 
               <tbody>
-                {filteredTransactions.map((trx) => (
-                  <tr key={trx._id} className="border-b hover:bg-slate-50">
+                {filteredTransactions.length > 0 ? (
+                  filteredTransactions.map((trx) => (
+                    <tr
+                      key={trx._id}
+                      className="border-b border-slate-100 hover:bg-slate-50 transition"
+                    >
+                      {/* Produk */}
+                      <td className="py-5">
+                        <div>
+                          <p className="font-semibold text-black text-base">
+                            {trx.productName}
+                          </p>
+                        </div>
+                      </td>
 
-                    <td>{trx.productName}</td>
-                    <td>{trx.qty}</td>
-                    <td>{trx.paymentMethod}</td>
-                    <td>Rp {trx.total.toLocaleString("id-ID")}</td>
-                    <td>
-                      {new Date(trx.createdAt).toLocaleDateString("id-ID")}
-                    </td>
+                      {/* Qty */}
+                      <td>
+                        <span className="font-semibold text-black">
+                          {trx.qty}
+                        </span>
+                      </td>
 
-                    <td>
-                      <div className="flex gap-2">
-
-                        <button
-                          onClick={() => {
-                            setSelectedTransaction(trx);
-                            setShowEditModal(true);
-                          }}
-                          className="bg-yellow-100 text-yellow-600 p-2 rounded-lg"
+                      {/* Metode */}
+                      <td>
+                        <span
+                          className={`px-3 py-1 rounded-full text-sm font-medium ${
+                            trx.paymentMethod === "QRIS"
+                              ? "bg-blue-100 text-blue-700"
+                              : "bg-green-100 text-green-700"
+                          }`}
                         >
-                          <Pencil size={16} />
-                        </button>
+                          {trx.paymentMethod}
+                        </span>
+                      </td>
 
-                        <button
-                          onClick={() => handleDelete(trx._id)}
-                          className="bg-red-100 text-red-600 p-2 rounded-lg"
-                        >
-                          <Trash2 size={16} />
-                        </button>
+                      {/* Total */}
+                      <td>
+                        <span className="font-semibold text-black">
+                          {formatRp(trx.total)}
+                        </span>
+                      </td>
 
-                      </div>
+                      {/* Tanggal */}
+                      <td>
+                        <div>
+                          <p className="text-black font-medium">
+                            {new Date(trx.createdAt).toLocaleDateString(
+                              "id-ID"
+                            )}
+                          </p>
+                          <p className="text-sm text-slate-500">
+                            {new Date(trx.createdAt).toLocaleTimeString(
+                              "id-ID",
+                              {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              }
+                            )}
+                          </p>
+                        </div>
+                      </td>
+
+                      {/* Aksi */}
+                      <td>
+                        <div className="flex gap-2">
+
+                          {/* Edit */}
+                          <button
+                            onClick={() => {
+                              setSelectedTransaction(trx);
+                              setShowEditModal(true);
+                            }}
+                            className="bg-yellow-100 hover:bg-yellow-200 text-yellow-600 p-2 rounded-lg transition"
+                          >
+                            <Pencil size={16} />
+                          </button>
+
+                          {/* Delete */}
+                          <button
+                            onClick={() => handleDelete(trx._id)}
+                            className="bg-red-100 hover:bg-red-200 text-red-600 p-2 rounded-lg transition"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      colSpan={6}
+                      className="text-center py-8 text-slate-400"
+                    >
+                      Tidak ada transaksi ditemukan
                     </td>
-
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>
@@ -137,7 +208,7 @@ export default function TransactionPage() {
         </main>
       </div>
 
-      {/* Edit Modal */}
+      {/* EDIT MODAL */}
       {showEditModal && selectedTransaction && (
         <EditTransactionModal
           transaction={selectedTransaction}
