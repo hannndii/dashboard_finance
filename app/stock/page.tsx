@@ -1,10 +1,57 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Sidebar from "../component/Sidebar";
 import Topbar from "../component/Topbar";
-import { getProducts, deleteProduct } from "../action";
-import { Package, PlusCircle, Trash2, Pencil } from "lucide-react";
+import ProductModal from "../component/ProductModal";
 
-export default async function StockPage() {
-  const products = await getProducts();
+import {
+  getProducts,
+  deleteProduct,
+  addStock,
+} from "../action";
+
+import {
+  PlusCircle,
+  Trash2,
+  Pencil,
+  Search,
+  Package,
+} from "lucide-react";
+
+export default function StockPage() {
+  const [products, setProducts] = useState<any[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<any[]>([]);
+  const [showModal, setShowModal] = useState(false);
+  const [search, setSearch] = useState("");
+
+  async function loadProducts() {
+    const data = await getProducts();
+    setProducts(data);
+    setFilteredProducts(data);
+  }
+
+  useEffect(() => {
+    loadProducts();
+  }, []);
+
+  useEffect(() => {
+    const filtered = products.filter((product) =>
+      product.name.toLowerCase().includes(search.toLowerCase())
+    );
+
+    setFilteredProducts(filtered);
+  }, [search, products]);
+
+  async function handleDelete(id: string) {
+    await deleteProduct(id);
+    await loadProducts();
+  }
+
+  async function handleAddStock(id: string) {
+    await addStock(id, 1);
+    await loadProducts();
+  }
 
   return (
     <div className="flex min-h-screen bg-slate-100">
@@ -15,24 +62,41 @@ export default async function StockPage() {
 
         <main className="p-8">
 
-          {/* Header */}
+          {/* HEADER */}
           <div className="flex justify-between items-center mb-8">
             <div>
               <h1 className="text-4xl font-light text-slate-700">
                 Stok Barang
               </h1>
+
               <p className="text-slate-500 mt-2">
                 Kelola semua produk dan stok warung
               </p>
             </div>
 
-            <button className="bg-blue-600 text-white px-5 py-3 rounded-lg flex gap-2 items-center">
+            <button
+              onClick={() => setShowModal(true)}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg flex gap-2 items-center"
+            >
               <PlusCircle size={18} />
               Tambah Produk
             </button>
           </div>
 
-          {/* Table */}
+          {/* SEARCH */}
+          <div className="bg-white rounded-xl shadow-sm p-4 mb-6 flex items-center gap-3">
+            <Search className="text-slate-400" size={18} />
+
+            <input
+              type="text"
+              placeholder="Cari produk..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full outline-none text-black"
+            />
+          </div>
+
+          {/* TABLE */}
           <div className="bg-white rounded-xl shadow-sm p-6">
 
             <table className="w-full">
@@ -47,60 +111,112 @@ export default async function StockPage() {
               </thead>
 
               <tbody>
-                {products.map((product: any) => (
-                  <tr key={product._id} className="border-b">
+                {filteredProducts.length > 0 ? (
+                  filteredProducts.map((product) => (
+                    <tr
+                      key={product._id}
+                      className="border-b hover:bg-slate-50 transition"
+                    >
 
-                    <td className="py-4 font-medium text-slate-700">
-                      {product.name}
-                    </td>
+                      {/* Product */}
+                      <td className="py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                            <Package size={18} className="text-blue-600" />
+                          </div>
 
-                    <td>
-                      Rp {product.price.toLocaleString("id-ID")}
-                    </td>
+                          <div>
+                            <p className="font-semibold text-slate-700">
+                              {product.name}
+                            </p>
 
-                    <td>{product.stock}</td>
+                            <p className="text-sm text-slate-400">
+                              Min stok: {product.minStock}
+                            </p>
+                          </div>
+                        </div>
+                      </td>
 
-                    <td>
-                      {product.stock <= product.minStock ? (
-                        <span className="bg-red-100 text-red-600 px-3 py-1 rounded-full text-sm">
-                          Hampir Habis
+                      {/* Price */}
+                      <td className="text-slate-700 font-medium">
+                        Rp {product.price.toLocaleString("id-ID")}
+                      </td>
+
+                      {/* Stock */}
+                      <td>
+                        <span className="font-bold text-slate-700">
+                          {product.stock}
                         </span>
-                      ) : (
-                        <span className="bg-green-100 text-green-600 px-3 py-1 rounded-full text-sm">
-                          Aman
-                        </span>
-                      )}
-                    </td>
+                      </td>
 
-                    <td>
-                      <div className="flex gap-2">
+                      {/* Status */}
+                      <td>
+                        {product.stock <= product.minStock ? (
+                          <span className="bg-red-100 text-red-600 px-3 py-1 rounded-full text-sm">
+                            Hampir Habis
+                          </span>
+                        ) : (
+                          <span className="bg-green-100 text-green-600 px-3 py-1 rounded-full text-sm">
+                            Aman
+                          </span>
+                        )}
+                      </td>
 
-                        <button className="bg-yellow-100 text-yellow-600 p-2 rounded-lg">
-                          <Pencil size={16} />
-                        </button>
+                      {/* Actions */}
+                      <td>
+                        <div className="flex gap-2">
 
-                        <form
-                          action={async () => {
-                            "use server";
-                            await deleteProduct(product._id);
-                          }}
-                        >
-                          <button className="bg-red-100 text-red-600 p-2 rounded-lg">
+                          {/* Quick Stock */}
+                          <button
+                            onClick={() => handleAddStock(product._id)}
+                            className="bg-blue-100 text-blue-600 px-3 py-2 rounded-lg text-sm font-bold"
+                          >
+                            +1
+                          </button>
+
+                          {/* Edit */}
+                          <button className="bg-yellow-100 text-yellow-600 p-2 rounded-lg">
+                            <Pencil size={16} />
+                          </button>
+
+                          {/* Delete */}
+                          <button
+                            onClick={() => handleDelete(product._id)}
+                            className="bg-red-100 text-red-600 p-2 rounded-lg"
+                          >
                             <Trash2 size={16} />
                           </button>
-                        </form>
 
-                      </div>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      colSpan={5}
+                      className="text-center py-8 text-slate-400"
+                    >
+                      Tidak ada produk ditemukan
                     </td>
-
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
-
           </div>
+
         </main>
       </div>
+
+      {/* MODAL TAMBAH PRODUCT */}
+      {showModal && (
+        <ProductModal
+          onClose={() => {
+            setShowModal(false);
+            loadProducts();
+          }}
+        />
+      )}
     </div>
   );
 }

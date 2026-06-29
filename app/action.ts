@@ -170,3 +170,17 @@ export async function updateProduct(
   revalidatePath("/stock");
 }
 
+export async function addStock(id: string, qty: number) {
+  try {
+    await Product.findByIdAndUpdate(id, {
+      $inc: { stock: qty },
+    });
+
+    revalidatePath("/stock");
+
+    return { status: "success" };
+  } catch {
+    return { status: "error" };
+  }
+}
+
