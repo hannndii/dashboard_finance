@@ -42,10 +42,9 @@ export default function DashboardView({ data }: any) {
           <main className="p-4 md:p-6 lg:p-8 flex-1 overflow-x-hidden">
             {/* HEADER */}
             <div className="flex flex-col md:flex-row gap-4 md:justify-between md:items-center mb-8">
-
               <button
                 onClick={() => setShowInput(true)}
-                className="hover:cursor-pointer bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg w-full md:w-auto"
+                className="hover:cursor-pointer bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-white px-5 py-3 rounded-lg w-full md:w-auto"
               >
                 + Input Transaksi
               </button>

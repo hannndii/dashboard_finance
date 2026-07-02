@@ -80,7 +80,7 @@ export default function StockPage() {
 
             <button
               onClick={() => setShowModal(true)}
-              className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg flex gap-2 items-center justify-center"
+              className="w-full md:w-auto hover:cursor-pointer bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-3 rounded-lg flex gap-2 items-center justify-center"
             >
               <PlusCircle size={18} />
               Tambah Produk

@@ -42,7 +42,7 @@ export default async function ReportPage() {
                   className="
                     flex items-center justify-center gap-2
                     px-5 py-3
-                    rounded-xl
+                    rounded-lg
                     bg-emerald-600
                     hover:bg-emerald-700
                     text-white
