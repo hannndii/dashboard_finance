@@ -24,14 +24,58 @@ export default async function ReportPage() {
         <main className="p-4 md:p-6 lg:p-8">
 
           {/* HEADER */}
-          <div className="mb-8">
-            <h1 className="text-2xl md:text-4xl font-light text-slate-700">
-              Laporan Penjualan
-            </h1>
+          <div className="mb-8 rounded-xl bg-white p-6 shadow-sm">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+              <div>
+                <h1 className="text-2xl font-light text-slate-700 md:text-4xl">
+                  Laporan Penjualan
+                </h1>
 
-            <p className="text-slate-500 mt-2 text-sm md:text-base">
-              Export laporan transaksi ke PDF dan Excel
-            </p>
+                <p className="mt-2 text-sm text-slate-500 md:text-base">
+                  Pantau ringkasan penjualan dan ekspor data transaksi secara cepat untuk laporan harian.
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <a
+                  href="/api/excel"
+                  className="
+                    flex items-center justify-center gap-2
+                    px-5 py-3
+                    rounded-xl
+                    bg-emerald-600
+                    hover:bg-emerald-700
+                    text-white
+                    font-semibold
+                    transition-all
+                    shadow-sm
+                    w-full sm:w-auto
+                  "
+                >
+                  <FileSpreadsheet size={18} />
+                  Export Excel
+                </a>
+
+                <a
+                  href="/api/pdf"
+                  className="
+                    flex items-center justify-center gap-2
+                    px-5 py-3
+                    rounded-xl
+                    bg-red-600
+                    hover:bg-red-700
+                    text-white
+                    font-semibold
+                    transition-all
+                    shadow-sm
+                    w-full sm:w-auto
+                  "
+                >
+                  <FileText size={18} />
+                  Export PDF
+                </a>
+              </div>
+            </div>
           </div>
 
           {/* SUMMARY */}
@@ -51,53 +95,6 @@ export default async function ReportPage() {
               </h3>
             </div>
 
-          </div>
-
-          {/* EXPORT ACTIONS */}
-          <div className="bg-white rounded-xl p-6 shadow-sm mb-8">
-            <div className="flex flex-col sm:flex-row gap-4">
-
-              {/* Export Excel */}
-              <a
-                href="/api/excel"
-                className="
-                  flex items-center justify-center gap-2
-                  px-5 py-3
-                  rounded-xl
-                  bg-emerald-600
-                  hover:bg-emerald-700
-                  text-white
-                  font-semibold
-                  transition-all
-                  shadow-sm
-                  w-full sm:w-auto
-                "
-              >
-                <FileSpreadsheet size={18} />
-                Export Excel
-              </a>
-
-              {/* Export PDF */}
-              <a
-                href="/api/pdf"
-                className="
-                  flex items-center justify-center gap-2
-                  px-5 py-3
-                  rounded-xl
-                  bg-red-600
-                  hover:bg-red-700
-                  text-white
-                  font-semibold
-                  transition-all
-                  shadow-sm
-                  w-full sm:w-auto
-                "
-              >
-                <FileText size={18} />
-                Export PDF
-              </a>
-
-            </div>
           </div>
 
           {/* TABLE */}
