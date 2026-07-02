@@ -220,7 +220,7 @@ export default function InputPanel({
 
                   <button
                     onClick={() => updateQty(index, "minus")}
-                    className="w-8 h-8 bg-slate-200 rounded-lg"
+                    className="w-8 h-8 text-black bg-slate-200 rounded-lg"
                   >
                     <Minus size={16} />
                   </button>
@@ -231,7 +231,7 @@ export default function InputPanel({
 
                   <button
                     onClick={() => updateQty(index, "plus")}
-                    className="w-8 h-8 bg-slate-200 rounded-lg"
+                    className="w-8 h-8 text-black bg-slate-200 rounded-lg"
                   >
                     <Plus size={16} />
                   </button>
