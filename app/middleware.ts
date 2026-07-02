@@ -1,16 +1,27 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export function middleware(request: NextRequest) {
-  const session = request.cookies.get("admin_session");
+export function middleware(req: NextRequest) {
+  const token = req.cookies.get("admin_session");
 
-  if (!session && request.nextUrl.pathname !== "/login") {
-    return NextResponse.redirect(new URL("/login", request.url));
+  const isLoginPage = req.nextUrl.pathname === "/login";
+
+  if (!token && !isLoginPage) {
+    return NextResponse.redirect(new URL("/login", req.url));
+  }
+
+  if (token && isLoginPage) {
+    return NextResponse.redirect(new URL("/", req.url));
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/", "/stock", "/transaction", "/report"],
+  matcher: [
+    "/",
+    "/stock",
+    "/transaction",
+    "/report",
+    "/login",
+  ],
 };
