@@ -1,5 +1,7 @@
 "use client";
 
+import Sidebar from "../component/Sidebar";
+import Topbar from "../component/Topbar";
 import { useState } from "react";
 import Link from "next/link";
 import {
@@ -32,55 +34,10 @@ export default function DashboardView({ data }: any) {
     <>
       <div className="min-h-screen bg-slate-100 flex">
         {/* SIDEBAR */}
-        <aside className="w-20 md:w-64 bg-white border-r border-slate-200 min-h-screen flex-shrink-0">
-          <div className="h-16 bg-gradient-to-r from-blue-600 to-indigo-500 flex items-center justify-center md:justify-start px-4 md:px-6">
-            <h1 className="text-white font-bold text-lg md:text-xl">
-              <span className="hidden md:block">Kantin PB AU</span>
-              <span className="md:hidden">PB</span>
-            </h1>
-          </div>
-
-          <div className="p-3 md:p-5 space-y-2">
-            <Link href="/">
-              <SidebarItem
-                icon={<LayoutDashboard size={20} />}
-                label="Dashboard"
-                active
-              />
-            </Link>
-
-            <Link href="/transaction">
-              <SidebarItem
-                icon={<ShoppingCart size={20} />}
-                label="Transaksi"
-              />
-            </Link>
-
-            <Link href="/stock">
-              <SidebarItem icon={<Package size={20} />} label="Stok Barang" />
-            </Link>
-
-            <Link href="/report">
-              <SidebarItem icon={<BarChart3 size={20} />} label="Laporan" />
-            </Link>
-          </div>
-        </aside>
-
+        <Sidebar />
         {/* CONTENT */}
         <div className="flex-1 min-w-0 flex flex-col">
-          {/* TOPBAR
-          <header className="h-16 bg-gradient-to-r from-blue-600 to-indigo-500 flex items-center justify-between px-4 md:px-8">
-            <div className="flex items-center gap-3 md:gap-6 text-white">
-              <div className="flex items-center gap-3 border-l border-white/30 pl-3 md:pl-5">
-                <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white text-blue-600 flex items-center justify-center font-bold">
-                  M
-                </div>
-                <span className="hidden lg:block font-medium">
-                  Administrator
-                </span>
-              </div>
-            </div>
-          </header> */}
+          <Topbar />
           {/* MAIN */}
           <main className="p-4 md:p-6 lg:p-8 flex-1 overflow-x-hidden">
             {/* HEADER */}
@@ -88,7 +45,7 @@ export default function DashboardView({ data }: any) {
 
               <button
                 onClick={() => setShowInput(true)}
-                className="w-40 h-12 hover:cursor-pointer bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg w-full md:w-auto"
+                className="hover:cursor-pointer bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg w-full md:w-auto"
               >
                 + Input Transaksi
               </button>

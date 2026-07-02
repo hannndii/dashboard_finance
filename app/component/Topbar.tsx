@@ -23,13 +23,8 @@ export default function Topbar() {
 
   return (
     <header className="h-16 bg-gradient-to-r from-blue-600 to-indigo-500 flex items-center justify-between px-4 md:px-8">
-      <div className="flex items-center gap-4 text-white">
-        <Search size={18} />
-      </div>
-
+      <div className="flex items-center gap-4 text-white"></div>
       <div className="flex items-center gap-6 text-white">
-        <Bell size={18} />
-        <Mail size={18} />
 
         <div className="flex items-center gap-3 border-l border-white/30 pl-5">
           <div className="w-10 h-10 rounded-full bg-white text-blue-600 flex items-center justify-center font-bold">
