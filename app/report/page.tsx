@@ -55,25 +55,6 @@ export default async function ReportPage() {
                   <FileSpreadsheet size={18} />
                   Export Excel
                 </a>
-
-                <a
-                  href="/api/pdf"
-                  className="
-                    flex items-center justify-center gap-2
-                    px-5 py-3
-                    rounded-xl
-                    bg-red-600
-                    hover:bg-red-700
-                    text-white
-                    font-semibold
-                    transition-all
-                    shadow-sm
-                    w-full sm:w-auto
-                  "
-                >
-                  <FileText size={18} />
-                  Export PDF
-                </a>
               </div>
             </div>
           </div>
