@@ -1,22 +1,9 @@
 "use client";
 
-import { Bell, Mail, Search, LogOut, Utensils } from "lucide-react";
+import { Bell, Settings } from "lucide-react";
 import { useEffect, useState } from "react";
 
-import { useRouter } from "next/navigation";
-
 export default function Topbar() {
-  const router = useRouter();
-
-  async function handleLogout() {
-    await fetch("/api/logout", {
-      method: "POST",
-    });
-
-    router.push("/login");
-    router.refresh();
-  }
-
   const [now, setNow] = useState(new Date());
 
   useEffect(() => {
@@ -24,29 +11,35 @@ export default function Topbar() {
     return () => clearInterval(timer);
   }, []);
 
-  const formattedDate = now.toLocaleDateString(undefined, {
-    weekday: "long",
+  const formattedDate = now.toLocaleDateString("en-US", {
     year: "numeric",
-    month: "long",
+    month: "short",
     day: "numeric",
   });
 
-  const formattedTime = now.toLocaleTimeString(undefined, {
-    hour: "numeric",
-    minute: "numeric",
-    second: "numeric",
-    hour12: false,
-    timeZoneName: "short",
-  });
-
   return (
-    <header className="h-16 bg-white from-blue-600 to-indigo-500 flex items-center justify-between px-4 md:px-8 border-r border-slate-200">
-      <div className="flex items-center gap-6 text-slate-900">
-        <div className="flex flex-col gap-1 border-l border-slate-300 pl-5">
-          <div className="text-xs uppercase tracking-[0.24em] text-slate-500">Date</div>
-          <div className="font-semibold text-sm">{formattedDate}</div>
-          <div className="text-xs uppercase tracking-[0.24em] text-slate-500">Time</div>
-          <div className="font-semibold text-sm">{formattedTime}</div>
+    <header className="h-20 bg-white flex items-center justify-between px-4 md:px-8 border-b border-slate-200">
+      {/* Left Section - Title */}
+      <div>
+        <h2 className="text-2xl font-bold text-slate-900">Dashboard</h2>
+      </div>
+
+      {/* Right Section */}
+      <div className="flex items-center gap-6">
+        {/* Date and Status */}
+        <div className="text-right">
+          <p className="text-sm font-semibold text-slate-900">{formattedDate}</p>
+          <p className="text-xs text-slate-500">System Status: Optimal</p>
+        </div>
+
+        {/* Icons */}
+        <div className="flex items-center gap-4 pl-4 border-l border-slate-200">
+          <button className="p-2 hover:bg-slate-100 rounded-lg transition-colors">
+            <Bell size={20} className="text-slate-600" />
+          </button>
+          <button className="p-2 hover:bg-slate-100 rounded-lg transition-colors">
+            <Settings size={20} className="text-slate-600" />
+          </button>
         </div>
       </div>
     </header>
