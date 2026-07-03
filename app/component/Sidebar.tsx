@@ -1,18 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
   ShoppingCart,
   Package,
   BarChart3,
-  Utensils,
   LogOut,
 } from "lucide-react";
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
 
   const menus = [
     {
@@ -37,12 +37,24 @@ export default function Sidebar() {
     },
   ];
 
+  async function handleLogout() {
+    try {
+      await fetch("/api/logout", {
+        method: "POST",
+      });
+      router.push("/login-page");
+      router.refresh();
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  }
+
   return (
-    <aside className="w-64 bg-black text-white min-h-screen flex flex-col">
+    <aside className="w-64 bg-black text-white h-screen flex flex-col overflow-hidden">
       {/* Logo Section */}
-      <div className="h-20 bg-black flex items-center px-6 border-b border-slate-700">
+      <div className="h-20 bg-black flex items-center px-6 border-b border-slate-700 flex-shrink-0">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-white rounded flex items-center justify-center">
+          <div className="w-10 h-10 bg-white rounded flex items-center justify-center flex-shrink-0">
             <span className="font-bold text-black text-lg">K</span>
           </div>
           <div>
@@ -51,12 +63,12 @@ export default function Sidebar() {
         </div>
       </div>
 
-      {/* Menu Section */}
-      <nav className="flex-1 px-4 py-6 space-y-3">
+      {/* Menu Section - Scrollable Only If Content Exceeds Space */}
+      <nav className="flex-1 px-4 py-6 space-y-3 overflow-y-auto overflow-x-hidden">
         {menus.map((menu) => (
           <Link key={menu.href} href={menu.href}>
             <div
-              className={`flex items-center gap-4 px-4 py-3 rounded-lg transition-all ${
+              className={`flex items-center gap-4 px-4 py-3 rounded-lg transition-all cursor-pointer ${
                 pathname === menu.href
                   ? "bg-slate-800 text-white font-semibold"
                   : "text-slate-400 hover:text-white hover:bg-slate-900"
@@ -69,18 +81,21 @@ export default function Sidebar() {
         ))}
       </nav>
 
-      {/* User Profile Section */}
-      <div className="border-t border-slate-700 p-4">
+      {/* User Profile Section - Fixed at Bottom */}
+      <div className="border-t border-slate-700 p-4 flex-shrink-0">
         <div className="flex items-center gap-3 pb-4">
-          <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center">
+          <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
             <span className="text-white font-semibold text-sm">AR</span>
           </div>
-          <div className="flex-1">
-            <p className="text-sm font-semibold text-white">Alex Richards</p>
-            <p className="text-xs text-slate-400">Lead Admin</p>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold text-white truncate">Alex Richards</p>
+            <p className="text-xs text-slate-400 truncate">Lead Admin</p>
           </div>
         </div>
-        <button className="w-full flex items-center gap-2 px-4 py-2 text-slate-400 hover:text-white hover:bg-slate-900 rounded-lg transition-all text-sm">
+        <button
+          onClick={handleLogout}
+          className="w-full flex items-center gap-2 px-4 py-2 text-slate-400 hover:text-white hover:bg-slate-900 rounded-lg transition-all text-sm font-medium"
+        >
           <LogOut size={18} />
           <span>Logout</span>
         </button>

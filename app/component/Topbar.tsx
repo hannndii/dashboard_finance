@@ -18,7 +18,7 @@ export default function Topbar() {
   });
 
   return (
-    <header className="h-20 bg-white flex items-center justify-between px-4 md:px-8 border-b border-slate-200">
+    <header className="w-full h-20 bg-white flex items-center justify-between px-4 md:px-8 border-b border-slate-200 flex-shrink-0">
       {/* Left Section - Title */}
       <div>
         <h2 className="text-2xl font-bold text-slate-900">Dashboard</h2>
