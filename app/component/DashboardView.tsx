@@ -10,7 +10,6 @@ import {
 } from "lucide-react";
 
 import { SalesPerformanceChart, TopSellingProductDonutChart } from "./RevenueCart";
-import InputPanel from "./InputPanel";
 
 export default function DashboardView({ data }: any) {
   const [showInput, setShowInput] = useState(false);
@@ -197,13 +196,6 @@ export default function DashboardView({ data }: any) {
           </table>
         </div>
       </div>
-
-      {showInput && (
-        <InputPanel
-          products={data.products}
-          onClose={() => setShowInput(false)}
-        />
-      )}
     </>
   );
 }
