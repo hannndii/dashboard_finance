@@ -7,6 +7,7 @@ import {
   ShoppingCart,
   Package,
   BarChart3,
+  Utensils,
 } from "lucide-react";
 
 export default function Sidebar() {
@@ -37,7 +38,8 @@ export default function Sidebar() {
 
   return (
     <aside className="w-20 md:w-64 bg-white border-r border-slate-200 min-h-screen">
-      <div className="h-16 bg-gradient-to-r from-blue-600 to-indigo-500 flex items-center justify-center md:justify-start px-4 md:px-6">
+      <div className="h-16 bg-white from-blue-600 to-indigo-500 flex items-center justify-center md:justify-start px-4 md:px-6">
+        <Utensils size={24} className="text-white" />
         <h1 className="text-white font-bold text-lg md:text-xl">
           <span className="hidden md:block">Kantin PB AU</span>
           <span className="md:hidden">PB</span>
@@ -48,9 +50,9 @@ export default function Sidebar() {
         {menus.map((menu) => (
           <Link key={menu.href} href={menu.href}>
             <div
-              className={`flex items-center justify-center md:justify-start gap-3 px-4 py-3 rounded-lg transition-all ${
+              className={`flex items-center justify-center md:justify-start gap-4 flex flex-col px-4 py-3 rounded-lg transition-all ${
                 pathname === menu.href
-                  ? "bg-blue-50 text-blue-600 font-semibold"
+                  ? "bg-black text-while font-semibold"  
                   : "text-slate-500 hover:bg-slate-50"
               }`}
             >
