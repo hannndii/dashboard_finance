@@ -52,7 +52,7 @@ export default function Sidebar() {
             <div
               className={`flex items-center justify-center md:justify-start gap-4 flex flex-col px-4 py-3 rounded-lg transition-all ${
                 pathname === menu.href
-                  ? "bg-black text-while font-semibold"  
+                  ? "bg-black text-white font-semibold"  
                   : "text-slate-500 hover:bg-slate-50"
               }`}
             >
