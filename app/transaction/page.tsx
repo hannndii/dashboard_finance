@@ -341,13 +341,15 @@ export default function TransactionPage() {
   );
 
   return (
-    <div className="min-h-screen bg-slate-100 lg:flex">
-      <aside className="w-full border-b border-slate-200 bg-white lg:w-64 lg:shrink-0 lg:border-b-0 lg:border-r">
+    <div className="h-screen bg-slate-100 flex overflow-hidden">
+      <div className="w-64 flex-shrink-0 overflow-hidden">
         <Sidebar />
-      </aside>
+      </div>
 
-      <div className="flex min-h-screen flex-1 flex-col">
-        <Topbar />
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+        <div className="flex-shrink-0 overflow-hidden">
+          <Topbar />
+        </div>
 
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
           <div className="mx-auto flex max-w-7xl flex-col gap-6">
@@ -373,25 +375,24 @@ export default function TransactionPage() {
                       Pilih menu untuk ditambahkan ke keranjang.
                     </p>
                   </div>
-
-                  <div className="flex flex-wrap gap-2">
-                    {categoryOptions.map((category) => (
-                      <button
-                        key={category}
-                        type="button"
-                        onClick={() => setSelectedCategory(category)}
-                        className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
-                          selectedCategory === category
-                            ? "border-slate-900 bg-slate-900 text-white"
-                            : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
-                        }`}
-                      >
-                        {category}
-                      </button>
-                    ))}
-                  </div>
                 </div>
 
+                <div className="flex flex-wrap gap-2">
+                  {categoryOptions.map((category) => (
+                    <button
+                      key={category}
+                      type="button"
+                      onClick={() => setSelectedCategory(category)}
+                      className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
+                        selectedCategory === category
+                          ? "border-slate-900 bg-slate-900 text-white"
+                          : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+                      }`}
+                    >
+                      {category}
+                    </button>
+                  ))}
+                </div>
                 <div className="relative w-full md:w-[360px]">
                   <div className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-slate-400">
                     <Search size={18} />
