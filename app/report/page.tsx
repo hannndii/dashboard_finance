@@ -15,12 +15,17 @@ export default async function ReportPage() {
   const totalTransactions = transactions.length;
 
   return (
-    <div className="flex min-h-screen bg-slate-100">
+    <div className="h-screen bg-slate-100 flex overflow-hidden">
+      <div className="w-64 flex-shrink-0 overflow-hidden">
+        <Sidebar />
+      </div>
 
-      <div className="flex-1 min-w-0">
-        <Topbar />
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+        <div className="flex-shrink-0 overflow-hidden">
+          <Topbar />
+        </div>
 
-        <main className="p-4 md:p-6 lg:p-8">
+        <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-6 lg:p-8">
 
           {/* HEADER */}
           <div className="mb-8 rounded-xl bg-white p-6 shadow-sm">
