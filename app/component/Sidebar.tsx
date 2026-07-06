@@ -8,6 +8,7 @@ import {
   Package,
   BarChart3,
   LogOut,
+  Utensils
 } from "lucide-react";
 
 export default function Sidebar() {
@@ -55,7 +56,7 @@ export default function Sidebar() {
       <div className="h-20 bg-black flex items-center px-6 border-b border-slate-700 flex-shrink-0">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-white rounded flex items-center justify-center flex-shrink-0">
-            <span className="font-bold text-black text-lg">K</span>
+            <Utensils size={20} className="text-black" />
           </div>
           <div>
             <h1 className="font-bold text-white text-base">Kantin PB AU</h1>
@@ -64,7 +65,7 @@ export default function Sidebar() {
       </div>
 
       {/* Menu Section - Scrollable Only If Content Exceeds Space */}
-      <nav className="flex-1 px-4 py-6 space-y-3 overflow-y-auto overflow-x-hidden">
+      <nav className="flex-1 px-6 py-6 space-y-3 overflow-y-auto overflow-x-hidden">
         {menus.map((menu) => (
           <Link key={menu.href} href={menu.href}>
             <div
