@@ -390,21 +390,20 @@ export default function TransactionPage() {
                       </button>
                     ))}
                   </div>
-
-                  <div className="relative w-full md:w-[360px]">
-                    <div className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-slate-400">
-                      <Search size={18} />
-                    </div>
-                    <input
-                      type="text"
-                      value={search}
-                      onChange={(e) => setSearch(e.target.value)}
-                      placeholder="Quick Search Menu..."
-                      className="w-full rounded-full border border-slate-200 bg-white py-3 pl-12 pr-4 text-slate-900 shadow-sm outline-none transition focus:border-slate-400"
-                    />
-                  </div>
                 </div>
 
+                <div className="relative w-full md:w-[360px]">
+                  <div className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-slate-400">
+                    <Search size={18} />
+                  </div>
+                  <input
+                    type="text"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    placeholder="Quick Search Menu..."
+                    className="w-full rounded-full border border-slate-200 bg-white py-3 pl-12 pr-4 text-slate-900 shadow-sm outline-none transition focus:border-slate-400"
+                  />
+                </div>
                 <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
                   <div className="grid min-w-0 gap-4 p-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-2 2xl:grid-cols-3">
                     {filteredProducts.length > 0 ? (
