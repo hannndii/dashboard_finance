@@ -23,7 +23,11 @@ function detectCategory(name: string) {
     return "Drinks";
   }
 
-  if (/(burger|rice|soup|salad|sandwich|noodle|pasta|meal|chicken|beef|fish|dish)/.test(lower)) {
+  if (
+    /(burger|rice|soup|salad|sandwich|noodle|pasta|meal|chicken|beef|fish|dish)/.test(
+      lower,
+    )
+  ) {
     return "Meals";
   }
 
@@ -52,7 +56,7 @@ export default function TransactionPage() {
         data.map((product: any) => ({
           ...product,
           category: product.category || detectCategory(product.name),
-        }))
+        })),
       );
     }
 
@@ -60,7 +64,9 @@ export default function TransactionPage() {
   }, []);
 
   const filteredProducts = products.filter((product) => {
-    const matchesSearch = product.name.toLowerCase().includes(search.toLowerCase());
+    const matchesSearch = product.name
+      .toLowerCase()
+      .includes(search.toLowerCase());
     const matchesCategory =
       selectedCategory === "All" || product.category === selectedCategory;
 
@@ -68,13 +74,15 @@ export default function TransactionPage() {
   });
 
   const addToCart = (product: any) => {
-    const existingIndex = cart.findIndex((item) => item.productName === product.name);
+    const existingIndex = cart.findIndex(
+      (item) => item.productName === product.name,
+    );
 
     if (existingIndex !== -1) {
       setCart((current) =>
         current.map((item, idx) =>
-          idx === existingIndex ? { ...item, qty: item.qty + 1 } : item
-        )
+          idx === existingIndex ? { ...item, qty: item.qty + 1 } : item,
+        ),
       );
       return;
     }
@@ -97,8 +105,8 @@ export default function TransactionPage() {
               ...item,
               qty: type === "plus" ? item.qty + 1 : Math.max(1, item.qty - 1),
             }
-          : item
-      )
+          : item,
+      ),
     );
   };
 
@@ -176,8 +184,12 @@ export default function TransactionPage() {
     <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <p className="text-sm uppercase tracking-[0.24em] text-slate-500">Current Order</p>
-          <h2 className="mt-2 text-xl font-semibold text-slate-900 sm:text-2xl">Current Order</h2>
+          <p className="text-sm uppercase tracking-[0.24em] text-slate-500">
+            Current Order
+          </p>
+          <h2 className="mt-2 text-xl font-semibold text-slate-900 sm:text-2xl">
+            Current Order
+          </h2>
         </div>
         <button
           type="button"
@@ -202,8 +214,12 @@ export default function TransactionPage() {
             >
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <p className="font-semibold text-slate-900">{item.productName}</p>
-                  <p className="mt-1 text-sm text-slate-500">Rp {item.price.toLocaleString("id-ID")}</p>
+                  <p className="font-semibold text-slate-900">
+                    {item.productName}
+                  </p>
+                  <p className="mt-1 text-sm text-slate-500">
+                    Rp {item.price.toLocaleString("id-ID")}
+                  </p>
                 </div>
                 <button
                   type="button"
@@ -223,7 +239,9 @@ export default function TransactionPage() {
                   >
                     <Minus size={14} />
                   </button>
-                  <span className="min-w-[1.5rem] text-center font-semibold text-slate-900">{item.qty}</span>
+                  <span className="min-w-[1.5rem] text-center font-semibold text-slate-900">
+                    {item.qty}
+                  </span>
                   <button
                     type="button"
                     onClick={() => updateQty(index, "plus")}
@@ -232,7 +250,9 @@ export default function TransactionPage() {
                     <Plus size={14} />
                   </button>
                 </div>
-                <p className="font-semibold text-slate-900">{formatRp(item.price * item.qty)}</p>
+                <p className="font-semibold text-slate-900">
+                  {formatRp(item.price * item.qty)}
+                </p>
               </div>
             </div>
           ))
@@ -250,9 +270,11 @@ export default function TransactionPage() {
         </div>
       </div>
 
-      <div className="mt-6 space-y-4">
+      <div className="mt-6 space-y-6">
         <div>
-          <p className="mb-3 text-sm font-semibold text-slate-900">Select Payment Method</p>
+          <p className="mb-3 text-sm font-semibold text-slate-900">
+            Select Payment Method
+          </p>
           <div className="grid grid-cols-2 gap-3">
             {[
               { label: "Cash", icon: <DollarSign size={16} /> },
@@ -277,7 +299,9 @@ export default function TransactionPage() {
 
         {paymentMethod === "QRIS" && (
           <div className="rounded-3xl border border-slate-200 bg-white p-4">
-            <p className="mb-3 text-sm font-semibold text-slate-900">Upload Bukti QRIS</p>
+            <p className="mb-3 text-sm font-semibold text-slate-900">
+              Upload Bukti QRIS
+            </p>
             <input
               type="file"
               accept="image/*"
@@ -332,20 +356,9 @@ export default function TransactionPage() {
                 <h1 className="text-3xl font-semibold text-slate-900 md:text-4xl">
                   New Transaction
                 </h1>
-                <p className="mt-2 text-slate-500">Counter 02 · Register #4421</p>
-              </div>
-
-              <div className="relative w-full md:w-[360px]">
-                <div className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-slate-400">
-                  <Search size={18} />
-                </div>
-                <input
-                  type="text"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Quick Search Menu..."
-                  className="w-full rounded-full border border-slate-200 bg-white py-3 pl-12 pr-4 text-slate-900 shadow-sm outline-none transition focus:border-slate-400"
-                />
+                <p className="mt-2 text-slate-500">
+                  Counter 02 · Register #4421
+                </p>
               </div>
             </div>
 
@@ -353,7 +366,9 @@ export default function TransactionPage() {
               <section className="min-w-0 space-y-6">
                 <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                   <div>
-                    <h2 className="text-xl font-semibold text-slate-900">Menu Items</h2>
+                    <h2 className="text-xl font-semibold text-slate-900">
+                      Menu Items
+                    </h2>
                     <p className="mt-1 text-sm text-slate-500">
                       Pilih menu untuk ditambahkan ke keranjang.
                     </p>
@@ -374,6 +389,19 @@ export default function TransactionPage() {
                         {category}
                       </button>
                     ))}
+                  </div>
+
+                  <div className="relative w-full md:w-[360px]">
+                    <div className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-slate-400">
+                      <Search size={18} />
+                    </div>
+                    <input
+                      type="text"
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                      placeholder="Quick Search Menu..."
+                      className="w-full rounded-full border border-slate-200 bg-white py-3 pl-12 pr-4 text-slate-900 shadow-sm outline-none transition focus:border-slate-400"
+                    />
                   </div>
                 </div>
 
@@ -403,7 +431,9 @@ export default function TransactionPage() {
                           </div>
 
                           <div className="mt-5 flex items-center justify-between text-slate-500">
-                            <span>Rp {product.price.toLocaleString("id-ID")}</span>
+                            <span>
+                              Rp {product.price.toLocaleString("id-ID")}
+                            </span>
                             <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-slate-600">
                               add
                             </span>
