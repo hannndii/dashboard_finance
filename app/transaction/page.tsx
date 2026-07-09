@@ -187,9 +187,6 @@ export default function TransactionPage() {
           <p className="text-sm uppercase tracking-[0.24em] text-slate-500">
             Current Order
           </p>
-          <h2 className="mt-2 text-xl font-semibold text-slate-900 sm:text-2xl">
-            Current Order
-          </h2>
         </div>
         <button
           type="button"
@@ -353,17 +350,6 @@ export default function TransactionPage() {
 
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
           <div className="mx-auto flex max-w-7xl flex-col gap-6">
-            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-              <div>
-                <h1 className="text-3xl font-semibold text-slate-900 md:text-4xl">
-                  New Transaction
-                </h1>
-                <p className="mt-2 text-slate-500">
-                  Counter 02 · Register #4421
-                </p>
-              </div>
-            </div>
-
             <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
               <section className="min-w-0 space-y-6">
                 <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -375,6 +361,19 @@ export default function TransactionPage() {
                       Pilih menu untuk ditambahkan ke keranjang.
                     </p>
                   </div>
+                </div>
+
+                <div className="relative w-full md:w-[360px]">
+                  <div className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-slate-400">
+                    <Search size={18} />
+                  </div>
+                  <input
+                    type="text"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    placeholder="Quick Search Menu..."
+                    className="w-full rounded-full border border-slate-200 bg-white py-3 pl-12 pr-4 text-slate-900 shadow-sm outline-none transition focus:border-slate-400"
+                  />
                 </div>
 
                 <div className="flex flex-wrap gap-2">
@@ -392,18 +391,6 @@ export default function TransactionPage() {
                       {category}
                     </button>
                   ))}
-                </div>
-                <div className="relative w-full md:w-[360px]">
-                  <div className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-slate-400">
-                    <Search size={18} />
-                  </div>
-                  <input
-                    type="text"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    placeholder="Quick Search Menu..."
-                    className="w-full rounded-full border border-slate-200 bg-white py-3 pl-12 pr-4 text-slate-900 shadow-sm outline-none transition focus:border-slate-400"
-                  />
                 </div>
                 <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
                   <div className="grid min-w-0 gap-4 p-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-2 2xl:grid-cols-3">
