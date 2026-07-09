@@ -29,7 +29,7 @@ export default function Topbar() {
         {/* Date and Status */}
         <div className="text-right">
           <p className="text-sm font-semibold text-slate-900">{formattedDate}</p>
-          <p className="text-xs text-slate-500">System Status: Optimal</p>
+          <time className="text-xs text-slate-500">{now.toLocaleTimeString()}</time>
         </div>
 
         {/* Icons */}
