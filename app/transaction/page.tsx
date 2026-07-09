@@ -281,7 +281,7 @@ export default function TransactionPage() {
                 key={option.label}
                 type="button"
                 onClick={() => setPaymentMethod(option.label)}
-                className={`flex items-center justify-center gap-2 rounded-2xl border px-4 py-3 text-sm font-semibold transition ${
+                className={`flex items-center justify-center gap-2 rounded-2xl border px-4 py-3 text-sm font-semibold transition hover:cursor-pointer ${
                   paymentMethod === option.label
                     ? "border-slate-900 bg-slate-900 text-white"
                     : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
@@ -382,7 +382,7 @@ export default function TransactionPage() {
                       key={category}
                       type="button"
                       onClick={() => setSelectedCategory(category)}
-                      className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
+                      className={`rounded-full border px-4 py-2 text-sm font-medium transition hover:cursor-pointer ${
                         selectedCategory === category
                           ? "border-slate-900 bg-slate-900 text-white"
                           : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
@@ -400,7 +400,7 @@ export default function TransactionPage() {
                           key={product._id}
                           type="button"
                           onClick={() => addToCart(product)}
-                          className="group flex min-h-[140px] flex-col justify-between rounded-3xl border border-slate-200 bg-white p-4 text-left shadow-sm transition hover:border-slate-300 hover:shadow-md"
+                          className="group flex min-h-[140px] flex-col justify-between rounded-3xl border border-slate-200 bg-white p-4 text-left shadow-sm transition hover:border-slate-300 hover:shadow-md hover:cursor-pointer"
                           aria-label={`Tambah ${product.name} ke keranjang`}
                         >
                           <div className="flex items-start justify-between gap-4">
