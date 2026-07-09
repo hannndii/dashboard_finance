@@ -182,7 +182,7 @@ export default function TransactionPage() {
 
   const OrderPanel = () => (
     <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
-      <div className="flex flex-col items-center gap-3 text-center sm:flex-row sm:items-center sm:justify-center">
+      <div className="flex flex-col items-center gap-5 text-center sm:flex-row sm:items-center sm:justify-center">
         <div>
           <p className="text-sm uppercase tracking-[0.24em] text-slate-500">
             Keranjang
