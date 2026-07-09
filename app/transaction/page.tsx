@@ -20,7 +20,7 @@ function detectCategory(name: string) {
   const lower = name.toLowerCase();
 
   if (/(coffee|tea|juice|milk|latte|espresso|coke|soda|drink)/.test(lower)) {
-    return "Drinks";
+    return "Minuman";
   }
 
   if (
@@ -28,14 +28,14 @@ function detectCategory(name: string) {
       lower,
     )
   ) {
-    return "Meals";
+    return "Makanan Berat";
   }
 
   if (/(snack|chips|cookie|cake|brownie|dessert|pastry|toast)/.test(lower)) {
-    return "Snacks";
+    return "Cemilan";
   }
 
-  return "Meals";
+  return "Makanan Berat";
 }
 
 export default function TransactionPage() {
@@ -185,7 +185,7 @@ export default function TransactionPage() {
       <div className="flex flex-col items-center gap-3 text-center sm:flex-row sm:items-center sm:justify-center">
         <div>
           <p className="text-sm uppercase tracking-[0.24em] text-slate-500">
-            Current Order
+            Transaksi Terakhir
           </p>
         </div>
         <button
@@ -194,7 +194,7 @@ export default function TransactionPage() {
           className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100"
         >
           <Trash2 size={16} />
-          Clear Cart
+          Bersihkan
         </button>
       </div>
 
@@ -262,7 +262,7 @@ export default function TransactionPage() {
           <span>{formatRp(total)}</span>
         </div>
         <div className="mt-4 flex items-center justify-between text-xl font-semibold text-slate-900">
-          <span>Total Amount</span>
+          <span>Total Harga</span>
           <span>{formatRp(total)}</span>
         </div>
       </div>
@@ -270,7 +270,7 @@ export default function TransactionPage() {
       <div className="mt-6 space-y-6">
         <div>
           <p className="mb-3 text-sm font-semibold text-slate-900">
-            Select Payment Method
+            Pilih Metode Pembayaran
           </p>
           <div className="grid grid-cols-2 gap-3">
             {[
@@ -332,7 +332,7 @@ export default function TransactionPage() {
         disabled={isPending}
         className="mt-6 w-full rounded-3xl bg-slate-900 px-6 py-4 text-base font-semibold text-white shadow-lg shadow-slate-200 transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {isPending ? "Processing..." : "Complete Transaction"}
+        {isPending ? "Processing..." : "Selesaikan Transaksi"}
       </button>
     </div>
   );
