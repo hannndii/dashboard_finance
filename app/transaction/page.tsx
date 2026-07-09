@@ -185,7 +185,7 @@ export default function TransactionPage() {
       <div className="flex flex-col items-center gap-3 text-center sm:flex-row sm:items-center sm:justify-center">
         <div>
           <p className="text-sm uppercase tracking-[0.24em] text-slate-500">
-            Transaksi Terakhir
+            Keranjang
           </p>
         </div>
         <button
