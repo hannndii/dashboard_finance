@@ -96,15 +96,9 @@ export default function StockPage() {
             <div className="rounded-3xl bg-white p-6 shadow-sm">
               <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                 <div>
-                  <p className="text-sm uppercase tracking-[0.3em] text-slate-500">
-                    Stock Inventory
-                  </p>
-                  <h1 className="mt-3 text-3xl font-semibold text-slate-900">
+                  <h1 className="text-sm uppercase tracking-[0.3em] text-slate-500 font-semibold">
                     Stok Barang
                   </h1>
-                  <p className="mt-2 text-sm text-slate-500">
-                    Kelola semua produk dan stok warung
-                  </p>
                 </div>
 
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -132,7 +126,7 @@ export default function StockPage() {
               <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                 <div className="rounded-3xl border border-slate-200 bg-slate-50 p-5">
                   <p className="text-sm uppercase tracking-[0.24em] text-slate-500">
-                    Total Value
+                    Total Transaksi
                   </p>
                   <p className="mt-4 text-2xl font-semibold text-slate-900">
                     {formatRp(totalValue)}
@@ -141,7 +135,7 @@ export default function StockPage() {
 
                 <div className="rounded-3xl border border-slate-200 bg-slate-50 p-5">
                   <p className="text-sm uppercase tracking-[0.24em] text-slate-500">
-                    Low Stock
+                    Stok Hampir Habis
                   </p>
                   <p className="mt-4 text-2xl font-semibold text-slate-900">
                     {lowStockItems} Items
@@ -150,7 +144,7 @@ export default function StockPage() {
 
                 <div className="rounded-3xl border border-slate-200 bg-slate-50 p-5">
                   <p className="text-sm uppercase tracking-[0.24em] text-slate-500">
-                    Out of Stock
+                    Stok Habis
                   </p>
                   <p className="mt-4 text-2xl font-semibold text-slate-900">
                     {outOfStockItems} Items
@@ -159,7 +153,7 @@ export default function StockPage() {
 
                 <div className="rounded-3xl border border-slate-200 bg-slate-50 p-5">
                   <p className="text-sm uppercase tracking-[0.24em] text-slate-500">
-                    Categories
+                    Total Kategori
                   </p>
                   <p className="mt-4 text-2xl font-semibold text-slate-900">
                     {categoryCount} Groups
