@@ -8,10 +8,11 @@ import {
   Package,
   BarChart3,
   LogOut,
-  Utensils
+  Utensils,
+  X
 } from "lucide-react";
 
-export default function Sidebar() {
+export default function Sidebar({ onClose }: { onClose?: () => void }) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -53,7 +54,7 @@ export default function Sidebar() {
   return (
     <aside className="w-64 bg-black text-white h-screen flex flex-col overflow-hidden">
       {/* Logo Section */}
-      <div className="h-20 bg-black flex items-center px-6 border-b border-slate-700 flex-shrink-0">
+      <div className="h-20 bg-black flex items-center justify-between px-6 border-b border-slate-700 flex-shrink-0">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-white rounded flex items-center justify-center flex-shrink-0">
             <Utensils size={20} className="text-black" />
@@ -62,12 +63,17 @@ export default function Sidebar() {
             <h1 className="font-bold text-white text-base">Kantin PB AU</h1>
           </div>
         </div>
+        {onClose && (
+          <button onClick={onClose} className="md:hidden text-slate-400 hover:text-white p-1">
+            <X size={20} />
+          </button>
+        )}
       </div>
 
       {/* Menu Section - Scrollable Only If Content Exceeds Space */}
       <nav className="flex-1 px-6 py-6 space-y-3 overflow-y-auto overflow-x-hidden">
         {menus.map((menu) => (
-          <Link key={menu.href} href={menu.href}>
+          <Link key={menu.href} href={menu.href} onClick={onClose}>
             <div
               className={`flex items-center gap-4 px-4 py-3 rounded-lg transition-all cursor-pointer ${
                 pathname === menu.href

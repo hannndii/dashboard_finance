@@ -1,8 +1,7 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState, useTransition, type ChangeEvent } from "react";
-import Sidebar from "../component/Sidebar";
-import Topbar from "../component/Topbar";
+import AppShell from "../component/AppShell";
 import { getProducts, addTransaction, uploadToDrive } from "../action";
 import {
   Search,
@@ -338,111 +337,99 @@ export default function TransactionPage() {
   );
 
   return (
-    <div className="h-screen bg-slate-100 flex overflow-hidden">
-      <div className="w-64 flex-shrink-0 overflow-hidden">
-        <Sidebar />
-      </div>
-
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <div className="flex-shrink-0 overflow-hidden">
-          <Topbar />
-        </div>
-
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
-          <div className="mx-auto flex max-w-7xl flex-col gap-6">
-            <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
-              <section className="min-w-0 space-y-6">
-                <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                  <div>
-                    <h2 className="text-xl font-semibold text-slate-900">
-                      Menu Items
-                    </h2>
-                    <p className="mt-1 text-sm text-slate-500">
-                      Pilih menu untuk ditambahkan ke keranjang.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="relative w-full md:w-[360px]">
-                  <div className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-slate-400">
-                    <Search size={18} />
-                  </div>
-                  <input
-                    type="text"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    placeholder="Quick Search Menu..."
-                    className="w-full rounded-full border border-slate-200 bg-white py-3 pl-12 pr-4 text-slate-900 shadow-sm outline-none transition focus:border-slate-400"
-                  />
-                </div>
-
-                <div className="flex flex-wrap gap-2">
-                  {categoryOptions.map((category) => (
-                    <button
-                      key={category}
-                      type="button"
-                      onClick={() => setSelectedCategory(category)}
-                      className={`rounded-full border px-4 py-2 text-sm font-medium transition hover:cursor-pointer ${
-                        selectedCategory === category
-                          ? "border-slate-900 bg-slate-900 text-white"
-                          : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
-                      }`}
-                    >
-                      {category}
-                    </button>
-                  ))}
-                </div>
-                <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-                  <div className="grid min-w-0 gap-4 p-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-2 2xl:grid-cols-3">
-                    {filteredProducts.length > 0 ? (
-                      filteredProducts.map((product) => (
-                        <button
-                          key={product._id}
-                          type="button"
-                          onClick={() => addToCart(product)}
-                          className="group flex min-h-[140px] flex-col justify-between rounded-3xl border border-slate-200 bg-white p-4 text-left shadow-sm transition hover:border-slate-300 hover:shadow-md hover:cursor-pointer"
-                          aria-label={`Tambah ${product.name} ke keranjang`}
-                        >
-                          <div className="flex items-start justify-between gap-4">
-                            <div>
-                              <p className="text-sm uppercase tracking-[0.24em] text-slate-400">
-                                {product.category}
-                              </p>
-                              <h3 className="mt-3 text-lg font-semibold text-slate-900">
-                                {product.name}
-                              </h3>
-                            </div>
-                            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-900">
-                              <Plus size={18} />
-                            </div>
-                          </div>
-
-                          <div className="mt-5 flex items-center justify-between text-slate-500">
-                            <span>
-                              Rp {product.price.toLocaleString("id-ID")}
-                            </span>
-                            <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-slate-600">
-                              add
-                            </span>
-                          </div>
-                        </button>
-                      ))
-                    ) : (
-                      <div className="col-span-full rounded-3xl border border-dashed border-slate-300 bg-white p-8 text-center text-slate-500">
-                        Tidak ada menu yang cocok.
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </section>
-
-              <aside className="w-full xl:sticky xl:top-6 xl:self-start">
-                <OrderPanel />
-              </aside>
+    <AppShell>
+      <div className="mx-auto flex max-w-7xl flex-col gap-6">
+        <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
+          <section className="min-w-0 space-y-6">
+            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+              <div>
+                <h2 className="text-xl font-semibold text-slate-900">
+                  Menu Items
+                </h2>
+                <p className="mt-1 text-sm text-slate-500">
+                  Pilih menu untuk ditambahkan ke keranjang.
+                </p>
+              </div>
             </div>
-          </div>
-        </main>
+
+            <div className="relative w-full md:w-[360px]">
+              <div className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-slate-400">
+                <Search size={18} />
+              </div>
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Quick Search Menu..."
+                className="w-full rounded-full border border-slate-200 bg-white py-3 pl-12 pr-4 text-slate-900 shadow-sm outline-none transition focus:border-slate-400"
+              />
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              {categoryOptions.map((category) => (
+                <button
+                  key={category}
+                  type="button"
+                  onClick={() => setSelectedCategory(category)}
+                  className={`rounded-full border px-4 py-2 text-sm font-medium transition hover:cursor-pointer ${
+                    selectedCategory === category
+                      ? "border-slate-900 bg-slate-900 text-white"
+                      : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+                  }`}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+            <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+              <div className="grid min-w-0 gap-4 p-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-2 2xl:grid-cols-3">
+                {filteredProducts.length > 0 ? (
+                  filteredProducts.map((product) => (
+                    <button
+                      key={product._id}
+                      type="button"
+                      onClick={() => addToCart(product)}
+                      className="group flex min-h-[140px] flex-col justify-between rounded-3xl border border-slate-200 bg-white p-4 text-left shadow-sm transition hover:border-slate-300 hover:shadow-md hover:cursor-pointer"
+                      aria-label={`Tambah ${product.name} ke keranjang`}
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <div>
+                          <p className="text-sm uppercase tracking-[0.24em] text-slate-400">
+                            {product.category}
+                          </p>
+                          <h3 className="mt-3 text-lg font-semibold text-slate-900">
+                            {product.name}
+                          </h3>
+                        </div>
+                        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-900">
+                          <Plus size={18} />
+                        </div>
+                      </div>
+
+                      <div className="mt-5 flex items-center justify-between text-slate-500">
+                        <span>
+                          Rp {product.price.toLocaleString("id-ID")}
+                        </span>
+                        <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-slate-600">
+                          add
+                        </span>
+                      </div>
+                    </button>
+                  ))
+                ) : (
+                  <div className="col-span-full rounded-3xl border border-dashed border-slate-300 bg-white p-8 text-center text-slate-500">
+                    Tidak ada menu yang cocok.
+                  </div>
+                )}
+              </div>
+            </div>
+          </section>
+
+          <aside className="w-full xl:sticky xl:top-6 xl:self-start">
+            <OrderPanel />
+          </aside>
+        </div>
       </div>
-    </div>
+    </AppShell>
   );
 }
