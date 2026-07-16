@@ -6,13 +6,19 @@ import Topbar from "./Topbar";
 
 export default function AppShell({
   children,
+  title = "Dashboard",
+  subtitle,
+  rightElement,
 }: {
   children: React.ReactNode;
+  title?: string;
+  subtitle?: React.ReactNode;
+  rightElement?: React.ReactNode;
 }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <div className="h-screen bg-slate-100 flex overflow-hidden">
+    <div className="flex h-screen overflow-hidden bg-slate-50">
       {/* Mobile Sidebar Overlay */}
       {isMobileMenuOpen && (
         <div 
@@ -22,20 +28,23 @@ export default function AppShell({
       )}
 
       {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-50 w-64 transform transition-transform duration-300 ease-in-out md:relative md:translate-x-0 ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"} flex-shrink-0 overflow-hidden bg-black`}>
+      <div className={`fixed inset-y-0 left-0 z-50 w-64 transform transition-transform duration-300 ease-in-out md:relative md:translate-x-0 ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"} shrink-0`}>
         <Sidebar onClose={() => setIsMobileMenuOpen(false)} />
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden w-full">
+      <div className="flex w-full min-w-0 flex-1 flex-col overflow-hidden">
         {/* Fixed Topbar */}
-        <div className="flex-shrink-0 overflow-hidden">
-          <Topbar onMenuClick={() => setIsMobileMenuOpen(true)} />
-        </div>
+        <Topbar 
+          title={title} 
+          subtitle={subtitle} 
+          rightElement={rightElement}
+          onMenuClick={() => setIsMobileMenuOpen(true)} 
+        />
 
         {/* Scrollable Main Content */}
-        <main className="flex-1 overflow-y-auto overflow-x-hidden relative">
-          <div className="p-4 md:p-6 lg:p-8 min-h-full">
+        <main className="relative flex-1 overflow-x-hidden overflow-y-auto">
+          <div className="min-h-full p-4 md:p-6 lg:p-8">
             {children}
           </div>
         </main>

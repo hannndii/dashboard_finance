@@ -30,79 +30,101 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 to-indigo-700 p-6">
-
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl p-8">
-
-        <div className="flex flex-col items-center mb-8">
-          <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mb-4">
-            <ShieldCheck className="text-blue-600" size={30} />
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 p-6">
+      <div className="w-full max-w-[400px] bg-white rounded-[2rem] border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-8 sm:p-10">
+        
+        {/* Header */}
+        <div className="flex flex-col items-center mb-10 text-center">
+          <div className="w-14 h-14 rounded-2xl bg-slate-900 flex items-center justify-center mb-6 shadow-md">
+            <Utensils className="text-white" size={24} />
           </div>
-
-          <h1 className="text-3xl font-bold text-black">
-            Admin Login
+          <h1 className="text-2xl font-bold text-slate-900 mb-2">
+            Kantin PB AU
           </h1>
-
-          <p className="text-slate-500 mt-2 text-center">
-            Masuk untuk mengakses dashboard kasir
+          <p className="text-xs text-slate-500">
+            Selamat Datang di Menu Dashboard Finance
           </p>
         </div>
 
-        <form action={handleSubmit} className="space-y-5">
-
-          <div>
-            <label className="text-sm font-semibold text-black">
-              Username
+        <form action={handleSubmit} className="space-y-6">
+          {/* Username */}
+          <div className="space-y-2">
+            <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+              Nama Pengguna
             </label>
-
-            <div className="mt-2 flex items-center border rounded-xl px-4 py-3">
-              <User size={18} className="text-slate-400" />
+            <div className="flex items-center rounded-xl bg-slate-50 px-4 py-3.5 border border-slate-100 transition focus-within:border-slate-300 focus-within:bg-white">
+              <User size={16} className="text-slate-400 shrink-0" />
               <input
                 name="username"
-                className="w-full ml-3 outline-none text-black"
-                placeholder="Masukkan username"
+                className="w-full ml-3 bg-transparent outline-none text-sm font-medium text-slate-900 placeholder-slate-400"
+                placeholder="admin_user"
               />
             </div>
           </div>
 
-          <div>
-            <label className="text-sm font-semibold text-black">
-              Password
-            </label>
-
-            <div className="mt-2 flex items-center border rounded-xl px-4 py-3">
-              <Lock size={18} className="text-slate-400" />
+          {/* Password */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                Kata Sandi
+              </label>
+              <button type="button" className="text-[10px] font-bold text-slate-900 hover:underline">
+                Lupa?
+              </button>
+            </div>
+            <div className="flex items-center rounded-xl bg-slate-50 px-4 py-3.5 border border-slate-100 transition focus-within:border-slate-300 focus-within:bg-white">
+              <Lock size={16} className="text-slate-400 shrink-0" />
               <input
                 name="password"
                 type="password"
-                className="w-full ml-3 outline-none text-black"
-                placeholder="Masukkan password"
+                className="w-full ml-3 bg-transparent outline-none text-sm font-medium text-slate-900 placeholder-slate-400"
+                placeholder="••••••••"
               />
             </div>
           </div>
 
+          {/* Remember Me */}
+          <div className="flex items-center gap-2">
+            <input 
+              type="checkbox" 
+              id="remember" 
+              className="w-4 h-4 rounded border-slate-300 text-slate-900 focus:ring-slate-900 hover:cursor-pointer"
+            />
+            <label htmlFor="remember" className="text-xs font-medium text-slate-500 hover:cursor-pointer">
+              Ingatkan Saya!
+            </label>
+          </div>
+
           {error && (
-            <p className="text-red-500 text-sm font-semibold">
+            <p className="text-red-500 text-xs font-semibold text-center">
               {error}
             </p>
           )}
 
+          {/* Submit Button */}
           <button
             type="submit"
             disabled={isPending}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-xl font-semibold flex items-center justify-center gap-2"
+            className="w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-xl text-sm font-bold transition-all disabled:opacity-70 disabled:cursor-not-allowed"
           >
             {isPending ? (
-              <>
-                <Loader2 size={18} className="animate-spin" />
-                Loading...
-              </>
+              <span className="flex items-center justify-center gap-2">
+                <Loader2 size={16} className="animate-spin" />
+                Processing...
+              </span>
             ) : (
-              "Login"
+              "Masuk"
             )}
           </button>
-
         </form>
+
+        {/* Footer */}
+        <div className="mt-10 pt-6 border-t border-slate-100 text-center">
+          <p className="text-[10px] font-medium text-slate-400">
+            © 2024 Canteen System. All rights reserved.
+          </p>
+        </div>
+
       </div>
     </div>
   );

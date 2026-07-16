@@ -52,60 +52,71 @@ export default function Sidebar({ onClose }: { onClose?: () => void }) {
   }
 
   return (
-    <aside className="w-64 bg-black text-white h-screen flex flex-col overflow-hidden">
+    <aside className="flex h-screen w-64 flex-col overflow-hidden bg-white border-r border-slate-200">
       {/* Logo Section */}
-      <div className="h-20 bg-black flex items-center justify-between px-6 border-b border-slate-700 flex-shrink-0">
+      <div className="flex h-20 shrink-0 items-center justify-between px-6">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-white rounded flex items-center justify-center flex-shrink-0">
-            <Utensils size={20} className="text-black" />
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[0.8rem] bg-slate-900 shadow-sm">
+            <Utensils size={18} className="text-white" />
           </div>
-          <div>
-            <h1 className="font-bold text-white text-base">Kantin PB AU</h1>
-          </div>
+          <h1 className="text-lg font-bold text-slate-900 tracking-tight">CanteenSys</h1>
         </div>
         {onClose && (
-          <button onClick={onClose} className="md:hidden text-slate-400 hover:text-white p-1">
+          <button onClick={onClose} className="p-1 text-slate-400 hover:text-slate-900 md:hidden hover:cursor-pointer">
             <X size={20} />
           </button>
         )}
       </div>
 
-      {/* Menu Section - Scrollable Only If Content Exceeds Space */}
-      <nav className="flex-1 px-6 py-6 space-y-3 overflow-y-auto overflow-x-hidden">
-        {menus.map((menu) => (
-          <Link key={menu.href} href={menu.href} onClick={onClose}>
-            <div
-              className={`flex items-center gap-4 px-4 py-3 rounded-lg transition-all cursor-pointer ${
-                pathname === menu.href
-                  ? "bg-slate-800 text-white font-semibold"
-                  : "text-slate-400 hover:text-white hover:bg-slate-900"
-              }`}
-            >
-              {menu.icon}
-              <span className="text-sm">{menu.label}</span>
-            </div>
-          </Link>
-        ))}
+      {/* Menu Section */}
+      <nav className="flex-1 space-y-1.5 overflow-y-auto overflow-x-hidden px-4 py-6">
+        {menus.map((menu) => {
+          const isActive = pathname === menu.href;
+          return (
+            <Link key={menu.href} href={menu.href} onClick={onClose}>
+              <div
+                className={`flex items-center gap-3.5 rounded-xl px-4 py-3.5 transition-all hover:cursor-pointer ${
+                  isActive
+                    ? "bg-slate-900 text-white shadow-md"
+                    : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
+                }`}
+              >
+                {/* Icon wrapper to maintain alignment */}
+                <div className={`${isActive ? "text-white" : "text-slate-400"}`}>
+                  {menu.icon}
+                </div>
+                <span className={`text-sm ${isActive ? "font-semibold" : "font-medium"}`}>
+                  {menu.label}
+                </span>
+              </div>
+            </Link>
+          );
+        })}
       </nav>
 
-      {/* User Profile Section - Fixed at Bottom */}
-      <div className="border-t border-slate-700 p-4 flex-shrink-0">
-        <div className="flex items-center gap-3 pb-4">
-          <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
-            <span className="text-white font-semibold text-sm">AR</span>
+      {/* User Profile Section */}
+      <div className="shrink-0 p-4">
+        <div className="flex items-center gap-3 rounded-2xl p-3 border border-transparent transition-colors hover:border-slate-100 hover:bg-slate-50">
+          <div className="relative">
+            {/* Menggunakan gradient karena tidak ada foto profil */}
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-pink-400 to-indigo-500 shadow-sm">
+              <span className="text-xs font-bold text-white">AR</span>
+            </div>
+            {/* Status indicator pip */}
+            <div className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-white bg-green-500"></div>
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-white truncate">Alex Richards</p>
-            <p className="text-xs text-slate-400 truncate">Lead Admin</p>
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-bold text-slate-900">Alex Richards</p>
+            <p className="truncate text-[10px] font-medium text-slate-500 uppercase tracking-widest">Lead Admin</p>
           </div>
+          <button
+            onClick={handleLogout}
+            className="p-2 text-slate-400 transition-colors hover:text-red-500 hover:bg-red-50 rounded-full hover:cursor-pointer"
+            title="Logout"
+          >
+            <LogOut size={16} />
+          </button>
         </div>
-        <button
-          onClick={handleLogout}
-          className="w-full flex items-center gap-2 px-4 py-2 text-slate-400 hover:text-white hover:bg-slate-900 rounded-lg transition-all text-sm font-medium"
-        >
-          <LogOut size={18} />
-          <span>Logout</span>
-        </button>
       </div>
     </aside>
   );
