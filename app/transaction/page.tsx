@@ -11,6 +11,7 @@ import {
   CreditCard,
   DollarSign,
   X,
+  ShoppingCart
 } from "lucide-react";
 
 const categoryOptions = ["All", "Meals", "Drinks", "Snacks"];
@@ -47,6 +48,7 @@ export default function TransactionPage() {
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [statusType, setStatusType] = useState<"success" | "error">("success");
   const [isPending, startTransition] = useTransition();
+  const [isMobileCartOpen, setIsMobileCartOpen] = useState(false);
 
   useEffect(() => {
     async function loadProducts() {
@@ -172,12 +174,33 @@ export default function TransactionPage() {
         setPaymentMethod("Cash");
         setStatusType("success");
         setStatusMessage(result.message ?? "Transaksi berhasil disimpan.");
+        setIsMobileCartOpen(false);
       } else {
         setStatusType("error");
         setStatusMessage(result.message ?? "Gagal menyimpan transaksi.");
       }
     });
   };
+
+  const MobileBottomBar = () => (
+    <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-200 bg-white p-4 shadow-[0_-4px_10px_-1px_rgba(0,0,0,0.1)] lg:hidden">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
+        <div>
+          <p className="text-xs font-semibold uppercase text-slate-500">
+            Total ({cart.length} item)
+          </p>
+          <p className="text-lg font-bold text-slate-900">{formatRp(total)}</p>
+        </div>
+        <button
+          onClick={() => setIsMobileCartOpen(true)}
+          className="flex items-center gap-2 rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-slate-800"
+        >
+          <ShoppingCart size={18} />
+          Lihat Keranjang
+        </button>
+      </div>
+    </div>
+  );
 
   const OrderPanel = () => (
     <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-xl shadow-slate-200/60 sm:p-6">
@@ -338,7 +361,7 @@ export default function TransactionPage() {
 
   return (
     <AppShell>
-      <div className="mx-auto flex max-w-7xl flex-col gap-6">
+      <div className="mx-auto flex max-w-7xl flex-col gap-6 pb-24 lg:pb-8">
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_400px]">
           <section className="min-w-0 space-y-6">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -425,11 +448,29 @@ export default function TransactionPage() {
             </div>
           </section>
 
-          <aside className="w-full lg:sticky lg:top-6 lg:self-start z-10">
+          <aside className="hidden w-full lg:sticky lg:top-6 lg:block lg:self-start z-10">
             <OrderPanel />
           </aside>
         </div>
       </div>
+
+      <MobileBottomBar />
+
+      {isMobileCartOpen && (
+        <div className="fixed inset-0 z-50 flex flex-col justify-end bg-black/60 lg:hidden">
+          <div className="max-h-[90vh] w-full overflow-y-auto rounded-t-3xl bg-slate-100 p-4 shadow-2xl">
+            <div className="mb-2 flex justify-end">
+              <button
+                onClick={() => setIsMobileCartOpen(false)}
+                className="rounded-full bg-white p-2 text-slate-600 shadow-sm"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            <OrderPanel />
+          </div>
+        </div>
+      )}
     </AppShell>
   );
 }
