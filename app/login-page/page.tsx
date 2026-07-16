@@ -7,6 +7,7 @@ import {
   Lock,
   User,
   Loader2,
+  Utensils
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
