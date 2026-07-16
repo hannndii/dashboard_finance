@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState, useTransition, type ChangeEvent } from "react";
 import AppShell from "../component/AppShell";
@@ -367,11 +367,6 @@ export default function TransactionPage() {
   return (
     <AppShell
       title="New Transaction"
-      subtitle={
-        <span className="text-[10px] font-medium text-slate-500 uppercase tracking-widest">
-          Counter 02 • Register #4421
-        </span>
-      }
       rightElement={
         <div className="flex items-center gap-6">
           <div className="relative hidden sm:block w-64">

@@ -441,33 +441,20 @@ export async function addStock(id: string, qty: number) {
 // =========================================================
 export async function loginAdmin(formData: FormData) {
   try {
-    await dbConnect();
-
     const username = String(formData.get("username"));
     const password = String(formData.get("password"));
 
-    const admin = await Admin.findOne({ username });
+    const envUsername = process.env.ADMIN_USERNAME;
+    const envPassword = process.env.ADMIN_PASSWORD;
 
-    if (!admin) {
+    if (username !== envUsername || password !== envPassword) {
       return {
         status: "error",
-        message: "Admin tidak ditemukan",
+        message: "Username atau Password salah",
       };
     }
 
-    const validPassword = await comparePassword(
-      password,
-      admin.password
-    );
-
-    if (!validPassword) {
-      return {
-        status: "error",
-        message: "Password salah",
-      };
-    }
-
-    (await cookies()).set("admin_session", admin._id.toString(), {
+    (await cookies()).set("admin_session", "superadmin_active_session", {
       httpOnly: true,
       secure: true,
       path: "/",
@@ -477,7 +464,7 @@ export async function loginAdmin(formData: FormData) {
       status: "success",
     };
   } catch (error) {
-    console.error(error);
+    console.error("Login Error:", error);
 
     return {
       status: "error",
