@@ -180,7 +180,7 @@ export default function TransactionPage() {
   };
 
   const OrderPanel = () => (
-    <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
+    <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-xl shadow-slate-200/60 sm:p-6">
       <div className="flex flex-col items-center gap-5 text-center sm:flex-row sm:items-center sm:justify-center">
         <div>
           <p className="text-sm uppercase tracking-[0.24em] text-slate-500">
@@ -339,7 +339,7 @@ export default function TransactionPage() {
   return (
     <AppShell>
       <div className="mx-auto flex max-w-7xl flex-col gap-6">
-        <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_400px]">
           <section className="min-w-0 space-y-6">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
               <div>
@@ -425,7 +425,7 @@ export default function TransactionPage() {
             </div>
           </section>
 
-          <aside className="w-full xl:sticky xl:top-6 xl:self-start">
+          <aside className="w-full lg:sticky lg:top-6 lg:self-start z-10">
             <OrderPanel />
           </aside>
         </div>
