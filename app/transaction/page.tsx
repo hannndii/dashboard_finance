@@ -185,7 +185,7 @@ export default function TransactionPage() {
   const FloatingBottomCart = () => {
     if (cart.length === 0) return null;
     return (
-      <div className="fixed bottom-0 left-0 right-0 z-40 p-4 md:p-6 lg:p-8 pointer-events-none">
+      <div className="fixed bottom-0 left-0 right-0 z-40 p-4 md:p-6 lg:hidden pointer-events-none">
         <div className="mx-auto flex max-w-4xl items-center justify-between gap-4 rounded-3xl bg-slate-900/95 backdrop-blur-md p-4 px-6 text-white shadow-2xl shadow-slate-900/50 pointer-events-auto transition-all">
           <div>
             <p className="text-xs font-semibold uppercase text-slate-300">
@@ -364,8 +364,8 @@ export default function TransactionPage() {
 
   return (
     <AppShell>
-      <div className="mx-auto flex max-w-7xl flex-col gap-6 pb-24 md:pb-28">
-        <div className="grid gap-6">
+      <div className="mx-auto flex max-w-7xl flex-col gap-6 pb-24 lg:pb-8">
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_400px]">
           <section className="min-w-0 space-y-6">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
               <div>
@@ -450,13 +450,17 @@ export default function TransactionPage() {
               </div>
             </div>
           </section>
+
+          <aside className="hidden w-full lg:sticky lg:top-6 lg:block lg:self-start lg:max-h-[calc(100vh-3rem)] lg:overflow-y-auto no-scrollbar z-10">
+            <OrderPanel />
+          </aside>
         </div>
       </div>
 
       <FloatingBottomCart />
 
       {isMobileCartOpen && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 sm:items-center sm:p-6">
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 sm:items-center sm:p-6 lg:hidden">
           <div className="max-h-[90vh] w-full max-w-md overflow-y-auto rounded-t-3xl sm:rounded-3xl bg-slate-100 p-4 shadow-2xl">
             <div className="mb-2 flex justify-end">
               <button
