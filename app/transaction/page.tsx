@@ -206,107 +206,95 @@ export default function TransactionPage() {
   };
 
   const OrderPanel = () => (
-    <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-xl shadow-slate-200/60 sm:p-6">
-      <div className="flex flex-col items-center gap-5 text-center sm:flex-row sm:items-center sm:justify-center">
-        <div>
-          <p className="text-sm uppercase tracking-[0.24em] text-slate-500">
-            Keranjang
-          </p>
-        </div>
+    <div className="flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl shadow-slate-200/60">
+      <div className="flex shrink-0 items-center justify-between border-b border-slate-100 p-4 sm:p-6">
+        <p className="text-sm font-bold uppercase tracking-widest text-slate-500">
+          Keranjang
+        </p>
         <button
           type="button"
           onClick={clearCart}
-          className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:cursor-pointer"
+          className="inline-flex items-center gap-1.5 rounded-full bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-600 transition hover:bg-slate-100 hover:text-red-600 hover:cursor-pointer"
         >
-          <Trash2 size={16} />
+          <Trash2 size={14} />
           Bersihkan
         </button>
       </div>
 
-      <div className="mt-6 max-h-[24rem] space-y-4 overflow-y-auto pr-2">
-        {cart.length === 0 ? (
-          <div className="rounded-3xl border border-dashed border-slate-300 bg-slate-50 p-6 text-center text-sm text-slate-500">
-            Keranjang kosong. Tambahkan item dari menu.
-          </div>
-        ) : (
-          cart.map((item, index) => (
-            <div
-              key={`${item.productName}-${index}`}
-              className="rounded-3xl border border-slate-200 bg-slate-50 p-4"
-            >
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <p className="font-semibold text-slate-900">
+      <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+        <div className="space-y-3">
+          {cart.length === 0 ? (
+            <div className="flex min-h-[12rem] flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-6 text-center text-sm text-slate-500">
+              Keranjang kosong.
+            </div>
+          ) : (
+            cart.map((item, index) => (
+              <div
+                key={`${item.productName}-${index}`}
+                className="relative flex items-center justify-between gap-2 rounded-2xl border border-slate-200 bg-white p-3 pr-10 shadow-sm transition hover:border-slate-300"
+              >
+                <div className="flex flex-1 flex-col items-center text-center">
+                  <p className="text-sm font-bold leading-tight text-slate-900">
                     {item.productName}
                   </p>
-                  <p className="mt-1 text-sm text-slate-500">
+                  <p className="mt-1 text-xs text-slate-500">
                     Rp {item.price.toLocaleString("id-ID")}
                   </p>
+                  <div className="mt-2 flex items-center justify-center gap-3 rounded-full border border-slate-100 bg-slate-50 px-3 py-1">
+                    <button
+                      type="button"
+                      onClick={() => updateQty(index, "minus")}
+                      className="p-1 text-slate-500 hover:cursor-pointer hover:text-slate-900"
+                    >
+                      <Minus size={14} />
+                    </button>
+                    <span className="w-4 text-center text-xs font-bold text-slate-900">
+                      {item.qty}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => updateQty(index, "plus")}
+                      className="p-1 text-slate-500 hover:cursor-pointer hover:text-slate-900"
+                    >
+                      <Plus size={14} />
+                    </button>
+                  </div>
                 </div>
+
                 <button
                   type="button"
                   onClick={() => removeItem(index)}
-                  className="rounded-full border border-slate-200 bg-white p-2 text-slate-600 transition hover:bg-slate-100 hover:cursor-pointer"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-2 text-slate-400 transition hover:cursor-pointer hover:bg-red-50 hover:text-red-500"
                 >
                   <X size={16} />
                 </button>
               </div>
-
-              <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-                <div className="flex items-center gap-2 rounded-full bg-white px-3 py-2 shadow-sm">
-                  <button
-                    type="button"
-                    onClick={() => updateQty(index, "minus")}
-                    className="rounded-full bg-slate-100 p-2 text-slate-600 transition hover:bg-slate-200 hover:cursor-pointer"
-                  >
-                    <Minus size={14} />
-                  </button>
-                  <span className="min-w-[1.5rem] text-center font-semibold text-slate-900">
-                    {item.qty}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => updateQty(index, "plus")}
-                    className="rounded-full bg-slate-100 p-2 text-slate-600 transition hover:bg-slate-200 hover:cursor-pointer"
-                  >
-                    <Plus size={14} />
-                  </button>
-                </div>
-                <p className="font-semibold text-slate-900">
-                  {formatRp(item.price * item.qty)}
-                </p>
-              </div>
-            </div>
-          ))
-        )}
+            ))
+          )}
+        </div>
       </div>
 
-      <div className="mt-6 rounded-3xl bg-slate-50 p-4 sm:p-5">
-        <div className="flex items-center justify-between text-sm text-slate-500">
+      <div className="shrink-0 border-t border-slate-100 bg-slate-50 p-4 sm:p-6">
+        <div className="mb-2 flex items-center justify-between text-sm text-slate-500">
           <span>Subtotal</span>
           <span>{formatRp(total)}</span>
         </div>
-        <div className="mt-4 flex items-center justify-between text-xl font-semibold text-slate-900">
-          <span>Total Harga</span>
+        <div className="mb-4 flex items-center justify-between text-lg font-bold text-slate-900">
+          <span>Total</span>
           <span>{formatRp(total)}</span>
         </div>
-      </div>
 
-      <div className="mt-6 space-y-6">
-        <div>
-          <p className="mb-3 text-sm font-semibold text-slate-900">
-            Pilih Metode Pembayaran
-          </p>
-          <div className="grid grid-cols-2 gap-3">
+        <div className="mb-4">
+          <div className="grid grid-cols-2 gap-2">
             {[
-              { label: "Cash", icon: <DollarSign size={16} /> },
-              { label: "QRIS", icon: <CreditCard size={16} /> },
+              { label: "Cash", icon: <DollarSign size={14} /> },
+              { label: "QRIS", icon: <CreditCard size={14} /> },
             ].map((option) => (
               <button
                 key={option.label}
                 type="button"
                 onClick={() => setPaymentMethod(option.label)}
-                className={`flex items-center justify-center gap-2 rounded-2xl border px-4 py-3 text-sm font-semibold transition hover:cursor-pointer ${
+                className={`flex items-center justify-center gap-2 rounded-xl border px-3 py-2.5 text-sm font-semibold transition hover:cursor-pointer ${
                   paymentMethod === option.label
                     ? "border-slate-900 bg-slate-900 text-white"
                     : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
@@ -320,45 +308,45 @@ export default function TransactionPage() {
         </div>
 
         {paymentMethod === "QRIS" && (
-          <div className="rounded-3xl border border-slate-200 bg-white p-4">
-            <p className="mb-3 text-sm font-semibold text-slate-900">
+          <div className="mb-4 rounded-2xl border border-slate-200 bg-white p-3">
+            <p className="mb-2 text-xs font-semibold text-slate-900">
               Upload Bukti QRIS
             </p>
             <input
               type="file"
               accept="image/*"
               onChange={handleFileUpload}
-              className="w-full text-sm text-slate-500"
+              className="w-full text-xs text-slate-500"
             />
             {receiptUrl && (
-              <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
+              <div className="mt-2 rounded-xl border border-slate-200 bg-slate-50 p-2 text-xs text-slate-700">
                 Bukti berhasil diunggah.
               </div>
             )}
           </div>
         )}
-      </div>
 
-      {statusMessage && (
-        <div
-          className={`mt-6 rounded-2xl px-4 py-3 text-sm font-medium ${
-            statusType === "success"
-              ? "bg-emerald-50 text-emerald-700"
-              : "bg-red-50 text-red-700"
-          }`}
+        {statusMessage && (
+          <div
+            className={`mb-4 rounded-xl px-3 py-2 text-xs font-medium ${
+              statusType === "success"
+                ? "bg-emerald-50 text-emerald-700"
+                : "bg-red-50 text-red-700"
+            }`}
+          >
+            {statusMessage}
+          </div>
+        )}
+
+        <button
+          type="button"
+          onClick={handleSubmit}
+          disabled={isPending}
+          className="w-full rounded-2xl bg-slate-900 px-4 py-3.5 text-sm font-bold text-white shadow-lg transition hover:cursor-pointer hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {statusMessage}
-        </div>
-      )}
-
-      <button
-        type="button"
-        onClick={handleSubmit}
-        disabled={isPending}
-        className="mt-6 w-full rounded-3xl bg-slate-900 px-6 py-4 text-base font-semibold text-white shadow-lg shadow-slate-200 transition hover:bg-slate-800 hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
-      >
-        {isPending ? "Processing..." : "Selesaikan Transaksi"}
-      </button>
+          {isPending ? "Processing..." : "Selesaikan Transaksi"}
+        </button>
+      </div>
     </div>
   );
 
@@ -451,7 +439,7 @@ export default function TransactionPage() {
             </div>
           </section>
 
-          <aside className="hidden w-full lg:sticky lg:top-6 lg:block lg:self-start lg:max-h-[calc(100vh-3rem)] lg:overflow-y-auto no-scrollbar z-10">
+          <aside className="hidden w-full lg:sticky lg:top-6 lg:block lg:self-start lg:h-[calc(100vh-3rem)] z-10">
             <OrderPanel />
           </aside>
         </div>
@@ -460,9 +448,9 @@ export default function TransactionPage() {
       <FloatingBottomCart />
 
       {isMobileCartOpen && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 sm:items-center sm:p-6 lg:hidden">
-          <div className="max-h-[90vh] w-full max-w-md overflow-y-auto rounded-t-3xl sm:rounded-3xl bg-slate-100 p-4 shadow-2xl">
-            <div className="mb-2 flex justify-end">
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 p-4 pt-10 sm:items-center sm:p-6 lg:hidden">
+          <div className="flex h-[85vh] w-full max-w-md flex-col">
+            <div className="mb-3 flex shrink-0 justify-end">
               <button
                 onClick={() => setIsMobileCartOpen(false)}
                 className="rounded-full bg-white p-2 text-slate-600 shadow-sm hover:cursor-pointer"
@@ -470,7 +458,9 @@ export default function TransactionPage() {
                 <X size={20} />
               </button>
             </div>
-            <OrderPanel />
+            <div className="min-h-0 flex-1">
+              <OrderPanel />
+            </div>
           </div>
         </div>
       )}
