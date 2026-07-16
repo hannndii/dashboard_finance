@@ -462,7 +462,7 @@ export default function TransactionPage() {
             </div>
           </section>
 
-          <aside className="hidden w-full lg:sticky lg:top-6 lg:block lg:self-start lg:h-[calc(100vh-3rem)] z-10">
+          <aside className="hidden w-full lg:sticky lg:top-0 lg:block lg:self-start lg:h-[calc(100vh-8rem)] z-10">
             <OrderPanel />
           </aside>
         </div>
