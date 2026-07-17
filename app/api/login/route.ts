@@ -1,31 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import dbConnect from "@/lib/db";
-import Admin from "@/models/Admin";
-import { comparePassword } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
   try {
-    await dbConnect();
-
     const { username, password } = await req.json();
 
-    const admin = await Admin.findOne({ username });
+    const envUsername = process.env.ADMIN_USERNAME;
+    const envPassword = process.env.ADMIN_PASSWORD;
 
-    if (!admin) {
+    if (username !== envUsername || password !== envPassword) {
       return NextResponse.json(
-        { status: "error", message: "Admin tidak ditemukan" },
-        { status: 401 }
-      );
-    }
-
-    const valid = await comparePassword(
-      password,
-      admin.password
-    );
-
-    if (!valid) {
-      return NextResponse.json(
-        { status: "error", message: "Password salah" },
+        { status: "error", message: "Username atau Password salah" },
         { status: 401 }
       );
     }
@@ -34,15 +18,15 @@ export async function POST(req: NextRequest) {
       status: "success",
     });
 
-    response.cookies.set("admin_session", admin._id.toString(), {
+    response.cookies.set("admin_session", "superadmin_active_session", {
       httpOnly: true,
-      secure: false,
+      secure: process.env.NODE_ENV === "production",
       path: "/",
       maxAge: 60 * 60 * 24,
     });
 
     return response;
-  } catch {
+  } catch (error) {
     return NextResponse.json(
       {
         status: "error",

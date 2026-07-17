@@ -7,13 +7,16 @@ import {
   Lock,
   User,
   Loader2,
-  Utensils
+  Utensils,
+  Eye,
+  EyeOff
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
   async function handleSubmit(formData: FormData) {
@@ -80,11 +83,18 @@ export default function LoginPage() {
               <input
                 id="password"
                 name="password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 autoComplete="current-password"
                 className="w-full ml-3 bg-transparent outline-none text-sm font-medium text-slate-900 placeholder-slate-400"
                 placeholder="••••••••"
               />
+              <button 
+                type="button" 
+                onClick={() => setShowPassword(!showPassword)}
+                className="ml-2 text-slate-400 hover:text-slate-600 focus:outline-none"
+              >
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
             </div>
           </div>
 
