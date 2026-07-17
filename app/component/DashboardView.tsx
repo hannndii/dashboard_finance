@@ -15,12 +15,14 @@ import {
 } from "lucide-react";
 
 import { SalesPerformanceChart, TopSellingProductDonutChart } from "./RevenueCart";
+import { useLanguage } from "./LanguageProvider";
 
 export default function DashboardView({ data }: any) {
   const [showInput, setShowInput] = useState(false);
+  const { dict, lang } = useLanguage();
 
   const formatRp = (n: number) =>
-    new Intl.NumberFormat("id-ID", {
+    new Intl.NumberFormat(lang === "en" ? "en-US" : "id-ID", {
       style: "currency",
       currency: "IDR",
       minimumFractionDigits: 0,
@@ -30,9 +32,9 @@ export default function DashboardView({ data }: any) {
 
   const getStatusLabel = (trx: any) => {
     if (trx.paymentMethod === "QRIS" && !trx.receiptImage) {
-      return "Belum bayar";
+      return dict.dashboard.pending;
     }
-    return "Berhasil";
+    return dict.dashboard.completed;
   };
 
   const topSellingProducts = Object.values(
@@ -57,30 +59,30 @@ export default function DashboardView({ data }: any) {
       {/* CARDS */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
         <StatCard
-          title="PENJUALAN HARI INI"
+          title={dict.dashboard.salesToday}
           value={formatRp(data.today.totalRevenue)}
           icon={<DollarSign size={20} className="text-slate-700" />}
           trend="up"
           trendValue="12%"
-          subtitle="v.s. kemarin"
+          subtitle={dict.dashboard.vsYesterday}
         />
 
         <StatCard
-          title="TOTAL TRANSACTIONS"
+          title={dict.dashboard.totalTransactions}
           value={data.today.count}
           icon={<ShoppingCart size={20} className="text-slate-700" />}
           trend="up"
           trendValue="5%"
-          subtitle="Across food counters"
+          subtitle={dict.dashboard.allSales}
         />
 
         <StatCard
-          title="LOW STOCK ITEMS"
+          title={dict.dashboard.lowStock}
           value="08"
           icon={<AlertTriangle size={20} className="text-slate-700" />}
           trend="down"
-          trendValue="3 items"
-          subtitle="Requires immediate restock"
+          trendValue="3 item"
+          subtitle={dict.dashboard.needsRestock}
         />
       </div>
 
@@ -89,12 +91,8 @@ export default function DashboardView({ data }: any) {
         <div className="bg-white rounded-[1.5rem] border border-slate-200 p-6 md:p-8">
           <div className="mb-6 flex items-center justify-between">
             <h3 className="text-slate-900 text-lg font-bold">
-              Sales Performance (Weekly)
+              {dict.dashboard.performance}
             </h3>
-            <div className="flex bg-slate-50 p-1 rounded-lg border border-slate-200">
-               <button className="px-3 py-1 text-xs font-bold bg-white text-slate-900 rounded-md shadow-sm border border-slate-200">Week</button>
-               <button className="px-3 py-1 text-xs font-bold text-slate-500 hover:text-slate-900">Month</button>
-            </div>
           </div>
           <div className="h-[320px] md:h-[380px]">
             <SalesPerformanceChart data={data.chart} />
@@ -104,7 +102,7 @@ export default function DashboardView({ data }: any) {
         <div className="bg-white rounded-[1.5rem] border border-slate-200 p-6 md:p-8">
           <div className="mb-6 flex items-center justify-between">
             <h3 className="text-slate-900 text-lg font-bold">
-              Top Selling Categories
+              {dict.dashboard.topCategories}
             </h3>
           </div>
           <div className="h-[320px] md:h-[380px]">
@@ -117,14 +115,14 @@ export default function DashboardView({ data }: any) {
       <div className="bg-white rounded-[1.5rem] border border-slate-200 p-6 md:p-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
           <div>
-            <h3 className="text-slate-900 text-lg font-bold">Recent Transactions</h3>
+            <h3 className="text-slate-900 text-lg font-bold">{dict.dashboard.recentTransactions}</h3>
           </div>
 
           <Link
             href="/transaction"
             className="inline-flex items-center justify-center gap-1 text-sm font-bold text-slate-900 transition hover:text-slate-600"
           >
-            View All <ChevronRight size={16} />
+            {dict.dashboard.seeAll} <ChevronRight size={16} />
           </Link>
         </div>
 
@@ -132,11 +130,11 @@ export default function DashboardView({ data }: any) {
           <table className="w-full min-w-[720px] text-left text-sm">
             <thead>
               <tr className="border-b border-slate-100 text-slate-500">
-                <th className="py-4 font-bold text-[10px] uppercase tracking-widest">Order ID</th>
-                <th className="py-4 font-bold text-[10px] uppercase tracking-widest">Item Summary</th>
-                <th className="py-4 font-bold text-[10px] uppercase tracking-widest">Time</th>
-                <th className="py-4 font-bold text-[10px] uppercase tracking-widest">Status</th>
-                <th className="py-4 font-bold text-[10px] uppercase tracking-widest text-right">Amount</th>
+                <th className="py-4 font-bold text-[10px] uppercase tracking-widest">{dict.dashboard.orderId}</th>
+                <th className="py-4 font-bold text-[10px] uppercase tracking-widest">{dict.dashboard.itemSummary}</th>
+                <th className="py-4 font-bold text-[10px] uppercase tracking-widest">{dict.dashboard.time}</th>
+                <th className="py-4 font-bold text-[10px] uppercase tracking-widest">{dict.dashboard.status}</th>
+                <th className="py-4 font-bold text-[10px] uppercase tracking-widest text-right">{dict.dashboard.total}</th>
               </tr>
             </thead>
 
@@ -157,7 +155,7 @@ export default function DashboardView({ data }: any) {
                         {trx.productName}
                       </td>
                       <td className="py-4 font-medium text-slate-500">
-                        {new Date(trx.createdAt).toLocaleTimeString("en-US", {
+                        {new Date(trx.createdAt).toLocaleTimeString(lang === "en" ? "en-US" : "id-ID", {
                           hour: "2-digit",
                           minute: "2-digit",
                         })}
@@ -170,7 +168,7 @@ export default function DashboardView({ data }: any) {
                               : "bg-white text-slate-900 border-slate-300"
                           }`}
                         >
-                          {isCompleted ? "COMPLETED" : "PENDING"}
+                          {statusLabel}
                         </span>
                       </td>
                       <td className="py-4 font-bold text-slate-900 text-right">
@@ -185,7 +183,7 @@ export default function DashboardView({ data }: any) {
                     colSpan={5}
                     className="py-8 text-center text-sm font-medium text-slate-400"
                   >
-                    Belum ada transaksi terbaru.
+                    {dict.dashboard.noRecent}
                   </td>
                 </tr>
               )}

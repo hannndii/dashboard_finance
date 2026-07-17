@@ -1,7 +1,12 @@
-"use client";
+// ============================================================================
+// MODULE: NAVIGATION (Sidebar)
+// Sidebar menu navigasi, berisi profil pengguna, dan link ke halaman utama.
+// ============================================================================
 
+"use client";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useLanguage } from "./LanguageProvider";
 import {
   LayoutDashboard,
   ShoppingCart,
@@ -16,25 +21,27 @@ export default function Sidebar({ onClose }: { onClose?: () => void }) {
   const pathname = usePathname();
   const router = useRouter();
 
+  const { dict, lang, setLang, isPending } = useLanguage();
+
   const menus = [
     {
       href: "/dashboard",
-      label: "Halaman Utama",
+      label: dict.sidebar.dashboard,
       icon: <LayoutDashboard size={20} />,
     },
     {
       href: "/transaction",
-      label: "Transaksi",
+      label: dict.sidebar.transaction,
       icon: <ShoppingCart size={20} />,
     },
     {
       href: "/stock",
-      label: "Manajemen Stok",
+      label: dict.sidebar.stock,
       icon: <Package size={20} />,
     },
     {
       href: "/report",
-      label: "Laporan Keuangan",
+      label: dict.sidebar.report,
       icon: <BarChart3 size={20} />,
     },
   ];
@@ -59,7 +66,7 @@ export default function Sidebar({ onClose }: { onClose?: () => void }) {
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[0.8rem] bg-slate-900 shadow-sm">
             <Utensils size={18} className="text-white" />
           </div>
-          <h1 className="text-lg font-bold text-slate-900 tracking-tight">CanteenSys</h1>
+          <h1 className="text-lg font-bold text-slate-900 tracking-tight">KANTIN AU</h1>
         </div>
         {onClose && (
           <button onClick={onClose} className="p-1 text-slate-400 hover:text-slate-900 md:hidden hover:cursor-pointer">
@@ -93,6 +100,8 @@ export default function Sidebar({ onClose }: { onClose?: () => void }) {
           );
         })}
       </nav>
+
+
 
       {/* User Profile Section */}
       <div className="shrink-0 p-4">

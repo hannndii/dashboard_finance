@@ -3,8 +3,10 @@
 import { useState, useTransition } from "react";
 import { addProduct } from "../action";
 import { Loader2, X, Save } from "lucide-react";
+import { useLanguage } from "./LanguageProvider";
 
 export default function ProductModal({ onClose }: any) {
+  const { dict } = useLanguage();
   const [isPending, startTransition] = useTransition();
 
   const [name, setName] = useState("");
@@ -17,7 +19,7 @@ export default function ProductModal({ onClose }: any) {
     setError("");
 
     if (!name || !price || !stock || !minStock) {
-      setError("Semua field wajib diisi.");
+      setError(dict.productModal.errorEmpty);
       return;
     }
 
@@ -27,7 +29,7 @@ export default function ProductModal({ onClose }: any) {
       if (result?.status === "success") {
         onClose();
       } else {
-        setError("Gagal menyimpan produk.");
+        setError(dict.productModal.errorAdd);
       }
     });
   }
@@ -48,7 +50,7 @@ export default function ProductModal({ onClose }: any) {
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-black">
-            Tambah Produk
+            {dict.productModal.titleAdd}
           </h2>
 
           <button
@@ -65,7 +67,7 @@ export default function ProductModal({ onClose }: any) {
           {/* Nama */}
           <input
             name="name"
-            placeholder="Nama Produk"
+            placeholder={dict.productModal.name}
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="w-full p-4 border-2 border-slate-300 rounded-lg text-black"
@@ -75,7 +77,7 @@ export default function ProductModal({ onClose }: any) {
           <input
             name="price"
             type="number"
-            placeholder="Harga"
+            placeholder={dict.productModal.price}
             value={price}
             onChange={(e) => setPrice(e.target.value)}
             className="w-full p-4 border-2 border-slate-300 rounded-lg text-black"
@@ -85,7 +87,7 @@ export default function ProductModal({ onClose }: any) {
           <input
             name="stock"
             type="number"
-            placeholder="Jumlah Stok"
+            placeholder={dict.productModal.stock}
             value={stock}
             onChange={(e) => setStock(e.target.value)}
             className="w-full p-4 border-2 border-slate-300 rounded-lg text-black"
@@ -95,7 +97,7 @@ export default function ProductModal({ onClose }: any) {
           <input
             name="minStock"
             type="number"
-            placeholder="Minimal Stok Alert"
+            placeholder={dict.productModal.minStock}
             value={minStock}
             onChange={(e) => setMinStock(e.target.value)}
             className="w-full p-4 border-2 border-slate-300 rounded-lg text-black"
@@ -120,12 +122,12 @@ export default function ProductModal({ onClose }: any) {
               {isPending ? (
                 <>
                   <Loader2 size={18} className="animate-spin" />
-                  Menyimpan...
+                  {dict.productModal.saving}
                 </>
               ) : (
                 <>
                   <Save size={18} />
-                  Simpan
+                  {dict.productModal.save}
                 </>
               )}
             </button>
@@ -137,7 +139,7 @@ export default function ProductModal({ onClose }: any) {
               disabled={isPending}
               className="flex-1 bg-slate-200 hover:bg-slate-300 text-black px-4 py-3 rounded-lg"
             >
-              Batal
+              {dict.productModal.cancel}
             </button>
 
           </div>

@@ -1,5 +1,10 @@
-"use server";
+// ============================================================================
+// ⚡ MODULE: SERVER ACTIONS
+// Kumpulan fungsi aksi server Next.js terpusat untuk interaksi database 
+// (MongoDB), login auth, manajamen produk, dan transaksi.
+// ============================================================================
 
+"use server";
 import dbConnect from "@/lib/db";
 import Transaction from "@/models/Transaction";
 import Product from "@/models/Product";

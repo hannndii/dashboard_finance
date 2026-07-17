@@ -1,5 +1,9 @@
-"use client";
+// ============================================================================
+// 🎨 MODULE: CORE LAYOUT (AppShell)
+// Pembungkus utama aplikasi. Mengatur tata letak responsif, Sidebar, dan Topbar.
+// ============================================================================
 
+"use client";
 import { useState } from "react";
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";

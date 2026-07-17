@@ -1,7 +1,12 @@
-"use client";
+// ============================================================================
+// 🧭 MODULE: NAVIGATION (Topbar)
+// Baris atas aplikasi. Menampilkan judul halaman, waktu terkini, dan tombol bahasa.
+// ============================================================================
 
-import { Bell, Settings, Menu } from "lucide-react";
+"use client";
+import { Menu } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useLanguage } from "./LanguageProvider";
 
 interface TopbarProps {
   title: string;
@@ -12,6 +17,7 @@ interface TopbarProps {
 
 export default function Topbar({ title, subtitle, rightElement, onMenuClick }: TopbarProps) {
   const [now, setNow] = useState<Date | null>(null);
+  const { dict, lang, setLang } = useLanguage();
 
   useEffect(() => {
     setNow(new Date());
@@ -19,17 +25,17 @@ export default function Topbar({ title, subtitle, rightElement, onMenuClick }: T
     return () => clearInterval(timer);
   }, []);
 
-  const formattedDate = now?.toLocaleDateString("en-US", {
+  const formattedDate = now?.toLocaleDateString(dict.topbar.dateLocale, {
     year: "numeric",
     month: "short",
     day: "numeric",
   });
 
-  const formattedTime = now?.toLocaleTimeString("en-US", {
+  const formattedTime = now?.toLocaleTimeString(dict.topbar.dateLocale, {
     hour: "numeric",
     minute: "2-digit",
     second: "2-digit",
-    hour12: true,
+    hour12: false,
   });
 
   return (
@@ -55,30 +61,40 @@ export default function Topbar({ title, subtitle, rightElement, onMenuClick }: T
       </div>
 
       {/* Right Section */}
-      <div className="flex items-center gap-6">
+      <div className="flex items-center gap-4 sm:gap-6">
         {rightElement ? (
           rightElement
         ) : (
           <>
             {/* Default Date and Status */}
-            <div className="hidden text-right sm:block">
+            <div className="hidden text-right sm:block pr-4 sm:pr-6 border-r border-slate-200">
               <p className="text-sm font-bold text-slate-900">{formattedDate}</p>
               <p className="text-[10px] uppercase tracking-wider text-slate-400">
                 {formattedTime}
               </p>
             </div>
-
-            {/* Icons */}
-            <div className="flex items-center gap-3 border-l border-slate-200 pl-6">
-              <button className="rounded-full p-2 text-slate-400 transition-colors hover:bg-slate-50 hover:text-slate-900 hover:cursor-pointer">
-                <Bell size={18} />
-              </button>
-              <button className="rounded-full p-2 text-slate-400 transition-colors hover:bg-slate-50 hover:text-slate-900 hover:cursor-pointer">
-                <Settings size={18} />
-              </button>
-            </div>
           </>
         )}
+        
+        {/* Language Toggle */}
+        <div className="flex bg-slate-100 rounded-lg p-1 relative w-[72px] shrink-0">
+          <button
+            onClick={() => setLang("id")}
+            className={`flex-1 flex items-center justify-center text-[10px] font-bold py-1.5 rounded-md transition-all z-10 ${
+              lang === "id" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700"
+            }`}
+          >
+            ID
+          </button>
+          <button
+            onClick={() => setLang("en")}
+            className={`flex-1 flex items-center justify-center text-[10px] font-bold py-1.5 rounded-md transition-all z-10 ${
+              lang === "en" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700"
+            }`}
+          >
+            EN
+          </button>
+        </div>
       </div>
     </header>
   );

@@ -1,3 +1,8 @@
+// ============================================================================
+// 📊 MODULE: DASHBOARD PAGE
+// Halaman utama setelah login, menampilkan ringkasan data transaksi.
+// ============================================================================
+
 import { getDashboardData } from "../action";
 import DashboardView from "../component/DashboardView";
 import AppShell from "../component/AppShell";

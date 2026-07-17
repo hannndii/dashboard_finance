@@ -3,11 +3,13 @@
 import { useState, useTransition } from "react";
 import { updateProduct } from "../action";
 import { Loader2, X, Save } from "lucide-react";
+import { useLanguage } from "./LanguageProvider";
 
 export default function EditProductModal({
   product,
   onClose,
 }: any) {
+  const { dict } = useLanguage();
   const [isPending, startTransition] = useTransition();
 
   const [name, setName] = useState(product.name);
@@ -26,7 +28,7 @@ export default function EditProductModal({
       stock < 0 ||
       minStock < 0
     ) {
-      setError("Semua field harus valid.");
+      setError(dict.productModal.errorValid);
       return;
     }
 
@@ -36,7 +38,7 @@ export default function EditProductModal({
       if (result?.status === "success") {
         onClose();
       } else {
-        setError("Gagal memperbarui produk.");
+        setError(dict.productModal.errorEdit);
       }
     });
   }
@@ -48,7 +50,7 @@ export default function EditProductModal({
         {/* HEADER */}
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl md:text-2xl font-bold text-black">
-            Edit Produk
+            {dict.productModal.titleEdit}
           </h2>
 
           <button
@@ -65,7 +67,7 @@ export default function EditProductModal({
           {/* Nama */}
           <div>
             <label className="block text-sm font-semibold text-slate-700 mb-2">
-              Nama Produk
+              {dict.productModal.name}
             </label>
 
             <input
@@ -80,7 +82,7 @@ export default function EditProductModal({
           {/* Harga */}
           <div>
             <label className="block text-sm font-semibold text-slate-700 mb-2">
-              Harga Produk (Rp)
+              {dict.productModal.price}
             </label>
 
             <input
@@ -96,7 +98,7 @@ export default function EditProductModal({
           {/* Stock */}
           <div>
             <label className="block text-sm font-semibold text-slate-700 mb-2">
-              Jumlah Stok
+              {dict.productModal.stock}
             </label>
 
             <input
@@ -112,7 +114,7 @@ export default function EditProductModal({
           {/* Min Stock */}
           <div>
             <label className="block text-sm font-semibold text-slate-700 mb-2">
-              Minimal Alert Stok
+              {dict.productModal.minStock}
             </label>
 
             <input
@@ -143,12 +145,12 @@ export default function EditProductModal({
               {isPending ? (
                 <>
                   <Loader2 size={18} className="animate-spin" />
-                  Menyimpan...
+                  {dict.productModal.saving}
                 </>
               ) : (
                 <>
                   <Save size={18} />
-                  Simpan Perubahan
+                  {dict.productModal.saveEdit}
                 </>
               )}
             </button>
@@ -159,7 +161,7 @@ export default function EditProductModal({
               onClick={onClose}
               className="flex-1 bg-slate-200 hover:bg-slate-300 text-black px-4 py-3 rounded-xl"
             >
-              Batal
+              {dict.productModal.cancel}
             </button>
 
           </div>

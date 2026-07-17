@@ -1,28 +1,37 @@
-name: Deploy to Vercel
+name: Manual Deployment Trigger (Template)
+
+# ==============================================================================
+# NOTE: Workflow ini di-disable secara default agar tidak bentrok dengan Vercel.
+# Gunakan workflow ini JIKA Anda memindahkan hosting ke VPS/Docker/Layanan lain.
+# Ubah `on: workflow_dispatch` menjadi `push` branch main jika ingin otomatis.
+# ==============================================================================
 
 on:
-  push:
-    branches: [ main, development ]
+  workflow_dispatch: # Hanya bisa dijalankan secara manual via GitHub Actions UI
 
 jobs:
   deploy:
-    name: Deploy
+    name: Generic Server Deployment
     runs-on: ubuntu-latest
     
     steps:
       - uses: actions/checkout@v4
       
-      - name: Deploy to Vercel
-        id: vercel
-        uses: vercel/action@v4
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          github-comment: true
-          
-      - name: Deployment Summary
+      - name: Deployment Placeholder
         run: |
-          echo "✅ Deployment successful!"
-          echo "Preview URL: ${{ steps.vercel.outputs.preview-url }}"
+          echo "🚀 Memulai proses deployment..."
+          echo "Tambahkan script SSH atau Docker Compose Anda di sini."
+          
+      # CONTOH DEPLOY VIA SSH (VPS)
+      # - name: Deploy to VPS via SSH
+      #   uses: appleboy/ssh-action@v1.0.3
+      #   with:
+      #     host: ${{ secrets.SERVER_HOST }}
+      #     username: ${{ secrets.SERVER_USER }}
+      #     key: ${{ secrets.SERVER_SSH_KEY }}
+      #     script: |
+      #       cd /var/www/dashboard_finance
+      #       git pull origin main
+      #       npm install
+      #       npm run build
+      #       pm2 restart canteen-app
