@@ -3,6 +3,7 @@
 import { useEffect, useState, useTransition, type ChangeEvent } from "react";
 import AppShell from "../component/AppShell";
 import { getProducts, addTransaction, uploadToDrive } from "../action";
+import { useLanguage } from "../component/LanguageProvider";
 import {
   Search,
   Plus,
@@ -39,6 +40,7 @@ function detectCategory(name: string) {
 }
 
 export default function TransactionPage() {
+  const { dict, lang } = useLanguage();
   const [products, setProducts] = useState<any[]>([]);
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Semua");
@@ -124,7 +126,7 @@ export default function TransactionPage() {
   const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
 
   const formatRp = (n: number) =>
-    new Intl.NumberFormat("id-ID", {
+    new Intl.NumberFormat(lang === "en" ? "en-US" : "id-ID", {
       style: "currency",
       currency: "IDR",
       minimumFractionDigits: 0,
@@ -141,23 +143,23 @@ export default function TransactionPage() {
     if (result.status === "success") {
       setReceiptUrl(result.url ?? "");
       setStatusType("success");
-      setStatusMessage("Bukti QRIS berhasil diunggah.");
+      setStatusMessage(dict.transaction.receiptSuccess);
     } else {
       setStatusType("error");
-      setStatusMessage(result.message ?? "Gagal mengunggah bukti QRIS.");
+      setStatusMessage(result.message ?? "Failed");
     }
   };
 
   const handleSubmit = () => {
     if (cart.length === 0) {
       setStatusType("error");
-      setStatusMessage("Keranjang masih kosong.");
+      setStatusMessage(dict.transaction.errorEmpty);
       return;
     }
 
     if (paymentMethod === "QRIS" && !receiptUrl) {
       setStatusType("error");
-      setStatusMessage("Unggah bukti pembayaran QRIS terlebih dahulu.");
+      setStatusMessage(dict.transaction.errorReceipt);
       return;
     }
 
@@ -173,11 +175,11 @@ export default function TransactionPage() {
         clearCart();
         setPaymentMethod("Tunai");
         setStatusType("success");
-        setStatusMessage(result.message ?? "Transaksi berhasil disimpan.");
+        setStatusMessage(dict.transaction.successSave);
         setIsMobileCartOpen(false);
       } else {
         setStatusType("error");
-        setStatusMessage(result.message ?? "Gagal menyimpan transaksi.");
+        setStatusMessage(dict.transaction.errorSave);
       }
     });
   };
@@ -189,7 +191,7 @@ export default function TransactionPage() {
         <div className="mx-auto flex max-w-4xl items-center justify-between gap-4 rounded-3xl bg-slate-900/95 backdrop-blur-md p-4 px-6 text-white shadow-2xl shadow-slate-900/50 pointer-events-auto transition-all">
           <div>
             <p className="text-xs font-semibold uppercase text-slate-300">
-              Total ({cart.length} item)
+              {dict.transaction.totalItem} ({cart.length} item)
             </p>
             <p className="text-xl font-bold">{formatRp(total)}</p>
           </div>
@@ -198,7 +200,7 @@ export default function TransactionPage() {
             className="flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-bold text-slate-900 shadow-md transition hover:bg-slate-100 hover:cursor-pointer"
           >
             <ShoppingCart size={18} />
-            Selesaikan
+            {dict.transaction.finish}
           </button>
         </div>
       </div>
@@ -209,14 +211,14 @@ export default function TransactionPage() {
     <div className="flex h-full flex-col overflow-hidden rounded-[1.5rem] border border-slate-200 bg-slate-50/50">
       <div className="flex shrink-0 items-center justify-between p-6 pb-2">
         <h3 className="text-lg font-bold text-slate-900">
-          Pesanan Saat Ini
+          {dict.transaction.currentOrder}
         </h3>
         <button
           type="button"
           onClick={clearCart}
           className="text-[10px] font-medium text-slate-500 underline hover:text-red-500 hover:cursor-pointer"
         >
-          Kosongkan Keranjang
+          {dict.transaction.clearCart}
         </button>
       </div>
 
@@ -224,7 +226,7 @@ export default function TransactionPage() {
         <div className="space-y-4">
           {cart.length === 0 ? (
             <div className="flex min-h-[12rem] flex-col items-center justify-center rounded-[1rem] border border-dashed border-slate-300 bg-white p-6 text-center text-sm text-slate-500">
-              Keranjang masih kosong.
+              {dict.transaction.emptyCart}
             </div>
           ) : (
             cart.map((item, index) => (
@@ -241,7 +243,7 @@ export default function TransactionPage() {
                        {item.productName}
                      </p>
                      <p className="text-[10px] text-slate-500">
-                       Rp {item.price.toLocaleString("id-ID")}
+                       {formatRp(item.price)}
                      </p>
                    </div>
                 </div>
@@ -268,7 +270,7 @@ export default function TransactionPage() {
                 
                 <div className="w-20 flex justify-end items-center gap-2">
                   <span className="text-xs font-bold text-slate-900">
-                     Rp {(item.price * item.qty).toLocaleString("id-ID")}
+                     {formatRp(item.price * item.qty)}
                   </span>
                   <button
                     onClick={() => removeItem(index)}
@@ -282,7 +284,7 @@ export default function TransactionPage() {
           )}
           {cart.length > 0 && (
              <div className="text-center text-[10px] italic text-slate-400 mt-4">
-                Pilih menu untuk menambahkan ke keranjang
+                {dict.transaction.scanQr}
              </div>
           )}
         </div>
@@ -290,26 +292,26 @@ export default function TransactionPage() {
 
       <div className="shrink-0 bg-white p-6 rounded-t-[1.5rem] shadow-[0_-4px_20px_rgb(0,0,0,0.03)] border-t border-slate-100">
         <div className="mb-3 flex items-center justify-between text-xs text-slate-500">
-          <span className="font-medium">Subtotal</span>
+          <span className="font-medium">{dict.transaction.subtotal}</span>
           <span className="font-medium">{formatRp(total)}</span>
         </div>
         <div className="mb-6 flex items-center justify-between">
-          <span className="text-sm font-bold text-slate-900">Total Pembayaran</span>
+          <span className="text-sm font-bold text-slate-900">{dict.transaction.totalAmount}</span>
           <span className="text-xl font-bold text-slate-900">{formatRp(total)}</span>
         </div>
 
         <div className="mb-4">
           <div className="flex gap-2">
             {[
-              { label: "Tunai", icon: <DollarSign size={16} /> },
-              { label: "Kartu / QRIS", icon: <CreditCard size={16} /> },
+              { label: dict.transaction.cash, id: "Tunai", icon: <DollarSign size={16} /> },
+              { label: dict.transaction.card, id: "Kartu / QRIS", icon: <CreditCard size={16} /> },
             ].map((option) => (
               <button
-                key={option.label}
+                key={option.id}
                 type="button"
-                onClick={() => setPaymentMethod(option.label === "Kartu / QRIS" ? "QRIS" : option.label)}
+                onClick={() => setPaymentMethod(option.id === "Kartu / QRIS" ? "QRIS" : option.id)}
                 className={`flex flex-1 items-center justify-center gap-2 rounded-xl border px-3 py-3 text-xs font-bold transition hover:cursor-pointer ${
-                  (paymentMethod === option.label || (paymentMethod === "QRIS" && option.label === "Kartu / QRIS"))
+                  (paymentMethod === option.id || (paymentMethod === "QRIS" && option.id === "Kartu / QRIS"))
                     ? "border-slate-900 bg-slate-900 text-white"
                     : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
                 }`}
@@ -324,7 +326,7 @@ export default function TransactionPage() {
         {paymentMethod === "QRIS" && (
           <div className="mb-4 rounded-xl border border-slate-200 bg-slate-50 p-3">
             <p className="mb-2 text-[10px] font-bold text-slate-900 uppercase">
-              Unggah Bukti
+              {dict.transaction.uploadReceipt}
             </p>
             <input
               type="file"
@@ -334,7 +336,7 @@ export default function TransactionPage() {
             />
             {receiptUrl && (
               <div className="mt-2 rounded-lg border border-slate-200 bg-white p-2 text-[10px] font-medium text-slate-700">
-                Bukti berhasil diunggah.
+                {dict.transaction.receiptSuccess}
               </div>
             )}
           </div>
@@ -358,7 +360,7 @@ export default function TransactionPage() {
           disabled={isPending}
           className="w-full rounded-xl bg-slate-900 px-4 py-4 text-xs font-bold uppercase tracking-widest text-white transition hover:cursor-pointer hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {isPending ? "Memproses..." : "Selesaikan Pembayaran"}
+          {isPending ? dict.transaction.processing : dict.transaction.complete}
         </button>
       </div>
     </div>
@@ -366,7 +368,7 @@ export default function TransactionPage() {
 
   return (
     <AppShell
-      title="Transaksi Baru"
+      title={dict.transaction.title}
       rightElement={
         <div className="flex items-center gap-6">
           <div className="relative hidden sm:block w-64">
@@ -375,13 +377,13 @@ export default function TransactionPage() {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Cari Menu Cepat..."
+              placeholder={dict.transaction.searchPlaceholder}
               className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-4 text-sm font-medium text-slate-900 shadow-sm outline-none transition focus:border-slate-300 focus:bg-white"
             />
           </div>
           <div className="hidden text-right sm:block pl-6 border-l border-slate-200">
             <p className="text-sm font-bold text-slate-900">
-              {new Date().toLocaleDateString("id-ID", { month: "short", day: "numeric", year: "numeric" })}
+              {new Date().toLocaleDateString(dict.topbar.dateLocale, { month: "short", day: "numeric", year: "numeric" })}
             </p>
           </div>
         </div>
@@ -390,14 +392,12 @@ export default function TransactionPage() {
       <div className="mx-auto flex w-full flex-col gap-6 pb-24 lg:pb-8">
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px] xl:grid-cols-[minmax(0,1fr)_420px]">
           <section className="min-w-0 space-y-6">
-            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-              <div>
-                <h2 className="text-xl font-bold text-slate-900">
-                  Daftar Menu
-                </h2>
-              </div>
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <h2 className="text-xl font-bold text-slate-900 whitespace-nowrap">
+                {dict.transaction.menuItems}
+              </h2>
               <div className="flex flex-wrap gap-2">
-                {categoryOptions.map((category) => (
+                {categoryOptions.map((category, idx) => (
                   <button
                     key={category}
                     type="button"
@@ -408,13 +408,13 @@ export default function TransactionPage() {
                         : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
                     }`}
                   >
-                    {category}
+                    {dict.transaction.categories[idx]}
                   </button>
                 ))}
               </div>
             </div>
 
-            <div className="grid min-w-0 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4">
+            <div className="grid min-w-0 gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
               {filteredProducts.length > 0 ? (
                 filteredProducts.map((product) => (
                   <button
@@ -433,13 +433,13 @@ export default function TransactionPage() {
                         {product.name}
                       </h3>
                       <p className="mt-1 text-[10px] text-slate-500 line-clamp-2">
-                        Menu lezat {product.category.toLowerCase()} yang siap disajikan untuk Anda.
+                        {dict.transaction.desc}
                       </p>
                       <div className="mt-4 flex items-center justify-between">
                         <span className="text-sm font-bold text-slate-900">
-                          Rp {product.price.toLocaleString("id-ID")}
+                          {formatRp(product.price)}
                         </span>
-                        <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-50 border border-slate-100 text-slate-900 transition-colors group-hover:bg-slate-900 group-hover:text-white">
+                        <div className="shrink-0 flex h-8 w-8 items-center justify-center rounded-xl bg-slate-50 border border-slate-100 text-slate-900 transition-colors group-hover:bg-slate-900 group-hover:text-white">
                           <Plus size={16} />
                         </div>
                       </div>
@@ -448,13 +448,13 @@ export default function TransactionPage() {
                 ))
               ) : (
                 <div className="col-span-full rounded-3xl border border-dashed border-slate-300 bg-white p-8 text-center text-slate-500">
-                  Tidak ada menu yang cocok.
+                  {dict.transaction.noMenu}
                 </div>
               )}
             </div>
           </section>
 
-          <aside className="hidden w-full lg:sticky lg:top-0 lg:block lg:self-start lg:h-[calc(100vh-8rem)] z-10">
+          <aside className="hidden w-full lg:sticky lg:top-0 lg:block lg:self-start lg:h-[calc(100vh-11rem)] z-10">
             <OrderPanel />
           </aside>
         </div>

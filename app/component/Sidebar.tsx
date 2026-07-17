@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useLanguage } from "./LanguageProvider";
 import {
   LayoutDashboard,
   ShoppingCart,
@@ -16,25 +17,27 @@ export default function Sidebar({ onClose }: { onClose?: () => void }) {
   const pathname = usePathname();
   const router = useRouter();
 
+  const { dict, lang, setLang, isPending } = useLanguage();
+
   const menus = [
     {
       href: "/dashboard",
-      label: "Halaman Utama",
+      label: dict.sidebar.dashboard,
       icon: <LayoutDashboard size={20} />,
     },
     {
       href: "/transaction",
-      label: "Transaksi",
+      label: dict.sidebar.transaction,
       icon: <ShoppingCart size={20} />,
     },
     {
       href: "/stock",
-      label: "Manajemen Stok",
+      label: dict.sidebar.stock,
       icon: <Package size={20} />,
     },
     {
       href: "/report",
-      label: "Laporan Keuangan",
+      label: dict.sidebar.report,
       icon: <BarChart3 size={20} />,
     },
   ];
@@ -93,6 +96,8 @@ export default function Sidebar({ onClose }: { onClose?: () => void }) {
           );
         })}
       </nav>
+
+
 
       {/* User Profile Section */}
       <div className="shrink-0 p-4">

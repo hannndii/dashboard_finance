@@ -12,12 +12,14 @@ import {
   EyeOff
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useLanguage } from "./component/LanguageProvider";
 
 export default function LoginPage() {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
+  const { dict } = useLanguage();
 
   async function handleSubmit(formData: FormData) {
     setError("");
@@ -54,7 +56,7 @@ export default function LoginPage() {
           {/* Username */}
           <div className="space-y-2">
             <label htmlFor="username" className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
-              Nama Pengguna
+              {dict.login.username}
             </label>
             <div className="flex items-center rounded-xl bg-slate-50 px-4 py-3.5 border border-slate-100 transition focus-within:border-slate-300 focus-within:bg-white">
               <User size={16} className="text-slate-400 shrink-0" />
@@ -63,7 +65,7 @@ export default function LoginPage() {
                 name="username"
                 autoComplete="username"
                 className="w-full ml-3 bg-transparent outline-none text-sm font-medium text-slate-900 placeholder-slate-400"
-                placeholder="admin_user"
+                placeholder={dict.login.usernamePlaceholder}
               />
             </div>
           </div>
@@ -72,7 +74,7 @@ export default function LoginPage() {
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <label htmlFor="password" className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
-                Kata Sandi
+                {dict.login.password}
               </label>
               <button type="button" className="text-[10px] font-bold text-slate-900 hover:underline">
                 Lupa?
@@ -125,10 +127,10 @@ export default function LoginPage() {
             {isPending ? (
               <span className="flex items-center justify-center gap-2">
                 <Loader2 size={16} className="animate-spin" />
-                Processing...
+                {dict.login.buttonLoading}
               </span>
             ) : (
-              "Masuk"
+              dict.login.button
             )}
           </button>
         </form>
