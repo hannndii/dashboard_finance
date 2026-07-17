@@ -66,67 +66,101 @@ export default function ProductModal({ onClose }: any) {
         </div>
 
         {/* Form */}
-        <form action={handleSubmit} className="space-y-4">
+        <form action={handleSubmit} className="space-y-3 md:space-y-4">
+          
+          {/* Baris 1: Nama Produk */}
+          <div>
+            <label className="block text-xs md:text-sm font-semibold text-slate-700 mb-1.5">
+              {dict.productModal.name}
+            </label>
+            <input
+              name="name"
+              required
+              placeholder={dict.productModal.name}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full px-4 py-2.5 border-2 border-slate-300 rounded-xl text-black focus:border-slate-500 focus:ring-0 outline-none transition-all"
+            />
+          </div>
 
-          {/* Nama */}
-          <input
-            name="name"
-            placeholder={dict.productModal.name}
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full p-4 border-2 border-slate-300 rounded-lg text-black"
-          />
+          {/* Baris 2: Harga & Kategori */}
+          <div className="grid grid-cols-2 gap-3 md:gap-4">
+            <div>
+              <label className="block text-xs md:text-sm font-semibold text-slate-700 mb-1.5">
+                {dict.productModal.price}
+              </label>
+              <input
+                name="price"
+                type="number"
+                required
+                placeholder={dict.productModal.price}
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                className="w-full px-4 py-2.5 border-2 border-slate-300 rounded-xl text-black focus:border-slate-500 outline-none transition-all"
+              />
+            </div>
+            <div>
+              <label className="block text-xs md:text-sm font-semibold text-slate-700 mb-1.5">
+                Kategori
+              </label>
+              <select
+                name="category"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="w-full px-4 py-2.5 border-2 border-slate-300 rounded-xl text-black bg-white focus:border-slate-500 outline-none transition-all"
+              >
+                <option value="Makanan Berat">Makanan Berat</option>
+                <option value="Minuman">Minuman</option>
+                <option value="Cemilan">Cemilan</option>
+              </select>
+            </div>
+          </div>
 
-          {/* Harga */}
-          <input
-            name="price"
-            type="number"
-            placeholder={dict.productModal.price}
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            className="w-full p-4 border-2 border-slate-300 rounded-lg text-black"
-          />
+          {/* Baris 3: Stok & Min Stok */}
+          <div className="grid grid-cols-2 gap-3 md:gap-4">
+            <div>
+              <label className="block text-xs md:text-sm font-semibold text-slate-700 mb-1.5">
+                {dict.productModal.stock}
+              </label>
+              <input
+                name="stock"
+                type="number"
+                required
+                placeholder={dict.productModal.stock}
+                value={stock}
+                onChange={(e) => setStock(e.target.value)}
+                className="w-full px-4 py-2.5 border-2 border-slate-300 rounded-xl text-black focus:border-slate-500 outline-none transition-all"
+              />
+            </div>
+            <div>
+              <label className="block text-xs md:text-sm font-semibold text-slate-700 mb-1.5">
+                {dict.productModal.minStock}
+              </label>
+              <input
+                name="minStock"
+                type="number"
+                required
+                placeholder={dict.productModal.minStock}
+                value={minStock}
+                onChange={(e) => setMinStock(e.target.value)}
+                className="w-full px-4 py-2.5 border-2 border-slate-300 rounded-xl text-black focus:border-slate-500 outline-none transition-all"
+              />
+            </div>
+          </div>
 
-          {/* Stok */}
-          <input
-            name="stock"
-            type="number"
-            placeholder={dict.productModal.stock}
-            value={stock}
-            onChange={(e) => setStock(e.target.value)}
-            className="w-full p-4 border-2 border-slate-300 rounded-lg text-black"
-          />
-
-          {/* Kategori */}
-          <select
-            name="category"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="w-full p-4 border-2 border-slate-300 rounded-lg text-black bg-white"
-          >
-            <option value="Makanan Berat">Makanan Berat</option>
-            <option value="Minuman">Minuman</option>
-            <option value="Cemilan">Cemilan</option>
-          </select>
-
-          {/* Deskripsi */}
-          <textarea
-            name="description"
-            placeholder="Deskripsi Singkat (Opsional)"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="w-full p-4 border-2 border-slate-300 rounded-lg text-black resize-none h-24"
-          ></textarea>
-
-          {/* Minimum Stock */}
-          <input
-            name="minStock"
-            type="number"
-            placeholder={dict.productModal.minStock}
-            value={minStock}
-            onChange={(e) => setMinStock(e.target.value)}
-            className="w-full p-4 border-2 border-slate-300 rounded-lg text-black"
-          />
+          {/* Baris 4: Deskripsi */}
+          <div>
+            <label className="block text-xs md:text-sm font-semibold text-slate-700 mb-1.5">
+              Deskripsi Singkat
+            </label>
+            <textarea
+              name="description"
+              placeholder="Deskripsi opsional..."
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="w-full px-4 py-2.5 border-2 border-slate-300 rounded-xl text-black resize-none h-20 focus:border-slate-500 outline-none transition-all"
+            ></textarea>
+          </div>
 
           {/* Error */}
           {error && (
