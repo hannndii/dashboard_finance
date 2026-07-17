@@ -1,5 +1,5 @@
 // ============================================================================
-// 🧭 MODULE: NAVIGATION (Sidebar)
+// MODULE: NAVIGATION (Sidebar)
 // Sidebar menu navigasi, berisi profil pengguna, dan link ke halaman utama.
 // ============================================================================
 
