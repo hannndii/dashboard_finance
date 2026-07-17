@@ -240,7 +240,6 @@ export default function StockPage() {
             </table>
           </div>
         </div>
-        </div>
       </div>
 
       {showModal && (
