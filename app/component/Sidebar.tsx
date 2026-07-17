@@ -18,7 +18,7 @@ export default function Sidebar({ onClose }: { onClose?: () => void }) {
 
   const menus = [
     {
-      href: "/",
+      href: "/dashboard",
       label: "Halaman Utama",
       icon: <LayoutDashboard size={20} />,
     },
@@ -45,7 +45,7 @@ export default function Sidebar({ onClose }: { onClose?: () => void }) {
         method: "POST",
       });
       // Force full page reload to clear all states and trigger middleware
-      window.location.href = "/login";
+      window.location.href = "/";
     } catch (error) {
       console.error("Logout failed:", error);
     }
