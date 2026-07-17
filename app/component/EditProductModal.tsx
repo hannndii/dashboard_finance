@@ -16,6 +16,8 @@ export default function EditProductModal({
   const [price, setPrice] = useState(product.price);
   const [stock, setStock] = useState(product.stock);
   const [minStock, setMinStock] = useState(product.minStock);
+  const [category, setCategory] = useState(product.category || "Makanan Berat");
+  const [description, setDescription] = useState(product.description || "");
 
   const [error, setError] = useState("");
 
@@ -26,7 +28,8 @@ export default function EditProductModal({
       !name.trim() ||
       price <= 0 ||
       stock < 0 ||
-      minStock < 0
+      minStock < 0 ||
+      !category.trim()
     ) {
       setError(dict.productModal.errorValid);
       return;
@@ -125,6 +128,38 @@ export default function EditProductModal({
               onChange={(e) => setMinStock(Number(e.target.value))}
               className="w-full p-4 border-2 border-slate-300 rounded-xl text-black"
             />
+          </div>
+
+          {/* Kategori */}
+          <div>
+            <label className="block text-sm font-semibold text-slate-700 mb-2">
+              Kategori
+            </label>
+
+            <select
+              name="category"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="w-full p-4 border-2 border-slate-300 rounded-xl text-black bg-white"
+            >
+              <option value="Makanan Berat">Makanan Berat</option>
+              <option value="Minuman">Minuman</option>
+              <option value="Cemilan">Cemilan</option>
+            </select>
+          </div>
+
+          {/* Deskripsi */}
+          <div>
+            <label className="block text-sm font-semibold text-slate-700 mb-2">
+              Deskripsi Singkat
+            </label>
+
+            <textarea
+              name="description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="w-full p-4 border-2 border-slate-300 rounded-xl text-black resize-none h-24"
+            ></textarea>
           </div>
 
           {/* Error */}
