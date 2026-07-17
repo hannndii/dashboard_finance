@@ -44,8 +44,8 @@ export default function Sidebar({ onClose }: { onClose?: () => void }) {
       await fetch("/api/logout", {
         method: "POST",
       });
-      router.push("/login-page");
-      router.refresh();
+      // Force full page reload to clear all states and trigger middleware
+      window.location.href = "/login";
     } catch (error) {
       console.error("Logout failed:", error);
     }

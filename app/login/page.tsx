@@ -50,13 +50,15 @@ export default function LoginPage() {
         <form action={handleSubmit} className="space-y-6">
           {/* Username */}
           <div className="space-y-2">
-            <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+            <label htmlFor="username" className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
               Nama Pengguna
             </label>
             <div className="flex items-center rounded-xl bg-slate-50 px-4 py-3.5 border border-slate-100 transition focus-within:border-slate-300 focus-within:bg-white">
               <User size={16} className="text-slate-400 shrink-0" />
               <input
+                id="username"
                 name="username"
+                autoComplete="username"
                 className="w-full ml-3 bg-transparent outline-none text-sm font-medium text-slate-900 placeholder-slate-400"
                 placeholder="admin_user"
               />
@@ -66,7 +68,7 @@ export default function LoginPage() {
           {/* Password */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+              <label htmlFor="password" className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
                 Kata Sandi
               </label>
               <button type="button" className="text-[10px] font-bold text-slate-900 hover:underline">
@@ -76,8 +78,10 @@ export default function LoginPage() {
             <div className="flex items-center rounded-xl bg-slate-50 px-4 py-3.5 border border-slate-100 transition focus-within:border-slate-300 focus-within:bg-white">
               <Lock size={16} className="text-slate-400 shrink-0" />
               <input
+                id="password"
                 name="password"
                 type="password"
+                autoComplete="current-password"
                 className="w-full ml-3 bg-transparent outline-none text-sm font-medium text-slate-900 placeholder-slate-400"
                 placeholder="••••••••"
               />
