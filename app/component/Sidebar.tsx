@@ -62,7 +62,7 @@ export default function Sidebar({ onClose }: { onClose?: () => void }) {
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[0.8rem] bg-slate-900 shadow-sm">
             <Utensils size={18} className="text-white" />
           </div>
-          <h1 className="text-lg font-bold text-slate-900 tracking-tight">CanteenSys</h1>
+          <h1 className="text-lg font-bold text-slate-900 tracking-tight">KANTIN AU</h1>
         </div>
         {onClose && (
           <button onClick={onClose} className="p-1 text-slate-400 hover:text-slate-900 md:hidden hover:cursor-pointer">
