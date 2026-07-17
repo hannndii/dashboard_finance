@@ -1,4 +1,4 @@
-# CanteenSys - Modern Finance & Order Management System
+# KANTIN AU - Modern Finance & Order Management System
 
 CanteenSys is a highly responsive, full-stack Point of Sale (POS) and Financial Dashboard designed to streamline canteen order management, stock tracking, and revenue reporting. Built with modern web development practices, it prioritizes performance, security, and a premium User Experience (UX).
 
