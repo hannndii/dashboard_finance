@@ -13,12 +13,14 @@ export default function ProductModal({ onClose }: any) {
   const [price, setPrice] = useState("");
   const [stock, setStock] = useState("");
   const [minStock, setMinStock] = useState("");
+  const [category, setCategory] = useState("Makanan Berat");
+  const [description, setDescription] = useState("");
   const [error, setError] = useState("");
 
   async function handleSubmit(formData: FormData) {
     setError("");
 
-    if (!name || !price || !stock || !minStock) {
+    if (!name || !price || !stock || !minStock || !category) {
       setError(dict.productModal.errorEmpty);
       return;
     }
@@ -39,6 +41,8 @@ export default function ProductModal({ onClose }: any) {
     setPrice("");
     setStock("");
     setMinStock("");
+    setCategory("Makanan Berat");
+    setDescription("");
     setError("");
     onClose();
   }
@@ -92,6 +96,27 @@ export default function ProductModal({ onClose }: any) {
             onChange={(e) => setStock(e.target.value)}
             className="w-full p-4 border-2 border-slate-300 rounded-lg text-black"
           />
+
+          {/* Kategori */}
+          <select
+            name="category"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="w-full p-4 border-2 border-slate-300 rounded-lg text-black bg-white"
+          >
+            <option value="Makanan Berat">Makanan Berat</option>
+            <option value="Minuman">Minuman</option>
+            <option value="Cemilan">Cemilan</option>
+          </select>
+
+          {/* Deskripsi */}
+          <textarea
+            name="description"
+            placeholder="Deskripsi Singkat (Opsional)"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="w-full p-4 border-2 border-slate-300 rounded-lg text-black resize-none h-24"
+          ></textarea>
 
           {/* Minimum Stock */}
           <input

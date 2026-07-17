@@ -74,7 +74,7 @@ export default function StockPage() {
     (product) => product.stock === 0,
   ).length;
 
-  const categoryCount = new Set(products.map((product) => product.category)).size;
+  const categoryCount = new Set(products.map((product) => product.category || "Makanan Berat")).size;
 
   async function handleDelete(id: string) {
     await deleteProduct(id);
@@ -180,7 +180,7 @@ export default function StockPage() {
                         </td>
 
                         <td className="py-4 font-medium text-slate-500">
-                          {product.category}
+                          {product.category || "Makanan Berat"}
                         </td>
 
                         <td className="py-4">

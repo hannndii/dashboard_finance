@@ -332,8 +332,10 @@ export async function addProduct(formData: FormData) {
     const price = Number(formData.get("price"));
     const stock = Number(formData.get("stock"));
     const minStock = Number(formData.get("minStock"));
+    const category = formData.get("category")?.toString().trim() || "Makanan Berat";
+    const description = formData.get("description")?.toString().trim() || "";
 
-    if (!name || !price || !stock || !minStock) {
+    if (!name || !price || !stock || !minStock || !category) {
       return {
         status: "error",
       };
@@ -344,6 +346,8 @@ export async function addProduct(formData: FormData) {
       price,
       stock,
       minStock,
+      category,
+      description,
     });
 
     revalidatePath("/stock");
@@ -397,6 +401,8 @@ export async function updateProduct(id: string, formData: FormData) {
       price: Number(formData.get("price")),
       stock: Number(formData.get("stock")),
       minStock: Number(formData.get("minStock")),
+      category: formData.get("category")?.toString().trim() || "Makanan Berat",
+      description: formData.get("description")?.toString().trim() || "",
     });
 
     revalidatePath("/stock");

@@ -22,28 +22,6 @@ import {
 
 const categoryOptions = ["Semua", "Makanan Berat", "Minuman", "Cemilan"];
 
-function detectCategory(name: string) {
-  const lower = name.toLowerCase();
-
-  if (/(coffee|tea|juice|milk|latte|espresso|coke|soda|drink)/.test(lower)) {
-    return "Minuman";
-  }
-
-  if (
-    /(burger|rice|soup|salad|sandwich|noodle|pasta|meal|chicken|beef|fish|dish)/.test(
-      lower,
-    )
-  ) {
-    return "Makanan Berat";
-  }
-
-  if (/(snack|chips|cookie|cake|brownie|dessert|pastry|toast)/.test(lower)) {
-    return "Cemilan";
-  }
-
-  return "Makanan Berat";
-}
-
 export default function TransactionPage() {
   const { dict, lang } = useLanguage();
   const [products, setProducts] = useState<any[]>([]);
@@ -63,7 +41,8 @@ export default function TransactionPage() {
       setProducts(
         data.map((product: any) => ({
           ...product,
-          category: product.category || detectCategory(product.name),
+          category: product.category || "Makanan Berat",
+          description: product.description || dict.transaction.desc,
         })),
       );
     }
@@ -437,8 +416,8 @@ export default function TransactionPage() {
                       <h3 className="text-sm font-bold text-slate-900">
                         {product.name}
                       </h3>
-                      <p className="mt-1 text-[10px] text-slate-500 line-clamp-2">
-                        {dict.transaction.desc}
+                      <p className="mt-1 text-[10px] text-slate-500 line-clamp-2 min-h-3">
+                        {product.description}
                       </p>
                       <div className="mt-4 flex items-center justify-between">
                         <span className="text-sm font-bold text-slate-900">

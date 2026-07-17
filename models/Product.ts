@@ -18,6 +18,14 @@ const ProductSchema = new mongoose.Schema(
       type: Number,
       default: 5,
     },
+    category: {
+      type: String,
+      default: "Makanan Berat",
+    },
+    description: {
+      type: String,
+      default: "",
+    },
   },
   { timestamps: true }
 );
