@@ -10,20 +10,25 @@
   },
   "dependencies": {
     "@vercel/analytics": "^1.6.1",
+    "bcryptjs": "^3.0.3",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
+    "exceljs": "^4.4.0",
     "googleapis": "^171.4.0",
     "lucide-react": "^0.563.0",
     "mongodb": "4.1",
     "mongoose": "^9.1.5",
     "next": "16.1.6",
+    "pdfkit": "^0.19.1",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "recharts": "^3.7.0"
+    "recharts": "^3.7.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
+    "@types/pdfkit": "^0.17.6",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",

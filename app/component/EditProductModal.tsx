@@ -1,0 +1,170 @@
+"use client";
+
+import { useState, useTransition } from "react";
+import { updateProduct } from "../action";
+import { Loader2, X, Save } from "lucide-react";
+
+export default function EditProductModal({
+  product,
+  onClose,
+}: any) {
+  const [isPending, startTransition] = useTransition();
+
+  const [name, setName] = useState(product.name);
+  const [price, setPrice] = useState(product.price);
+  const [stock, setStock] = useState(product.stock);
+  const [minStock, setMinStock] = useState(product.minStock);
+
+  const [error, setError] = useState("");
+
+  async function handleSubmit(formData: FormData) {
+    setError("");
+
+    if (
+      !name.trim() ||
+      price <= 0 ||
+      stock < 0 ||
+      minStock < 0
+    ) {
+      setError("Semua field harus valid.");
+      return;
+    }
+
+    startTransition(async () => {
+      const result = await updateProduct(product._id, formData);
+
+      if (result?.status === "success") {
+        onClose();
+      } else {
+        setError("Gagal memperbarui produk.");
+      }
+    });
+  }
+
+  return (
+    <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50 p-4">
+      <div className="bg-white rounded-2xl p-6 w-full max-w-lg shadow-xl">
+
+        {/* HEADER */}
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-xl md:text-2xl font-bold text-black">
+            Edit Produk
+          </h2>
+
+          <button
+            onClick={onClose}
+            disabled={isPending}
+            className="p-2 rounded-lg hover:bg-slate-100"
+          >
+            <X size={20} />
+          </button>
+        </div>
+
+        <form action={handleSubmit} className="space-y-5">
+
+          {/* Nama */}
+          <div>
+            <label className="block text-sm font-semibold text-slate-700 mb-2">
+              Nama Produk
+            </label>
+
+            <input
+              name="name"
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full p-4 border-2 border-slate-300 rounded-xl text-black"
+            />
+          </div>
+
+          {/* Harga */}
+          <div>
+            <label className="block text-sm font-semibold text-slate-700 mb-2">
+              Harga Produk (Rp)
+            </label>
+
+            <input
+              name="price"
+              type="number"
+              required
+              value={price}
+              onChange={(e) => setPrice(Number(e.target.value))}
+              className="w-full p-4 border-2 border-slate-300 rounded-xl text-black"
+            />
+          </div>
+
+          {/* Stock */}
+          <div>
+            <label className="block text-sm font-semibold text-slate-700 mb-2">
+              Jumlah Stok
+            </label>
+
+            <input
+              name="stock"
+              type="number"
+              required
+              value={stock}
+              onChange={(e) => setStock(Number(e.target.value))}
+              className="w-full p-4 border-2 border-slate-300 rounded-xl text-black"
+            />
+          </div>
+
+          {/* Min Stock */}
+          <div>
+            <label className="block text-sm font-semibold text-slate-700 mb-2">
+              Minimal Alert Stok
+            </label>
+
+            <input
+              name="minStock"
+              type="number"
+              required
+              value={minStock}
+              onChange={(e) => setMinStock(Number(e.target.value))}
+              className="w-full p-4 border-2 border-slate-300 rounded-xl text-black"
+            />
+          </div>
+
+          {/* Error */}
+          {error && (
+            <p className="text-red-500 text-sm font-semibold">
+              {error}
+            </p>
+          )}
+
+          {/* Buttons */}
+          <div className="flex flex-col md:flex-row gap-3 pt-2">
+
+            <button
+              type="submit"
+              disabled={isPending}
+              className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-3 rounded-xl flex items-center justify-center gap-2 disabled:opacity-50"
+            >
+              {isPending ? (
+                <>
+                  <Loader2 size={18} className="animate-spin" />
+                  Menyimpan...
+                </>
+              ) : (
+                <>
+                  <Save size={18} />
+                  Simpan Perubahan
+                </>
+              )}
+            </button>
+
+            <button
+              type="button"
+              disabled={isPending}
+              onClick={onClose}
+              className="flex-1 bg-slate-200 hover:bg-slate-300 text-black px-4 py-3 rounded-xl"
+            >
+              Batal
+            </button>
+
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}

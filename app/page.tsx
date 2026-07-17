@@ -1,249 +1,145 @@
-import { getDashboardData } from './action';
-import Link from 'next/link';
+"use client";
+
+import { useState, useTransition } from "react";
+import { loginAdmin } from "./action";
 import {
-  LayoutDashboard,
-  ShoppingCart,
-  Package,
-  BarChart3,
-  Search,
-  Bell,
-  Mail,
-  DollarSign,
-  Calendar,
-  Users
-} from 'lucide-react';
-import { RevenueChart } from './component/RevenueCart';
+  ShieldCheck,
+  Lock,
+  User,
+  Loader2,
+  Utensils,
+  Eye,
+  EyeOff
+} from "lucide-react";
+import { useRouter } from "next/navigation";
 
-export const dynamic = 'force-dynamic';
+export default function LoginPage() {
+  const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
 
-export default async function Dashboard() {
-  const data = await getDashboardData();
+  async function handleSubmit(formData: FormData) {
+    setError("");
 
-  const formatRp = (n: number) =>
-    new Intl.NumberFormat('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
-      minimumFractionDigits: 0
-    }).format(n);
+    startTransition(async () => {
+      const result = await loginAdmin(formData);
+
+      if (result.status === "success") {
+        router.push("/dashboard");
+      } else {
+        setError(result.message || "Login gagal");
+      }
+    });
+  }
 
   return (
-    <div className="min-h-screen bg-slate-100 flex">
-
-      {/* SIDEBAR */}
-      <aside className="w-64 bg-white border-r border-slate-200 min-h-screen">
-        <div className="h-16 bg-gradient-to-r from-blue-600 to-indigo-500 flex items-center px-6">
-          <h1 className="text-white font-bold text-xl">KantinAdmin</h1>
-        </div>
-
-        <div className="p-5 space-y-2">
-
-          <SidebarItem icon={<LayoutDashboard size={18} />} label="Dashboard" active />
-          <SidebarItem icon={<ShoppingCart size={18} />} label="Transaksi" />
-          <SidebarItem icon={<Package size={18} />} label="Stok Barang" />
-          <SidebarItem icon={<BarChart3 size={18} />} label="Laporan" />
-
-        </div>
-      </aside>
-
-      {/* CONTENT */}
-      <div className="flex-1">
-
-        {/* TOPBAR */}
-        <header className="h-16 bg-gradient-to-r from-blue-600 to-indigo-500 flex items-center justify-between px-8">
-
-          <div className="flex items-center gap-4 text-white">
-            <Search size={18} />
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 p-6">
+      <div className="w-full max-w-[400px] bg-white rounded-[2rem] border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-8 sm:p-10">
+        
+        {/* Header */}
+        <div className="flex flex-col items-center mb-10 text-center">
+          <div className="w-14 h-14 rounded-2xl bg-slate-900 flex items-center justify-center mb-6 shadow-md">
+            <Utensils className="text-white" size={24} />
           </div>
-
-          <div className="flex items-center gap-6 text-white">
-            <Bell size={18} />
-            <Mail size={18} />
-
-            <div className="flex items-center gap-3 border-l border-white/30 pl-5">
-              <div className="w-10 h-10 rounded-full bg-white text-blue-600 flex items-center justify-center font-bold">
-                M
-              </div>
-              <span className="font-medium">Maman Ketoprak</span>
-            </div>
-          </div>
-
-        </header>
-
-        {/* MAIN */}
-        <main className="p-8">
-
-          {/* PAGE TITLE */}
-          <div className="flex justify-between mb-8">
-            <div>
-              <h2 className="text-4xl font-light text-slate-700">
-                Dashboard
-              </h2>
-            </div>
-
-            <Link
-              href="/input"
-              className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg font-medium"
-            >
-              + Input Transaksi
-            </Link>
-          </div>
-
-          {/* SUMMARY CARDS */}
-          <div className="grid grid-cols-4 gap-6 mb-8">
-
-            <StatCard
-              title="OMSET HARI INI"
-              value={formatRp(data.today.totalRevenue)}
-              icon={<DollarSign className="text-blue-500" />}
-              growth="+3.4%"
-            />
-
-            <StatCard
-              title="TRANSAKSI"
-              value={data.today.count}
-              icon={<ShoppingCart className="text-green-500" />}
-              growth="+12%"
-            />
-
-            <StatCard
-              title="PRODUK TERJUAL"
-              value={data.recent.length}
-              icon={<Users className="text-sky-500" />}
-              growth="+20%"
-            />
-
-            <StatCard
-              title="STOK MENIPIS"
-              value="4"
-              icon={<Calendar className="text-orange-500" />}
-              growth="-1.1%"
-              danger
-            />
-          </div>
-
-          {/* CHART + STOCK */}
-          <div className="grid grid-cols-3 gap-6 mb-8">
-
-            {/* CHART */}
-            <div className="col-span-2 bg-white rounded-xl shadow-sm p-6">
-              <h3 className="text-blue-600 font-semibold mb-6">
-                Monthly Recap Report
-              </h3>
-
-              <div className="h-[380px]">
-                <RevenueChart data={data.chart} />
-              </div>
-            </div>
-
-            {/* STOCK LIST */}
-            <div className="bg-white rounded-xl shadow-sm p-6">
-              <h3 className="text-blue-600 font-semibold mb-6">
-                Products Sold
-              </h3>
-
-              <StockProgress name="Dimsum Goreng" percent={75} />
-              <StockProgress name="Dimsum Kukus" percent={62} />
-              <StockProgress name="Pisang Coklat" percent={54} />
-              <StockProgress name="Air Mineral" percent={40} />
-            </div>
-
-          </div>
-
-          {/* TABLE */}
-          <div className="bg-white rounded-xl shadow-sm p-6">
-            <div className="flex justify-between mb-5">
-              <h3 className="text-blue-600 font-semibold text-lg">
-                Recent Transactions
-              </h3>
-
-              <button className="bg-red-500 text-white px-4 py-2 rounded-lg">
-                View More
-              </button>
-            </div>
-
-            <table className="w-full">
-              <thead>
-                <tr className="text-left text-slate-400 border-b">
-                  <th className="py-3">Produk</th>
-                  <th>Metode</th>
-                  <th>Total</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {data.recent.map((trx: any) => (
-                  <tr key={trx._id} className="border-b">
-                    <td className="py-4">{trx.productName}</td>
-                    <td>{trx.paymentMethod}</td>
-                    <td>{formatRp(trx.total)}</td>
-                    <td>
-                      <span className="bg-green-100 text-green-600 px-3 py-1 rounded-full text-sm">
-                        Success
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-        </main>
-      </div>
-    </div>
-  );
-}
-
-function SidebarItem({ icon, label, active = false }: any) {
-  return (
-    <div
-      className={`flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer ${
-        active
-          ? 'bg-blue-50 text-blue-600 font-semibold'
-          : 'text-slate-500 hover:bg-slate-50'
-      }`}
-    >
-      {icon}
-      {label}
-    </div>
-  );
-}
-
-function StatCard({ title, value, icon, growth, danger = false }: any) {
-  return (
-    <div className="bg-white rounded-xl shadow-sm p-6">
-      <div className="flex justify-between">
-        <div>
-          <p className="text-xs text-slate-400 font-semibold">{title}</p>
-          <h3 className="text-3xl font-bold text-slate-700 mt-2">{value}</h3>
-          <p
-            className={`text-sm mt-2 ${
-              danger ? 'text-red-500' : 'text-green-500'
-            }`}
-          >
-            {growth}
+          <h1 className="text-2xl font-bold text-slate-900 mb-2">
+            Kantin PB AU
+          </h1>
+          <p className="text-xs text-slate-500">
+            Selamat Datang di Menu Dashboard Finance
           </p>
         </div>
 
-        <div>{icon}</div>
-      </div>
-    </div>
-  );
-}
+        <form action={handleSubmit} className="space-y-6">
+          {/* Username */}
+          <div className="space-y-2">
+            <label htmlFor="username" className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+              Nama Pengguna
+            </label>
+            <div className="flex items-center rounded-xl bg-slate-50 px-4 py-3.5 border border-slate-100 transition focus-within:border-slate-300 focus-within:bg-white">
+              <User size={16} className="text-slate-400 shrink-0" />
+              <input
+                id="username"
+                name="username"
+                autoComplete="username"
+                className="w-full ml-3 bg-transparent outline-none text-sm font-medium text-slate-900 placeholder-slate-400"
+                placeholder="admin_user"
+              />
+            </div>
+          </div>
 
-function StockProgress({ name, percent }: any) {
-  return (
-    <div className="mb-5">
-      <div className="flex justify-between text-sm mb-2">
-        <span>{name}</span>
-        <span>{percent}%</span>
-      </div>
+          {/* Password */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <label htmlFor="password" className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                Kata Sandi
+              </label>
+              <button type="button" className="text-[10px] font-bold text-slate-900 hover:underline">
+                Lupa?
+              </button>
+            </div>
+            <div className="flex items-center rounded-xl bg-slate-50 px-4 py-3.5 border border-slate-100 transition focus-within:border-slate-300 focus-within:bg-white">
+              <Lock size={16} className="text-slate-400 shrink-0" />
+              <input
+                id="password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                autoComplete="current-password"
+                className="w-full ml-3 bg-transparent outline-none text-sm font-medium text-slate-900 placeholder-slate-400"
+                placeholder="••••••••"
+              />
+              <button 
+                type="button" 
+                onClick={() => setShowPassword(!showPassword)}
+                className="ml-2 text-slate-400 hover:text-slate-600 focus:outline-none"
+              >
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
+          </div>
 
-      <div className="w-full h-2 bg-slate-200 rounded-full">
-        <div
-          className="h-2 bg-blue-500 rounded-full"
-          style={{ width: `${percent}%` }}
-        />
+          {/* Remember Me */}
+          <div className="flex items-center gap-2">
+            <input 
+              type="checkbox" 
+              id="remember" 
+              className="w-4 h-4 rounded border-slate-300 text-slate-900 focus:ring-slate-900 hover:cursor-pointer"
+            />
+            <label htmlFor="remember" className="text-xs font-medium text-slate-500 hover:cursor-pointer">
+              Ingatkan Saya!
+            </label>
+          </div>
+
+          {error && (
+            <p className="text-red-500 text-xs font-semibold text-center">
+              {error}
+            </p>
+          )}
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            disabled={isPending}
+            className="w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-xl text-sm font-bold transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+          >
+            {isPending ? (
+              <span className="flex items-center justify-center gap-2">
+                <Loader2 size={16} className="animate-spin" />
+                Processing...
+              </span>
+            ) : (
+              "Masuk"
+            )}
+          </button>
+        </form>
+
+        {/* Footer */}
+        <div className="mt-10 pt-6 border-t border-slate-100 text-center">
+          <p className="text-[10px] font-medium text-slate-400">
+            © 2024 Canteen System. All rights reserved.
+          </p>
+        </div>
+
       </div>
     </div>
   );
