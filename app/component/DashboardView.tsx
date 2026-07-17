@@ -66,21 +66,21 @@ export default function DashboardView({ data }: any) {
         />
 
         <StatCard
-          title="TOTAL TRANSACTIONS"
+          title="TOTAL TRANSAKSI"
           value={data.today.count}
           icon={<ShoppingCart size={20} className="text-slate-700" />}
           trend="up"
           trendValue="5%"
-          subtitle="Across food counters"
+          subtitle="Seluruh penjualan"
         />
 
         <StatCard
-          title="LOW STOCK ITEMS"
+          title="STOK MENIPIS"
           value="08"
           icon={<AlertTriangle size={20} className="text-slate-700" />}
           trend="down"
-          trendValue="3 items"
-          subtitle="Requires immediate restock"
+          trendValue="3 item"
+          subtitle="Perlu diisi ulang"
         />
       </div>
 
@@ -89,12 +89,8 @@ export default function DashboardView({ data }: any) {
         <div className="bg-white rounded-[1.5rem] border border-slate-200 p-6 md:p-8">
           <div className="mb-6 flex items-center justify-between">
             <h3 className="text-slate-900 text-lg font-bold">
-              Sales Performance (Weekly)
+              Performa Penjualan (Mingguan)
             </h3>
-            <div className="flex bg-slate-50 p-1 rounded-lg border border-slate-200">
-               <button className="px-3 py-1 text-xs font-bold bg-white text-slate-900 rounded-md shadow-sm border border-slate-200">Week</button>
-               <button className="px-3 py-1 text-xs font-bold text-slate-500 hover:text-slate-900">Month</button>
-            </div>
           </div>
           <div className="h-[320px] md:h-[380px]">
             <SalesPerformanceChart data={data.chart} />
@@ -104,7 +100,7 @@ export default function DashboardView({ data }: any) {
         <div className="bg-white rounded-[1.5rem] border border-slate-200 p-6 md:p-8">
           <div className="mb-6 flex items-center justify-between">
             <h3 className="text-slate-900 text-lg font-bold">
-              Top Selling Categories
+              Kategori Terlaris
             </h3>
           </div>
           <div className="h-[320px] md:h-[380px]">
@@ -117,14 +113,14 @@ export default function DashboardView({ data }: any) {
       <div className="bg-white rounded-[1.5rem] border border-slate-200 p-6 md:p-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
           <div>
-            <h3 className="text-slate-900 text-lg font-bold">Recent Transactions</h3>
+            <h3 className="text-slate-900 text-lg font-bold">Transaksi Terbaru</h3>
           </div>
 
           <Link
             href="/transaction"
             className="inline-flex items-center justify-center gap-1 text-sm font-bold text-slate-900 transition hover:text-slate-600"
           >
-            View All <ChevronRight size={16} />
+            Lihat Semua <ChevronRight size={16} />
           </Link>
         </div>
 
@@ -132,11 +128,11 @@ export default function DashboardView({ data }: any) {
           <table className="w-full min-w-[720px] text-left text-sm">
             <thead>
               <tr className="border-b border-slate-100 text-slate-500">
-                <th className="py-4 font-bold text-[10px] uppercase tracking-widest">Order ID</th>
-                <th className="py-4 font-bold text-[10px] uppercase tracking-widest">Item Summary</th>
-                <th className="py-4 font-bold text-[10px] uppercase tracking-widest">Time</th>
+                <th className="py-4 font-bold text-[10px] uppercase tracking-widest">ID Pesanan</th>
+                <th className="py-4 font-bold text-[10px] uppercase tracking-widest">Ringkasan Item</th>
+                <th className="py-4 font-bold text-[10px] uppercase tracking-widest">Waktu</th>
                 <th className="py-4 font-bold text-[10px] uppercase tracking-widest">Status</th>
-                <th className="py-4 font-bold text-[10px] uppercase tracking-widest text-right">Amount</th>
+                <th className="py-4 font-bold text-[10px] uppercase tracking-widest text-right">Total</th>
               </tr>
             </thead>
 
@@ -157,7 +153,7 @@ export default function DashboardView({ data }: any) {
                         {trx.productName}
                       </td>
                       <td className="py-4 font-medium text-slate-500">
-                        {new Date(trx.createdAt).toLocaleTimeString("en-US", {
+                        {new Date(trx.createdAt).toLocaleTimeString("id-ID", {
                           hour: "2-digit",
                           minute: "2-digit",
                         })}
@@ -170,7 +166,7 @@ export default function DashboardView({ data }: any) {
                               : "bg-white text-slate-900 border-slate-300"
                           }`}
                         >
-                          {isCompleted ? "COMPLETED" : "PENDING"}
+                          {isCompleted ? "SELESAI" : "TERTUNDA"}
                         </span>
                       </td>
                       <td className="py-4 font-bold text-slate-900 text-right">

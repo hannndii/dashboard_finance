@@ -81,10 +81,10 @@ export default function StockPage() {
 
   return (
     <AppShell
-      title="Stock Inventory"
+      title="Inventaris Stok"
       subtitle={
         <span className="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-[10px] font-bold text-slate-600 border border-slate-200">
-          {products.length} Items Total
+          {products.length} Total Item
         </span>
       }
       rightElement={
@@ -93,7 +93,7 @@ export default function StockPage() {
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" size={16} />
             <input
               type="text"
-              placeholder="Search inventory..."
+              placeholder="Cari inventaris..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-4 text-sm font-medium text-slate-900 shadow-sm outline-none transition focus:border-slate-300 focus:bg-white"
@@ -104,7 +104,7 @@ export default function StockPage() {
             className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-bold text-white transition-all hover:bg-slate-800 hover:cursor-pointer shadow-sm"
           >
             <PlusCircle size={16} />
-            Add New Item
+            Tambah Item Baru
           </button>
         </div>
       }
@@ -114,28 +114,28 @@ export default function StockPage() {
         {/* STATS */}
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
           <div className="rounded-[1.5rem] border border-slate-200 bg-white p-6 md:p-8">
-            <p className="text-[10px] uppercase tracking-widest font-bold text-slate-500">Total Value</p>
+            <p className="text-[10px] uppercase tracking-widest font-bold text-slate-500">Total Nilai</p>
             <p className="mt-3 text-3xl font-bold text-slate-900 tracking-tight">{formatRp(totalValue)}</p>
           </div>
 
           <div className="rounded-[1.5rem] border border-slate-200 bg-white p-6 md:p-8">
-            <p className="text-[10px] uppercase tracking-widest font-bold text-slate-500">Low Stock</p>
+            <p className="text-[10px] uppercase tracking-widest font-bold text-slate-500">Stok Menipis</p>
             <p className="mt-3 text-3xl font-bold tracking-tight text-red-600">
-              {lowStockItems.toString().padStart(2, '0')} <span className="text-xl font-bold">Items</span>
+              {lowStockItems.toString().padStart(2, '0')} <span className="text-xl font-bold">Item</span>
             </p>
           </div>
 
           <div className="rounded-[1.5rem] border border-slate-200 bg-white p-6 md:p-8">
-            <p className="text-[10px] uppercase tracking-widest font-bold text-slate-500">Out of Stock</p>
+            <p className="text-[10px] uppercase tracking-widest font-bold text-slate-500">Stok Habis</p>
             <p className="mt-3 text-3xl font-bold tracking-tight text-slate-900">
-              {outOfStockItems.toString().padStart(2, '0')} <span className="text-xl font-bold">Items</span>
+              {outOfStockItems.toString().padStart(2, '0')} <span className="text-xl font-bold">Item</span>
             </p>
           </div>
 
           <div className="rounded-[1.5rem] border border-slate-200 bg-white p-6 md:p-8">
-            <p className="text-[10px] uppercase tracking-widest font-bold text-slate-500">Categories</p>
+            <p className="text-[10px] uppercase tracking-widest font-bold text-slate-500">Kategori</p>
             <p className="mt-3 text-3xl font-bold tracking-tight text-slate-900">
-              {categoryCount.toString().padStart(2, '0')} <span className="text-xl font-bold">Groups</span>
+              {categoryCount.toString().padStart(2, '0')} <span className="text-xl font-bold">Grup</span>
             </p>
           </div>
         </div>
@@ -146,12 +146,12 @@ export default function StockPage() {
             <table className="w-full min-w-[900px] table-auto text-left">
               <thead>
                 <tr className="border-b border-slate-100 text-[10px] uppercase tracking-widest font-bold text-slate-500">
-                  <th className="pb-4">Item Name</th>
-                  <th className="pb-4">Category</th>
-                  <th className="pb-4">Current Stock</th>
-                  <th className="pb-4">Price</th>
+                  <th className="pb-4">Nama Item</th>
+                  <th className="pb-4">Kategori</th>
+                  <th className="pb-4">Stok Saat Ini</th>
+                  <th className="pb-4">Harga</th>
                   <th className="pb-4">Status</th>
-                  <th className="pb-4 text-right">Actions</th>
+                  <th className="pb-4 text-right">Aksi</th>
                 </tr>
               </thead>
 
@@ -183,7 +183,7 @@ export default function StockPage() {
 
                         <td className="py-4">
                           <span className={`font-bold ${isLowStock || isOutOfStock ? "text-red-500" : "text-slate-900"}`}>
-                            {product.stock.toString().padStart(2, '0')} <span className="font-medium text-sm text-slate-400">units</span>
+                            {product.stock.toString().padStart(2, '0')} <span className="font-medium text-sm text-slate-400">unit</span>
                           </span>
                         </td>
 
@@ -194,15 +194,15 @@ export default function StockPage() {
                         <td className="py-4">
                           {isOutOfStock ? (
                             <span className="inline-flex rounded-full bg-slate-900 px-3 py-1 text-[10px] font-bold uppercase tracking-widest border border-slate-900 text-white">
-                              Out of Stock
+                              HABIS
                             </span>
                           ) : isLowStock ? (
                             <span className="inline-flex rounded-full bg-red-50 px-3 py-1 text-[10px] font-bold uppercase tracking-widest border border-red-200 text-red-600">
-                              Low Stock
+                              MENIPIS
                             </span>
                           ) : (
                             <span className="inline-flex rounded-full bg-emerald-50 px-3 py-1 text-[10px] font-bold uppercase tracking-widest border border-emerald-200 text-emerald-600">
-                              In Stock
+                              TERSEDIA
                             </span>
                           )}
                         </td>
@@ -232,26 +232,14 @@ export default function StockPage() {
                 ) : (
                   <tr>
                     <td colSpan={6} className="text-center py-8 text-sm font-medium text-slate-400">
-                      No items found.
+                      Tidak ada item yang ditemukan.
                     </td>
                   </tr>
                 )}
               </tbody>
             </table>
           </div>
-          
-          <div className="border-t border-slate-100 px-4 py-4 md:px-8 flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-500">
-              Showing 1 to {filteredProducts.length} of {products.length} items
-            </span>
-            <div className="flex items-center gap-1">
-               <button className="px-3 py-1.5 text-xs font-bold text-slate-500 border border-slate-200 rounded-lg hover:bg-slate-50">Previous</button>
-               <button className="px-3 py-1.5 text-xs font-bold text-white bg-slate-900 border border-slate-900 rounded-lg">1</button>
-               <button className="px-3 py-1.5 text-xs font-bold text-slate-500 border border-slate-200 rounded-lg hover:bg-slate-50">2</button>
-               <button className="px-3 py-1.5 text-xs font-bold text-slate-500 border border-slate-200 rounded-lg hover:bg-slate-50">3</button>
-               <button className="px-3 py-1.5 text-xs font-bold text-slate-500 border border-slate-200 rounded-lg hover:bg-slate-50">Next</button>
-            </div>
-          </div>
+        </div>
         </div>
       </div>
 

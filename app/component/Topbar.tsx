@@ -19,17 +19,17 @@ export default function Topbar({ title, subtitle, rightElement, onMenuClick }: T
     return () => clearInterval(timer);
   }, []);
 
-  const formattedDate = now?.toLocaleDateString("en-US", {
+  const formattedDate = now?.toLocaleDateString("id-ID", {
     year: "numeric",
     month: "short",
     day: "numeric",
   });
 
-  const formattedTime = now?.toLocaleTimeString("en-US", {
+  const formattedTime = now?.toLocaleTimeString("id-ID", {
     hour: "numeric",
     minute: "2-digit",
     second: "2-digit",
-    hour12: true,
+    hour12: false,
   });
 
   return (
@@ -61,21 +61,11 @@ export default function Topbar({ title, subtitle, rightElement, onMenuClick }: T
         ) : (
           <>
             {/* Default Date and Status */}
-            <div className="hidden text-right sm:block">
+            <div className="hidden text-right sm:block pr-6">
               <p className="text-sm font-bold text-slate-900">{formattedDate}</p>
               <p className="text-[10px] uppercase tracking-wider text-slate-400">
                 {formattedTime}
               </p>
-            </div>
-
-            {/* Icons */}
-            <div className="flex items-center gap-3 border-l border-slate-200 pl-6">
-              <button className="rounded-full p-2 text-slate-400 transition-colors hover:bg-slate-50 hover:text-slate-900 hover:cursor-pointer">
-                <Bell size={18} />
-              </button>
-              <button className="rounded-full p-2 text-slate-400 transition-colors hover:bg-slate-50 hover:text-slate-900 hover:cursor-pointer">
-                <Settings size={18} />
-              </button>
             </div>
           </>
         )}

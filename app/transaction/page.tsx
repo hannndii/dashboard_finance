@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState, useTransition, type ChangeEvent } from "react";
 import AppShell from "../component/AppShell";
@@ -14,7 +14,7 @@ import {
   ShoppingCart
 } from "lucide-react";
 
-const categoryOptions = ["All", "Meals", "Drinks", "Snacks"];
+const categoryOptions = ["Semua", "Makanan Berat", "Minuman", "Cemilan"];
 
 function detectCategory(name: string) {
   const lower = name.toLowerCase();
@@ -41,9 +41,9 @@ function detectCategory(name: string) {
 export default function TransactionPage() {
   const [products, setProducts] = useState<any[]>([]);
   const [search, setSearch] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedCategory, setSelectedCategory] = useState("Semua");
   const [cart, setCart] = useState<any[]>([]);
-  const [paymentMethod, setPaymentMethod] = useState("Cash");
+  const [paymentMethod, setPaymentMethod] = useState("Tunai");
   const [receiptUrl, setReceiptUrl] = useState("");
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [statusType, setStatusType] = useState<"success" | "error">("success");
@@ -69,7 +69,7 @@ export default function TransactionPage() {
       .toLowerCase()
       .includes(search.toLowerCase());
     const matchesCategory =
-      selectedCategory === "All" || product.category === selectedCategory;
+      selectedCategory === "Semua" || product.category === selectedCategory;
 
     return matchesSearch && matchesCategory;
   });
@@ -171,7 +171,7 @@ export default function TransactionPage() {
 
       if (result.status === "success") {
         clearCart();
-        setPaymentMethod("Cash");
+        setPaymentMethod("Tunai");
         setStatusType("success");
         setStatusMessage(result.message ?? "Transaksi berhasil disimpan.");
         setIsMobileCartOpen(false);
@@ -209,14 +209,14 @@ export default function TransactionPage() {
     <div className="flex h-full flex-col overflow-hidden rounded-[1.5rem] border border-slate-200 bg-slate-50/50">
       <div className="flex shrink-0 items-center justify-between p-6 pb-2">
         <h3 className="text-lg font-bold text-slate-900">
-          Current Order
+          Pesanan Saat Ini
         </h3>
         <button
           type="button"
           onClick={clearCart}
           className="text-[10px] font-medium text-slate-500 underline hover:text-red-500 hover:cursor-pointer"
         >
-          Clear Cart
+          Kosongkan Keranjang
         </button>
       </div>
 
@@ -224,7 +224,7 @@ export default function TransactionPage() {
         <div className="space-y-4">
           {cart.length === 0 ? (
             <div className="flex min-h-[12rem] flex-col items-center justify-center rounded-[1rem] border border-dashed border-slate-300 bg-white p-6 text-center text-sm text-slate-500">
-              Cart is empty.
+              Keranjang masih kosong.
             </div>
           ) : (
             cart.map((item, index) => (
@@ -282,7 +282,7 @@ export default function TransactionPage() {
           )}
           {cart.length > 0 && (
              <div className="text-center text-[10px] italic text-slate-400 mt-4">
-                Scan QR or search to add more items
+                Pilih menu untuk menambahkan ke keranjang
              </div>
           )}
         </div>
@@ -294,22 +294,22 @@ export default function TransactionPage() {
           <span className="font-medium">{formatRp(total)}</span>
         </div>
         <div className="mb-6 flex items-center justify-between">
-          <span className="text-sm font-bold text-slate-900">Total Amount</span>
+          <span className="text-sm font-bold text-slate-900">Total Pembayaran</span>
           <span className="text-xl font-bold text-slate-900">{formatRp(total)}</span>
         </div>
 
         <div className="mb-4">
           <div className="flex gap-2">
             {[
-              { label: "Cash", icon: <DollarSign size={16} /> },
-              { label: "Card / QR", icon: <CreditCard size={16} /> },
+              { label: "Tunai", icon: <DollarSign size={16} /> },
+              { label: "Kartu / QRIS", icon: <CreditCard size={16} /> },
             ].map((option) => (
               <button
                 key={option.label}
                 type="button"
-                onClick={() => setPaymentMethod(option.label === "Card / QR" ? "QRIS" : option.label)}
+                onClick={() => setPaymentMethod(option.label === "Kartu / QRIS" ? "QRIS" : option.label)}
                 className={`flex flex-1 items-center justify-center gap-2 rounded-xl border px-3 py-3 text-xs font-bold transition hover:cursor-pointer ${
-                  (paymentMethod === option.label || (paymentMethod === "QRIS" && option.label === "Card / QR"))
+                  (paymentMethod === option.label || (paymentMethod === "QRIS" && option.label === "Kartu / QRIS"))
                     ? "border-slate-900 bg-slate-900 text-white"
                     : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
                 }`}
@@ -324,7 +324,7 @@ export default function TransactionPage() {
         {paymentMethod === "QRIS" && (
           <div className="mb-4 rounded-xl border border-slate-200 bg-slate-50 p-3">
             <p className="mb-2 text-[10px] font-bold text-slate-900 uppercase">
-              Upload Receipt
+              Unggah Bukti
             </p>
             <input
               type="file"
@@ -358,7 +358,7 @@ export default function TransactionPage() {
           disabled={isPending}
           className="w-full rounded-xl bg-slate-900 px-4 py-4 text-xs font-bold uppercase tracking-widest text-white transition hover:cursor-pointer hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {isPending ? "Processing..." : "Complete Transaction"}
+          {isPending ? "Memproses..." : "Selesaikan Pembayaran"}
         </button>
       </div>
     </div>
@@ -366,7 +366,7 @@ export default function TransactionPage() {
 
   return (
     <AppShell
-      title="New Transaction"
+      title="Transaksi Baru"
       rightElement={
         <div className="flex items-center gap-6">
           <div className="relative hidden sm:block w-64">
@@ -375,16 +375,13 @@ export default function TransactionPage() {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Quick Search Menu..."
+              placeholder="Cari Menu Cepat..."
               className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-4 text-sm font-medium text-slate-900 shadow-sm outline-none transition focus:border-slate-300 focus:bg-white"
             />
           </div>
           <div className="hidden text-right sm:block pl-6 border-l border-slate-200">
             <p className="text-sm font-bold text-slate-900">
-              {new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-            </p>
-            <p className="text-[10px] uppercase tracking-wider text-slate-400">
-              Shift: Lunch
+              {new Date().toLocaleDateString("id-ID", { month: "short", day: "numeric", year: "numeric" })}
             </p>
           </div>
         </div>
@@ -396,7 +393,7 @@ export default function TransactionPage() {
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
               <div>
                 <h2 className="text-xl font-bold text-slate-900">
-                  Menu Items
+                  Daftar Menu
                 </h2>
               </div>
               <div className="flex flex-wrap gap-2">
@@ -436,7 +433,7 @@ export default function TransactionPage() {
                         {product.name}
                       </h3>
                       <p className="mt-1 text-[10px] text-slate-500 line-clamp-2">
-                        Delicious {product.category.toLowerCase()} prepared fresh for you.
+                        Menu lezat {product.category.toLowerCase()} yang siap disajikan untuk Anda.
                       </p>
                       <div className="mt-4 flex items-center justify-between">
                         <span className="text-sm font-bold text-slate-900">
