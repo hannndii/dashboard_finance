@@ -1,5 +1,10 @@
-"use client";
+// ============================================================================
+// 🌐 MODULE: MULTI-LANGUAGE PROVIDER
+// React Context API untuk mengelola preferensi bahasa (ID/EN) secara global.
+// Terintegrasi dengan cookies untuk penyimpanan persisten.
+// ============================================================================
 
+"use client";
 import { createContext, useContext, useState, ReactNode } from "react";
 import { Dictionary } from "@/lib/dictionaries";
 

@@ -1,3 +1,9 @@
+// ============================================================================
+// 📦 MODULE: STOCK MANAGEMENT
+// Halaman untuk mengelola inventaris produk (Tambah, Edit, Hapus, dan Filter).
+// Menampilkan metrik nilai stok, barang hampir habis, dan kosong.
+// ============================================================================
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -9,7 +15,6 @@ import { useLanguage } from "../component/LanguageProvider";
 import {
   getProducts,
   deleteProduct,
-  addStock,
 } from "../action";
 
 import {
@@ -73,11 +78,6 @@ export default function StockPage() {
 
   async function handleDelete(id: string) {
     await deleteProduct(id);
-    await loadProducts();
-  }
-
-  async function handleAddStock(id: string) {
-    await addStock(id, 1);
     await loadProducts();
   }
 

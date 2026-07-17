@@ -1,9 +1,13 @@
+// ============================================================================
+// 🔒 MODULE: LOGIN & AUTHENTICATION
+// Halaman utama untuk login admin. Menggunakan Server Actions untuk verifikasi.
+// ============================================================================
+
 "use client";
 
 import { useState, useTransition } from "react";
 import { loginAdmin } from "./action";
 import {
-  ShieldCheck,
   Lock,
   User,
   Loader2,

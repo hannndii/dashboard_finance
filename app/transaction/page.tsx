@@ -1,5 +1,10 @@
-"use client";
+// ============================================================================
+// 🛒 MODULE: TRANSACTIONS & CASHIER
+// Menangani sistem kasir/POS (Point of Sale), manajemen keranjang pesanan, 
+// kalkulasi total harga, dan proses checkout/upload struk pembayaran.
+// ============================================================================
 
+"use client";
 import { useEffect, useState, useTransition, type ChangeEvent } from "react";
 import AppShell from "../component/AppShell";
 import { getProducts, addTransaction, uploadToDrive } from "../action";

@@ -1,3 +1,8 @@
+// ============================================================================
+// 📈 MODULE: FINANCIAL REPORTS
+// Menyediakan analisis keuangan, tren pendapatan, dan riwayat transaksi lengkap.
+// ============================================================================
+
 import AppShell from "../component/AppShell";
 import { getAllTransactions } from "../action";
 import { FileSpreadsheet, ArrowUpRight, ArrowDownRight, Calendar as CalendarIcon, Filter, Search } from "lucide-react";

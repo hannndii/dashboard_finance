@@ -1,5 +1,9 @@
-"use client";
+// ============================================================================
+// 🧭 MODULE: NAVIGATION (Topbar)
+// Baris atas aplikasi. Menampilkan judul halaman, waktu terkini, dan tombol bahasa.
+// ============================================================================
 
+"use client";
 import { Menu } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLanguage } from "./LanguageProvider";

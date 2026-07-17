@@ -1,5 +1,9 @@
-"use client";
+// ============================================================================
+// 🧭 MODULE: NAVIGATION (Sidebar)
+// Sidebar menu navigasi, berisi profil pengguna, dan link ke halaman utama.
+// ============================================================================
 
+"use client";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useLanguage } from "./LanguageProvider";

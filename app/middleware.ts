@@ -1,3 +1,8 @@
+// ============================================================================
+// 🛡️ MODULE: AUTHENTICATION MIDDLEWARE
+// Memblokir akses tamu ke rute terproteksi (/dashboard, /stock, /transaction, dll)
+// ============================================================================
+
 import { NextRequest, NextResponse } from "next/server";
 
 export function middleware(req: NextRequest) {
