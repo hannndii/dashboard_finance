@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { loginAdmin } from "../action";
+import { loginAdmin } from "./action";
 import {
   ShieldCheck,
   Lock,
