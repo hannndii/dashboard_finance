@@ -23,6 +23,7 @@ import {
   Pencil,
   Search,
   Package,
+  X
 } from "lucide-react";
 
 export default function StockPage() {
