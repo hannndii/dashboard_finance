@@ -48,8 +48,8 @@ export default function ProductModal({ onClose }: any) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
-      <div className="bg-white rounded-xl p-6 w-[500px] shadow-xl">
+    <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex justify-center items-center z-50 p-4">
+      <div className="bg-white rounded-2xl p-6 w-full max-w-[500px] shadow-2xl">
 
         {/* Header */}
         <div className="flex justify-between items-center mb-6">

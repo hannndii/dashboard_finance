@@ -47,8 +47,8 @@ export default function EditProductModal({
   }
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50 p-4">
-      <div className="bg-white rounded-2xl p-6 w-full max-w-lg shadow-xl">
+    <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex justify-center items-center z-50 p-4">
+      <div className="bg-white rounded-2xl p-6 w-full max-w-lg shadow-2xl">
 
         {/* HEADER */}
         <div className="flex justify-between items-center mb-6">

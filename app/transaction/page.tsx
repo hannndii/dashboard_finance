@@ -34,6 +34,7 @@ export default function TransactionPage() {
   const [statusType, setStatusType] = useState<"success" | "error">("success");
   const [isPending, startTransition] = useTransition();
   const [isMobileCartOpen, setIsMobileCartOpen] = useState(false);
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
 
   useEffect(() => {
     async function loadProducts() {
@@ -446,10 +447,11 @@ export default function TransactionPage() {
 
       <FloatingBottomCart />
 
-      {/* MOBILE FLOATING SEARCH BAR */}
-      <div className={`fixed left-0 right-0 z-30 p-4 lg:hidden pointer-events-none transition-all duration-300 ${cart.length > 0 ? "bottom-[88px] md:bottom-[100px]" : "bottom-0"}`}>
-        <div className="flex items-center gap-2 pointer-events-auto bg-white rounded-2xl p-2 shadow-[0_-10px_40px_rgb(0,0,0,0.1)] border border-slate-200">
-          <div className="relative w-[85%] sm:w-[90%]">
+      {/* MOBILE FLOATING SEARCH */}
+      <div className={`fixed right-0 z-30 p-4 lg:hidden pointer-events-none transition-all duration-300 ${cart.length > 0 ? "bottom-[88px] md:bottom-[100px]" : "bottom-0"} ${isMobileSearchOpen ? "left-0" : "left-auto"}`}>
+        <div className={`flex items-center justify-end gap-2 pointer-events-auto transition-all duration-300 ${isMobileSearchOpen ? "w-full bg-white rounded-2xl p-2 shadow-[0_-10px_40px_rgb(0,0,0,0.1)] border border-slate-200" : ""}`}>
+          
+          <div className={`relative transition-all duration-300 overflow-hidden ${isMobileSearchOpen ? "w-[85%] sm:w-[90%] opacity-100" : "w-0 opacity-0"}`}>
             <input
               type="text"
               placeholder={dict.transaction.searchPlaceholder}
@@ -458,9 +460,12 @@ export default function TransactionPage() {
               className="w-full rounded-xl bg-slate-50 py-3.5 px-4 text-sm font-bold text-slate-900 outline-none focus:bg-slate-100 transition-all placeholder:text-slate-400 placeholder:font-medium"
             />
           </div>
-          <div className="w-[15%] sm:w-[10%] h-[48px] rounded-xl bg-slate-900 flex items-center justify-center text-white shadow-md">
-            <Search size={20} />
-          </div>
+          <button 
+            onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
+            className={`rounded-xl bg-slate-900 flex items-center justify-center text-white shadow-xl transition-all ${isMobileSearchOpen ? "w-[15%] sm:w-[10%] h-[48px]" : "w-14 h-14 !rounded-full"}`}
+          >
+            {isMobileSearchOpen ? <X size={20} /> : <Search size={24} />}
+          </button>
         </div>
       </div>
 
