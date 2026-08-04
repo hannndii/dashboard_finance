@@ -145,9 +145,9 @@ export default function StockPage() {
           </div>
         </div>
 
-        {/* TABLE */}
-        <div className="overflow-hidden rounded-[1.5rem] bg-white border border-slate-200">
-          <div className="overflow-x-auto p-4 md:p-8">
+        {/* DESKTOP TABLE */}
+        <div className="hidden md:block overflow-hidden rounded-[1.5rem] bg-white border border-slate-200">
+          <div className="overflow-x-auto p-8">
             <table className="w-full min-w-[900px] table-auto text-left">
               <thead>
                 <tr className="border-b border-slate-100 text-[10px] uppercase tracking-widest font-bold text-slate-500">
@@ -244,6 +244,86 @@ export default function StockPage() {
               </tbody>
             </table>
           </div>
+        </div>
+
+        {/* MOBILE CARDS LIST */}
+        <div className="grid grid-cols-1 gap-4 md:hidden pb-20">
+          {filteredProducts.length > 0 ? (
+            filteredProducts.map((product) => {
+              const isLowStock = product.stock > 0 && product.stock <= product.minStock;
+              const isOutOfStock = product.stock === 0;
+
+              return (
+                <div key={product._id} className="bg-white border border-slate-200 rounded-[1.5rem] p-5 shadow-sm">
+                  <div className="flex justify-between items-start mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-50 border border-slate-100">
+                        <Package size={20} className="text-slate-700" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-slate-900 text-base">{product.name}</h3>
+                        <p className="text-xs font-medium text-slate-500">{product.category || "Makanan Berat"}</p>
+                      </div>
+                    </div>
+                    <div>
+                      {isOutOfStock ? (
+                        <span className="inline-flex rounded-full bg-slate-900 px-3 py-1 text-[10px] font-bold uppercase tracking-widest border border-slate-900 text-white shadow-sm">
+                          {dict.stock.statusOut}
+                        </span>
+                      ) : isLowStock ? (
+                        <span className="inline-flex rounded-full bg-red-50 px-3 py-1 text-[10px] font-bold uppercase tracking-widest border border-red-200 text-red-600 shadow-sm">
+                          {dict.stock.statusLow}
+                        </span>
+                      ) : (
+                        <span className="inline-flex rounded-full bg-emerald-50 px-3 py-1 text-[10px] font-bold uppercase tracking-widest border border-emerald-200 text-emerald-600 shadow-sm">
+                          {dict.stock.statusIn}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4 mb-4 bg-slate-50 rounded-xl p-3 border border-slate-100">
+                    <div>
+                      <p className="text-[10px] uppercase font-bold text-slate-400 mb-1">{dict.stock.currentStock}</p>
+                      <p className={`font-bold text-lg tracking-tight ${isLowStock || isOutOfStock ? "text-red-500" : "text-slate-900"}`}>
+                        {product.stock.toString().padStart(2, '0')} <span className="text-xs font-medium text-slate-500">{dict.stock.units}</span>
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] uppercase font-bold text-slate-400 mb-1">{dict.stock.price}</p>
+                      <p className="font-bold text-slate-900 text-lg tracking-tight">
+                        {formatRp(product.price)}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-end gap-2 border-t border-slate-100 pt-4 mt-2">
+                    <button
+                      onClick={() => {
+                        setSelectedProduct(product);
+                        setShowEditModal(true);
+                      }}
+                      className="flex-1 flex items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 hover:text-slate-900 transition-colors shadow-sm"
+                    >
+                      <Pencil size={16} />
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(product._id)}
+                      className="flex-1 flex items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-bold text-red-600 bg-red-50 hover:bg-red-100 hover:text-red-700 transition-colors shadow-sm"
+                    >
+                      <Trash2 size={16} />
+                      Hapus
+                    </button>
+                  </div>
+                </div>
+              );
+            })
+          ) : (
+            <div className="bg-white border border-slate-200 rounded-[1.5rem] p-8 text-center text-sm font-medium text-slate-400">
+              {dict.stock.noItems}
+            </div>
+          )}
         </div>
       </div>
 
