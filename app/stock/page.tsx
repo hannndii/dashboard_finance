@@ -103,7 +103,7 @@ export default function StockPage() {
           </div>
           <button
             onClick={() => setShowModal(true)}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-bold text-white transition-all hover:bg-slate-800 hover:cursor-pointer shadow-sm"
+            className="hidden sm:inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-bold text-white transition-all hover:bg-slate-800 hover:cursor-pointer shadow-sm"
           >
             <PlusCircle size={16} />
             {dict.stock.addNewItem}
@@ -263,6 +263,27 @@ export default function StockPage() {
           }}
         />
       )}
+      {/* MOBILE FLOATING SEARCH & ADD BAR */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 p-4 sm:hidden pointer-events-none">
+        <div className="flex items-center gap-2 pointer-events-auto bg-white rounded-2xl p-2 shadow-[0_-10px_40px_rgb(0,0,0,0.1)] border border-slate-200">
+          <div className="relative w-[85%]">
+            <input
+              type="text"
+              placeholder={dict.stock.searchPlaceholder}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full rounded-xl bg-slate-50 py-3.5 px-4 text-sm font-bold text-slate-900 outline-none focus:bg-slate-100 transition-all placeholder:text-slate-400 placeholder:font-medium"
+            />
+          </div>
+          <button
+            onClick={() => setShowModal(true)}
+            className="w-[15%] h-[48px] rounded-xl bg-slate-900 flex items-center justify-center text-white transition hover:bg-slate-800 shadow-md"
+          >
+            <PlusCircle size={20} />
+          </button>
+        </div>
+      </div>
+
     </AppShell>
   );
 }

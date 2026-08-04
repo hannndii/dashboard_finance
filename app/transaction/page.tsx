@@ -446,6 +446,24 @@ export default function TransactionPage() {
 
       <FloatingBottomCart />
 
+      {/* MOBILE FLOATING SEARCH BAR */}
+      <div className={`fixed left-0 right-0 z-30 p-4 lg:hidden pointer-events-none transition-all duration-300 ${cart.length > 0 ? "bottom-[88px] md:bottom-[100px]" : "bottom-0"}`}>
+        <div className="flex items-center gap-2 pointer-events-auto bg-white rounded-2xl p-2 shadow-[0_-10px_40px_rgb(0,0,0,0.1)] border border-slate-200">
+          <div className="relative w-[85%] sm:w-[90%]">
+            <input
+              type="text"
+              placeholder={dict.transaction.searchPlaceholder}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full rounded-xl bg-slate-50 py-3.5 px-4 text-sm font-bold text-slate-900 outline-none focus:bg-slate-100 transition-all placeholder:text-slate-400 placeholder:font-medium"
+            />
+          </div>
+          <div className="w-[15%] sm:w-[10%] h-[48px] rounded-xl bg-slate-900 flex items-center justify-center text-white shadow-md">
+            <Search size={20} />
+          </div>
+        </div>
+      </div>
+
       {isMobileCartOpen && (
         <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 p-4 pt-10 sm:items-center sm:p-6 lg:hidden">
           <div className="flex h-[85vh] w-full max-w-md flex-col">

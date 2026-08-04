@@ -1,5 +1,5 @@
 // ============================================================================
-// 🧭 MODULE: NAVIGATION (Topbar)
+// MODULE: NAVIGATION (Topbar)
 // Baris atas aplikasi. Menampilkan judul halaman, waktu terkini, dan tombol bahasa.
 // ============================================================================
 
