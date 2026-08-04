@@ -8,6 +8,7 @@ import { getAllTransactions } from "../action";
 import { FileSpreadsheet, ArrowUpRight, ArrowDownRight, Calendar as CalendarIcon, Filter, Search } from "lucide-react";
 import { cookies } from "next/headers";
 import { getDictionary } from "../../lib/dictionaries";
+import { ReportTable } from "./ReportClient";
 
 export default async function ReportPage() {
   const cookieStore = await cookies();
@@ -26,39 +27,30 @@ export default async function ReportPage() {
   return (
     <AppShell
       title={dict.report.title}
-      subtitle={
-        <span className="text-[10px] font-medium text-slate-500 uppercase tracking-widest">
-          {dict.report.subtitle}
-        </span>
-      }
-      rightElement={
-        <div className="flex items-center gap-4">
-          <div className="hidden md:flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50 hover:cursor-pointer">
-            <CalendarIcon size={16} className="text-slate-400" />
-            May 01, 2024 - May 31, 2024
-          </div>
-          <a
-            href="/api/excel"
-            className="flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition-all hover:bg-slate-800"
-          >
-            <FileSpreadsheet size={16} />
-            {dict.report.export}
-          </a>
-        </div>
-      }
     >
       <div className="space-y-6 max-w-7xl mx-auto">
         
+        {/* EXPORT BUTTON SECTION */}
+        <div className="flex sm:justify-end">
+          <a
+            href="/api/excel"
+            className="flex items-center justify-center gap-2 rounded-[1rem] bg-slate-900 px-6 py-3 text-sm font-bold text-white shadow-sm transition-all hover:bg-slate-800 w-full sm:w-auto whitespace-nowrap"
+          >
+            <FileSpreadsheet size={18} />
+            {dict.report.export}
+          </a>
+        </div>
+
         {/* CARDS */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="rounded-[1.5rem] border border-slate-200 bg-white p-6 md:p-8">
+          <div className="rounded-[1.5rem] bg-slate-900 p-6 md:p-8 text-white shadow-xl shadow-slate-900/20">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center text-white">
+              <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white">
                  <ArrowUpRight size={16} />
               </div>
-              <p className="text-[10px] uppercase tracking-widest font-bold text-slate-500">{dict.report.totalRevenue}</p>
+              <p className="text-[10px] uppercase tracking-widest font-bold text-white/70">{dict.report.totalRevenue}</p>
             </div>
-            <h3 className="text-3xl font-bold text-slate-900 tracking-tight">
+            <h3 className="text-3xl font-bold tracking-tight">
               Rp {totalRevenue.toLocaleString("id-ID")}
             </h3>
           </div>
@@ -75,14 +67,14 @@ export default async function ReportPage() {
             </h3>
           </div>
 
-          <div className="rounded-[1.5rem] bg-slate-900 p-6 md:p-8 text-white shadow-xl shadow-slate-900/20">
+          <div className="rounded-[1.5rem] border border-slate-200 bg-white p-6 md:p-8">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white">
+              <div className="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center text-white">
                  <div className="w-3 h-3 bg-white rounded-sm"></div>
               </div>
-              <p className="text-[10px] uppercase tracking-widest font-bold text-white/70">{dict.report.netProfit}</p>
+              <p className="text-[10px] uppercase tracking-widest font-bold text-slate-500">{dict.report.netProfit}</p>
             </div>
-            <h3 className="text-3xl font-bold tracking-tight">
+            <h3 className="text-3xl font-bold text-slate-900 tracking-tight">
               Rp {(totalRevenue - 12450000).toLocaleString("id-ID")}
             </h3>
           </div>
@@ -142,68 +134,7 @@ export default async function ReportPage() {
         </div>
 
         {/* TABLE */}
-        <div className="rounded-[1.5rem] border border-slate-200 bg-white">
-          <div className="flex items-center justify-between p-6 md:p-8 pb-4">
-             <h3 className="text-slate-900 text-lg font-bold">{dict.report.history}</h3>
-          </div>
-          <div className="overflow-x-auto p-6 md:p-8 pt-0">
-            <table className="w-full min-w-[900px] table-auto text-left">
-              <thead>
-                <tr className="border-b border-slate-100 text-[10px] uppercase tracking-widest font-bold text-slate-500">
-                  <th className="pb-4">{dict.report.date}</th>
-                  <th className="pb-4">{dict.report.reference}</th>
-                  <th className="pb-4">{dict.report.category}</th>
-                  <th className="pb-4">{dict.report.type}</th>
-                  <th className="pb-4">{dict.report.payment}</th>
-                  <th className="pb-4 text-right">{dict.report.amount}</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {transactions.length > 0 ? (
-                  transactions.map((trx: any) => (
-                    <tr
-                      key={trx._id}
-                      className="border-b border-slate-50 transition-colors hover:bg-slate-50"
-                    >
-                      <td className="py-4 text-sm font-medium text-slate-900">
-                        {new Date(trx.createdAt).toLocaleDateString(lang === "en" ? "en-US" : "id-ID", { month: "short", day: "numeric", year: "numeric" })}
-                      </td>
-                      <td className="py-4 text-sm font-bold text-slate-900">
-                        TRX-{trx._id.substring(0,4).toUpperCase()}-A
-                      </td>
-                      <td className="py-4 text-sm font-medium text-slate-500">
-                        {dict.report.salesCat}
-                      </td>
-                      <td className="py-4">
-                        <span
-                          className="inline-flex rounded-full bg-emerald-50 px-3 py-1 text-[8px] font-bold uppercase tracking-widest border border-emerald-200 text-emerald-600"
-                        >
-                          {dict.report.income}
-                        </span>
-                      </td>
-                      <td className="py-4 text-sm font-medium text-slate-500">
-                        {trx.paymentMethod === "QRIS" ? dict.report.ewallet : dict.report.cash}
-                      </td>
-                      <td className="py-4 text-sm font-bold text-slate-900 text-right">
-                        + Rp {trx.total.toLocaleString("id-ID")}
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td
-                      colSpan={6}
-                      className="py-8 text-center text-sm font-medium text-slate-400"
-                    >
-                      {dict.report.noTransactions}
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <ReportTable transactions={transactions} dict={dict} lang={lang} />
       </div>
     </AppShell>
   );

@@ -50,10 +50,10 @@ export default function Topbar({ title, subtitle, rightElement, onMenuClick }: T
             <Menu size={24} />
           </button>
         )}
-        <div className="flex items-center gap-3">
-          <h2 className="text-xl font-bold text-slate-900 md:text-2xl">{title}</h2>
+        <div className="flex items-center gap-3 min-w-0">
+          <h2 className="text-xl font-bold text-slate-900 md:text-2xl whitespace-nowrap truncate">{title}</h2>
           {subtitle && (
-            <div className="hidden sm:block">
+            <div className="hidden sm:block whitespace-nowrap truncate">
               {subtitle}
             </div>
           )}
