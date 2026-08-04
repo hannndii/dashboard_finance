@@ -23,7 +23,8 @@ import {
   Pencil,
   Search,
   Package,
-  X
+  X,
+  MoreVertical
 } from "lucide-react";
 
 export default function StockPage() {
@@ -36,7 +37,7 @@ export default function StockPage() {
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
 
   const [search, setSearch] = useState("");
-  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const formatRp = (n: number) =>
     new Intl.NumberFormat(lang === "en" ? "en-US" : "id-ID", {
@@ -265,36 +266,49 @@ export default function StockPage() {
           }}
         />
       )}
-      {/* MOBILE FLOATING SEARCH & ADD BAR */}
-      <div className={`fixed right-0 z-40 p-4 sm:hidden pointer-events-none transition-all duration-300 bottom-0 ${isMobileSearchOpen ? "left-0" : "left-auto"}`}>
-        <div className={`flex items-center justify-end gap-3 pointer-events-auto transition-all duration-300 ${isMobileSearchOpen ? "w-full bg-white rounded-2xl p-2 shadow-[0_-10px_40px_rgb(0,0,0,0.1)] border border-slate-200" : "flex-col"}`}>
+      {/* MOBILE FLOATING ACTION BUTTON (DROPUP) */}
+      <div className="fixed bottom-0 right-0 z-40 p-4 sm:hidden pointer-events-none flex flex-col items-end gap-3">
+        
+        {/* DROPUP MENU ITEMS */}
+        <div 
+          className={`flex flex-col items-end gap-3 transition-all duration-300 origin-bottom-right ${isMobileMenuOpen ? 'scale-100 opacity-100 translate-y-0 pointer-events-auto' : 'scale-90 opacity-0 translate-y-8 pointer-events-none'}`}
+        >
           
-          <div className={`relative transition-all duration-300 overflow-hidden ${isMobileSearchOpen ? "w-[85%] opacity-100" : "w-0 opacity-0"}`}>
+          {/* Add Product Button */}
+          <button
+            onClick={() => {
+              setIsMobileMenuOpen(false);
+              setShowModal(true);
+            }}
+            className="flex items-center gap-3 bg-emerald-600 text-white rounded-full py-3 px-5 shadow-[0_4px_20px_rgb(52,211,153,0.4)] transition-all active:scale-95"
+          >
+            <span className="text-sm font-bold">{dict.stock.addNewItem}</span>
+            <PlusCircle size={20} />
+          </button>
+
+          {/* Search Bar */}
+          <div className="flex items-center gap-2 bg-white p-2 rounded-2xl shadow-[0_4px_25px_rgb(0,0,0,0.15)] border border-slate-800">
             <input
               type="text"
               placeholder={dict.stock.searchPlaceholder}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full rounded-xl bg-slate-50 py-3.5 px-4 text-sm font-bold text-slate-900 outline-none focus:bg-slate-100 transition-all placeholder:text-slate-400 placeholder:font-medium"
+              className="w-48 sm:w-64 rounded-xl bg-slate-50 py-2.5 px-4 text-sm font-bold text-slate-900 outline-none focus:bg-slate-100 transition-all placeholder:text-slate-400 placeholder:font-medium"
             />
+            <div className="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center text-white shrink-0">
+              <Search size={18} />
+            </div>
           </div>
 
-          {!isMobileSearchOpen && (
-            <button
-              onClick={() => setShowModal(true)}
-              className="w-14 h-14 rounded-full bg-emerald-600 flex items-center justify-center text-white transition hover:bg-emerald-700 shadow-xl"
-            >
-              <PlusCircle size={24} />
-            </button>
-          )}
-
-          <button 
-            onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
-            className={`bg-slate-900 flex items-center justify-center text-white shadow-xl transition-all ${isMobileSearchOpen ? "w-[15%] h-[48px] rounded-xl" : "w-14 h-14 rounded-full"}`}
-          >
-            {isMobileSearchOpen ? <X size={20} /> : <Search size={24} />}
-          </button>
         </div>
+
+        {/* MAIN FAB BUTTON */}
+        <button
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          className={`pointer-events-auto flex items-center justify-center rounded-full text-white shadow-2xl transition-all duration-300 ${isMobileMenuOpen ? 'w-14 h-14 bg-slate-800 rotate-90' : 'w-14 h-14 bg-slate-900 rotate-0'}`}
+        >
+          {isMobileMenuOpen ? <X size={24} /> : <MoreVertical size={24} />}
+        </button>
       </div>
 
     </AppShell>
