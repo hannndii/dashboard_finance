@@ -6,11 +6,12 @@
 
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useDeferredValue, useMemo } from "react";
 import AppShell from "../component/AppShell";
 import ProductModal from "../component/ProductModal";
 import EditProductModal from "../component/EditProductModal";
 import { useLanguage } from "../component/LanguageProvider";
+import { useMediaQuery } from "../hooks/useMediaQuery";
 
 import {
   getProducts,
@@ -30,14 +31,15 @@ import {
 export default function StockPage() {
   const { dict, lang } = useLanguage();
   const [products, setProducts] = useState<any[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<any[]>([]);
   const [showModal, setShowModal] = useState(false);
 
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
 
   const [search, setSearch] = useState("");
+  const deferredSearch = useDeferredValue(search);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const isDesktop = useMediaQuery("(min-width: 768px)");
 
   const formatRp = (n: number) =>
     new Intl.NumberFormat(lang === "en" ? "en-US" : "id-ID", {
@@ -49,35 +51,36 @@ export default function StockPage() {
   async function loadProducts() {
     const data = await getProducts();
     setProducts(data);
-    setFilteredProducts(data);
   }
 
   useEffect(() => {
     loadProducts();
   }, []);
 
-  useEffect(() => {
-    const filtered = products.filter((product) =>
-      product.name.toLowerCase().includes(search.toLowerCase())
+  const filteredProducts = useMemo(() => {
+    return products.filter((product) =>
+      product.name.toLowerCase().includes(deferredSearch.toLowerCase())
+    );
+  }, [deferredSearch, products]);
+
+  const { totalValue, lowStockItems, outOfStockItems, categoryCount } = useMemo(() => {
+    const totalValue = products.reduce(
+      (sum, product) => sum + product.price * product.stock,
+      0,
     );
 
-    setFilteredProducts(filtered);
-  }, [search, products]);
+    const lowStockItems = products.filter(
+      (product) => product.stock > 0 && product.stock <= product.minStock,
+    ).length;
 
-  const totalValue = products.reduce(
-    (sum, product) => sum + product.price * product.stock,
-    0,
-  );
+    const outOfStockItems = products.filter(
+      (product) => product.stock === 0,
+    ).length;
 
-  const lowStockItems = products.filter(
-    (product) => product.stock > 0 && product.stock <= product.minStock,
-  ).length;
+    const categoryCount = new Set(products.map((product) => product.category || "Makanan Berat")).size;
 
-  const outOfStockItems = products.filter(
-    (product) => product.stock === 0,
-  ).length;
-
-  const categoryCount = new Set(products.map((product) => product.category || "Makanan Berat")).size;
+    return { totalValue, lowStockItems, outOfStockItems, categoryCount };
+  }, [products]);
 
   async function handleDelete(id: string) {
     await deleteProduct(id);
@@ -146,7 +149,8 @@ export default function StockPage() {
         </div>
 
         {/* DESKTOP TABLE */}
-        <div className="hidden md:block overflow-hidden rounded-[1.5rem] bg-white border border-slate-200">
+        {isDesktop ? (
+        <div className="overflow-hidden rounded-[1.5rem] bg-white border border-slate-200">
           <div className="overflow-x-auto p-8">
             <table className="w-full min-w-[900px] table-auto text-left">
               <thead>
@@ -245,9 +249,9 @@ export default function StockPage() {
             </table>
           </div>
         </div>
-
-        {/* MOBILE CARDS LIST */}
-        <div className="grid grid-cols-1 gap-4 md:hidden pb-20">
+        ) : (
+        <div className="grid grid-cols-1 gap-4 pb-20">
+          {/* MOBILE CARDS LIST */}
           {filteredProducts.length > 0 ? (
             filteredProducts.map((product) => {
               const isLowStock = product.stock > 0 && product.stock <= product.minStock;
@@ -325,6 +329,7 @@ export default function StockPage() {
             </div>
           )}
         </div>
+        )}
       </div>
 
       {showModal && (
