@@ -35,6 +35,7 @@ export default function StockPage() {
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
 
   const [search, setSearch] = useState("");
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
 
   const formatRp = (n: number) =>
     new Intl.NumberFormat(lang === "en" ? "en-US" : "id-ID", {
@@ -264,9 +265,10 @@ export default function StockPage() {
         />
       )}
       {/* MOBILE FLOATING SEARCH & ADD BAR */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 p-4 sm:hidden pointer-events-none">
-        <div className="flex items-center gap-2 pointer-events-auto bg-white rounded-2xl p-2 shadow-[0_-10px_40px_rgb(0,0,0,0.1)] border border-slate-200">
-          <div className="relative w-[85%]">
+      <div className={`fixed right-0 z-40 p-4 sm:hidden pointer-events-none transition-all duration-300 bottom-0 ${isMobileSearchOpen ? "left-0" : "left-auto"}`}>
+        <div className={`flex items-center justify-end gap-3 pointer-events-auto transition-all duration-300 ${isMobileSearchOpen ? "w-full bg-white rounded-2xl p-2 shadow-[0_-10px_40px_rgb(0,0,0,0.1)] border border-slate-200" : "flex-col"}`}>
+          
+          <div className={`relative transition-all duration-300 overflow-hidden ${isMobileSearchOpen ? "w-[85%] opacity-100" : "w-0 opacity-0"}`}>
             <input
               type="text"
               placeholder={dict.stock.searchPlaceholder}
@@ -275,11 +277,21 @@ export default function StockPage() {
               className="w-full rounded-xl bg-slate-50 py-3.5 px-4 text-sm font-bold text-slate-900 outline-none focus:bg-slate-100 transition-all placeholder:text-slate-400 placeholder:font-medium"
             />
           </div>
-          <button
-            onClick={() => setShowModal(true)}
-            className="w-[15%] h-[48px] rounded-xl bg-slate-900 flex items-center justify-center text-white transition hover:bg-slate-800 shadow-md"
+
+          {!isMobileSearchOpen && (
+            <button
+              onClick={() => setShowModal(true)}
+              className="w-14 h-14 rounded-full bg-emerald-600 flex items-center justify-center text-white transition hover:bg-emerald-700 shadow-xl"
+            >
+              <PlusCircle size={24} />
+            </button>
+          )}
+
+          <button 
+            onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
+            className={`bg-slate-900 flex items-center justify-center text-white shadow-xl transition-all ${isMobileSearchOpen ? "w-[15%] h-[48px] rounded-xl" : "w-14 h-14 rounded-full"}`}
           >
-            <PlusCircle size={20} />
+            {isMobileSearchOpen ? <X size={20} /> : <Search size={24} />}
           </button>
         </div>
       </div>
