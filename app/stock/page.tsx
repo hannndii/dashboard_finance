@@ -38,8 +38,13 @@ export default function StockPage() {
 
   const [search, setSearch] = useState("");
   const deferredSearch = useDeferredValue(search);
+  const [visibleCount, setVisibleCount] = useState(2);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
+
+  useEffect(() => {
+    setVisibleCount(2);
+  }, [deferredSearch]);
 
   const formatRp = (n: number) =>
     new Intl.NumberFormat(lang === "en" ? "en-US" : "id-ID", {
@@ -120,32 +125,39 @@ export default function StockPage() {
       <div className="space-y-6">
         
         {/* STATS */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
-          <div className="rounded-[1.5rem] border border-slate-200 bg-white p-6 md:p-8">
+        <div className="flex flex-col md:flex-row gap-4 md:gap-6">
+          <div className="flex-1 rounded-[1.5rem] border border-slate-200 bg-white p-6 md:p-8">
             <p className="text-[10px] uppercase tracking-widest font-bold text-slate-500">{dict.stock.totalValue}</p>
             <p className="mt-3 text-3xl font-bold text-slate-900 tracking-tight">{formatRp(totalValue)}</p>
           </div>
 
-          <div className="rounded-[1.5rem] border border-slate-200 bg-white p-6 md:p-8">
-            <p className="text-[10px] uppercase tracking-widest font-bold text-slate-500">{dict.stock.lowStock}</p>
-            <p className="mt-3 text-3xl font-bold tracking-tight text-red-600">
-              {lowStockItems.toString().padStart(2, '0')} <span className="text-xl font-bold">{dict.stock.units}</span>
-            </p>
-          </div>
+          <div className="flex-1 grid grid-cols-3 gap-3 md:gap-6">
+            <div className="rounded-2xl border border-slate-200 bg-white p-4 flex flex-col items-center justify-center md:items-start md:p-8">
+              <p className="text-[9px] md:text-[10px] uppercase tracking-widest font-bold text-slate-500 text-center md:text-left">{dict.stock.lowStock}</p>
+              <p className="mt-2 text-xl md:text-3xl font-bold tracking-tight text-red-600">
+                {lowStockItems.toString().padStart(2, '0')}
+              </p>
+            </div>
 
-          <div className="rounded-[1.5rem] border border-slate-200 bg-white p-6 md:p-8">
-            <p className="text-[10px] uppercase tracking-widest font-bold text-slate-500">{dict.stock.outOfStock}</p>
-            <p className="mt-3 text-3xl font-bold tracking-tight text-slate-900">
-              {outOfStockItems.toString().padStart(2, '0')} <span className="text-xl font-bold">{dict.stock.units}</span>
-            </p>
-          </div>
+            <div className="rounded-2xl border border-slate-200 bg-white p-4 flex flex-col items-center justify-center md:items-start md:p-8">
+              <p className="text-[9px] md:text-[10px] uppercase tracking-widest font-bold text-slate-500 text-center md:text-left">{dict.stock.outOfStock}</p>
+              <p className="mt-2 text-xl md:text-3xl font-bold tracking-tight text-slate-900">
+                {outOfStockItems.toString().padStart(2, '0')}
+              </p>
+            </div>
 
-          <div className="rounded-[1.5rem] border border-slate-200 bg-white p-6 md:p-8">
-            <p className="text-[10px] uppercase tracking-widest font-bold text-slate-500">{dict.stock.categories}</p>
-            <p className="mt-3 text-3xl font-bold tracking-tight text-slate-900">
-              {categoryCount.toString().padStart(2, '0')} <span className="text-xl font-bold">{dict.stock.groups}</span>
-            </p>
+            <div className="rounded-2xl border border-slate-200 bg-white p-4 flex flex-col items-center justify-center md:items-start md:p-8">
+              <p className="text-[9px] md:text-[10px] uppercase tracking-widest font-bold text-slate-500 text-center md:text-left">{dict.stock.categories}</p>
+              <p className="mt-2 text-xl md:text-3xl font-bold tracking-tight text-slate-900">
+                {categoryCount.toString().padStart(2, '0')}
+              </p>
+            </div>
           </div>
+        </div>
+
+        {/* INVENTORY SECTION TITLE */}
+        <div>
+          <h2 className="text-xl font-bold text-slate-900 mb-4">{dict.stock.title}</h2>
         </div>
 
         {/* DESKTOP TABLE */}
@@ -250,25 +262,26 @@ export default function StockPage() {
           </div>
         </div>
         ) : (
-        <div className="grid grid-cols-1 gap-4 pb-20">
+        <div className="flex flex-col gap-4 pb-20">
           {/* MOBILE CARDS LIST */}
           {filteredProducts.length > 0 ? (
-            filteredProducts.map((product) => {
-              const isLowStock = product.stock > 0 && product.stock <= product.minStock;
-              const isOutOfStock = product.stock === 0;
+            <>
+              {filteredProducts.slice(0, visibleCount).map((product) => {
+                const isLowStock = product.stock > 0 && product.stock <= product.minStock;
+                const isOutOfStock = product.stock === 0;
 
-              return (
-                <div key={product._id} className="bg-white border border-slate-200 rounded-[1.5rem] p-5 shadow-sm">
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-50 border border-slate-100">
-                        <Package size={20} className="text-slate-700" />
+                return (
+                  <div key={product._id} className="bg-white border border-slate-200 rounded-[1.5rem] p-5 shadow-sm">
+                    <div className="flex justify-between items-start mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-50 border border-slate-100">
+                          <Package size={20} className="text-slate-700" />
+                        </div>
+                        <div>
+                          <h3 className="font-bold text-slate-900 text-base">{product.name}</h3>
+                          <p className="text-xs font-medium text-slate-500">{product.category || "Makanan Berat"}</p>
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="font-bold text-slate-900 text-base">{product.name}</h3>
-                        <p className="text-xs font-medium text-slate-500">{product.category || "Makanan Berat"}</p>
-                      </div>
-                    </div>
                     <div>
                       {isOutOfStock ? (
                         <span className="inline-flex rounded-full bg-slate-900 px-3 py-1 text-[10px] font-bold uppercase tracking-widest border border-slate-900 text-white shadow-sm">
@@ -307,22 +320,30 @@ export default function StockPage() {
                         setSelectedProduct(product);
                         setShowEditModal(true);
                       }}
-                      className="flex-1 flex items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 hover:text-slate-900 transition-colors shadow-sm"
+                      className="flex-1 flex items-center justify-center rounded-xl py-3 text-slate-700 bg-slate-100 hover:bg-slate-200 hover:text-slate-900 transition-colors shadow-sm"
                     >
-                      <Pencil size={16} />
-                      Edit
+                      <Pencil size={18} />
                     </button>
                     <button
                       onClick={() => handleDelete(product._id)}
-                      className="flex-1 flex items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-bold text-red-600 bg-red-50 hover:bg-red-100 hover:text-red-700 transition-colors shadow-sm"
+                      className="flex-1 flex items-center justify-center rounded-xl py-3 text-red-600 bg-red-50 hover:bg-red-100 hover:text-red-700 transition-colors shadow-sm"
                     >
-                      <Trash2 size={16} />
-                      Hapus
+                      <Trash2 size={18} />
                     </button>
                   </div>
                 </div>
               );
-            })
+            })}
+
+            {visibleCount < filteredProducts.length && (
+              <button 
+                onClick={() => setVisibleCount(filteredProducts.length)}
+                className="w-full rounded-2xl bg-slate-100 py-4 text-sm font-bold text-slate-600 hover:bg-slate-200 transition mt-2 shadow-sm border border-slate-200"
+              >
+                Tampilkan Semua ({filteredProducts.length - visibleCount} lagi)
+              </button>
+            )}
+          </>
           ) : (
             <div className="bg-white border border-slate-200 rounded-[1.5rem] p-8 text-center text-sm font-medium text-slate-400">
               {dict.stock.noItems}
