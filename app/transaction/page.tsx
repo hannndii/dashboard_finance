@@ -195,7 +195,7 @@ export default function TransactionPage() {
     );
   };
 
-  const OrderPanel = () => (
+  const OrderPanel = ({ onClose }: { onClose?: () => void }) => (
     <div className="flex h-full flex-col overflow-hidden rounded-[1.5rem] border border-slate-200 bg-slate-50/50">
       <div className="flex shrink-0 items-center justify-between p-6 pb-2">
         <h3 className="text-lg font-bold text-slate-900">
@@ -256,15 +256,15 @@ export default function TransactionPage() {
                   </button>
                 </div>
                 
-                <div className="w-20 flex justify-end items-center gap-2">
+                <div className="w-auto flex justify-end items-center gap-3 pl-2">
                   <span className="text-xs font-bold text-slate-900">
                      {formatRp(item.price * item.qty)}
                   </span>
                   <button
                     onClick={() => removeItem(index)}
-                    className="text-red-500 opacity-0 transition-opacity group-hover:opacity-100"
+                    className="text-slate-400 hover:text-red-500 transition-colors"
                   >
-                    <X size={14} />
+                    <Trash2 size={16} />
                   </button>
                 </div>
               </div>
@@ -350,6 +350,15 @@ export default function TransactionPage() {
         >
           {isPending ? dict.transaction.processing : dict.transaction.complete}
         </button>
+        {onClose && (
+          <button
+            type="button"
+            onClick={onClose}
+            className="mt-3 w-full rounded-xl bg-slate-200 px-4 py-4 text-xs font-bold uppercase tracking-widest text-slate-700 transition hover:cursor-pointer hover:bg-slate-300"
+          >
+            Batal
+          </button>
+        )}
       </div>
     </div>
   );
@@ -473,19 +482,9 @@ export default function TransactionPage() {
       </div>
 
       {isMobileCartOpen && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 p-4 pt-10 sm:items-center sm:p-6 lg:hidden">
-          <div className="flex h-[85vh] w-full max-w-md flex-col">
-            <div className="mb-3 flex shrink-0 justify-end">
-              <button
-                onClick={() => setIsMobileCartOpen(false)}
-                className="rounded-full bg-white p-2 text-slate-600 shadow-sm hover:cursor-pointer"
-              >
-                <X size={20} />
-              </button>
-            </div>
-            <div className="min-h-0 flex-1">
-              <OrderPanel />
-            </div>
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 backdrop-blur-md p-4 sm:items-center sm:p-6 lg:hidden">
+          <div className="w-full max-w-md max-h-[65vh] flex flex-col min-h-0">
+            <OrderPanel onClose={() => setIsMobileCartOpen(false)} />
           </div>
         </div>
       )}
