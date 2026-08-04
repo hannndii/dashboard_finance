@@ -449,7 +449,7 @@ export default function TransactionPage() {
 
       {/* MOBILE FLOATING SEARCH */}
       <div className={`fixed right-0 z-30 p-4 lg:hidden pointer-events-none transition-all duration-300 ${cart.length > 0 ? "bottom-[88px] md:bottom-[100px]" : "bottom-0"} ${isMobileSearchOpen ? "left-0" : "left-auto"}`}>
-        <div className={`flex items-center justify-end gap-2 pointer-events-auto transition-all duration-300 ${isMobileSearchOpen ? "w-full bg-white rounded-2xl p-2 shadow-[0_-10px_40px_rgb(0,0,0,0.1)] border border-slate-200" : ""}`}>
+        <div className={`flex items-center justify-end gap-2 pointer-events-auto transition-all duration-300 ${isMobileSearchOpen ? "w-full bg-white rounded-2xl p-2 shadow-[0_4px_25px_rgb(0,0,0,0.15)] border border-slate-800" : ""}`}>
           
           <div className={`relative transition-all duration-300 overflow-hidden ${isMobileSearchOpen ? "w-[85%] sm:w-[90%] opacity-100" : "w-0 opacity-0"}`}>
             <input
