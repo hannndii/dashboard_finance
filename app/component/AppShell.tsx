@@ -1,5 +1,5 @@
 // ============================================================================
-// 🎨 MODULE: CORE LAYOUT (AppShell)
+// MODULE: CORE LAYOUT (AppShell)
 // Pembungkus utama aplikasi. Mengatur tata letak responsif, Sidebar, dan Topbar.
 // ============================================================================
 
