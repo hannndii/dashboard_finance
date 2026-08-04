@@ -5,7 +5,7 @@
 // ============================================================================
 
 "use client";
-import { useEffect, useState, useTransition, type ChangeEvent } from "react";
+import { useEffect, useState, useTransition, type ChangeEvent, useDeferredValue, useMemo } from "react";
 import AppShell from "../component/AppShell";
 import { getProducts, addTransaction, uploadToDrive } from "../action";
 import { useLanguage } from "../component/LanguageProvider";
@@ -26,6 +26,7 @@ export default function TransactionPage() {
   const { dict, lang } = useLanguage();
   const [products, setProducts] = useState<any[]>([]);
   const [search, setSearch] = useState("");
+  const deferredSearch = useDeferredValue(search);
   const [selectedCategory, setSelectedCategory] = useState("Semua");
   const [cart, setCart] = useState<any[]>([]);
   const [paymentMethod, setPaymentMethod] = useState("Tunai");
@@ -51,15 +52,17 @@ export default function TransactionPage() {
     loadProducts();
   }, []);
 
-  const filteredProducts = products.filter((product) => {
-    const matchesSearch = product.name
-      .toLowerCase()
-      .includes(search.toLowerCase());
-    const matchesCategory =
-      selectedCategory === "Semua" || product.category === selectedCategory;
+  const filteredProducts = useMemo(() => {
+    return products.filter((product) => {
+      const matchesSearch = product.name
+        .toLowerCase()
+        .includes(deferredSearch.toLowerCase());
+      const matchesCategory =
+        selectedCategory === "Semua" || product.category === selectedCategory;
 
-    return matchesSearch && matchesCategory;
-  });
+      return matchesSearch && matchesCategory;
+    });
+  }, [products, deferredSearch, selectedCategory]);
 
   const addToCart = (product: any) => {
     const existingIndex = cart.findIndex(
